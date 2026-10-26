@@ -100,11 +100,11 @@ export const whiteChocolateIceCream: Recipe = {
         },
         {
           title: 'Afkoelen & invriezen',
-          text: 'Laat het mengsel afkoelen tot het lauw is en giet het dan in de Ninja Deluxe-beker. Doe het deksel erop en vries 12 uur in op een vlakke ondergrond.',
+          text: 'Laat het mengsel afkoelen tot het lauw is en giet het dan in de Ninja Deluxe-pint. Doe het deksel erop en vries 12 uur in op een vlakke ondergrond.',
         },
         {
           title: 'Draaien',
-          text: 'Plaats de beker in de Ninja Deluxe en start het programma ICE CREAM. Draai aan het eind van het programma zo nodig een RE-SPIN voor een nog romigere structuur.',
+          text: 'Plaats de pint in de Ninja Deluxe en start het programma ICE CREAM. Draai aan het eind van het programma zo nodig een RE-SPIN voor een nog romigere structuur.',
           program: 'Ice Cream',
         },
         {

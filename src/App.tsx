@@ -5,6 +5,7 @@ import { ToastProvider } from './components/Toast'
 import { I18nProvider } from './hooks/I18nProvider'
 import { LibraryProvider } from './hooks/LibraryProvider'
 import { DiscoverPage } from './pages/DiscoverPage'
+import { FolderPage } from './pages/FolderPage'
 import { LibraryPage } from './pages/LibraryPage'
 import { RecipeDetailPage } from './pages/RecipeDetailPage'
 import { RecipeFormPage } from './pages/RecipeFormPage'
@@ -60,6 +61,7 @@ export function App() {
                 <Route path="new" element={<RecipeFormPage />} />
                 <Route path="recipe/:id" element={<RecipeDetailPage />} />
                 <Route path="recipe/:id/edit" element={<RecipeFormPage />} />
+                <Route path="folder/:id" element={<FolderPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Routes>

@@ -1,23 +1,27 @@
 import { BookHeart, Compass, Plus, type LucideIcon } from 'lucide-react'
-import { Link, NavLink } from 'react-router'
+import { Link, NavLink, useLocation } from 'react-router'
 import { useI18n } from '../hooks/i18nContext'
 
-function Tab({ to, label, icon: Icon }: { to: string; label: string; icon: LucideIcon }) {
+function Tab({ to, label, icon: Icon, alsoActive = false }: { to: string; label: string; icon: LucideIcon; alsoActive?: boolean }) {
   return (
     <NavLink
       to={to}
       end
       className={({ isActive }) =>
         `flex flex-1 flex-col items-center gap-0.5 py-2 text-xs font-bold transition-colors ${
-          isActive ? 'text-raspberry' : 'text-ink-soft hover:text-ink'
+          isActive || alsoActive ? 'text-raspberry' : 'text-ink-soft hover:text-ink'
         }`
       }
     >
       {({ isActive }) => (
         <>
-          <Icon className="size-6" strokeWidth={isActive ? 2.4 : 1.9} aria-hidden />
+          <Icon
+            className={`size-6 transition-transform duration-300 ${isActive || alsoActive ? 'scale-110' : ''}`}
+            strokeWidth={isActive || alsoActive ? 2.4 : 1.9}
+            aria-hidden
+          />
           <span>{label}</span>
-          <span className={`size-1 rounded-full transition-opacity ${isActive ? 'bg-raspberry' : 'opacity-0'}`} />
+          <span className={`size-1 rounded-full transition-all duration-300 ${isActive || alsoActive ? 'bg-raspberry' : 'scale-0 opacity-0'}`} />
         </>
       )}
     </NavLink>
@@ -26,13 +30,15 @@ function Tab({ to, label, icon: Icon }: { to: string; label: string; icon: Lucid
 
 export function BottomNav() {
   const { t } = useI18n()
+  // A folder belongs to the Library, so its tab stays lit inside one.
+  const inFolder = useLocation().pathname.startsWith('/folder/')
   return (
     <nav aria-label={t('Main')} className="pb-safe fixed inset-x-0 bottom-0 z-30">
       <div className="mx-auto mb-3 max-w-md px-4">
         <div className="relative flex items-center rounded-[1.75rem] border border-white/70 bg-white/95 px-6 shadow-soft backdrop-blur-xl">
           <Tab to="/" label={t('Discover')} icon={Compass} />
           <div className="w-20 shrink-0" aria-hidden />
-          <Tab to="/library" label={t('Library')} icon={BookHeart} />
+          <Tab to="/library" label={t('Library')} icon={BookHeart} alsoActive={inFolder} />
           <Link
             to="/new"
             aria-label={t('Add a recipe')}

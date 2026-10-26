@@ -3,6 +3,9 @@ import {
   Check,
   ChefHat,
   Clock,
+  FolderCheck,
+  FolderMinus,
+  FolderPlus,
   Gauge,
   IceCreamBowl,
   Languages,
@@ -13,10 +16,11 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Segmented } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
 import { FavoriteButton } from '../components/FavoriteButton'
+import { FolderPickerSheet } from '../components/FolderPickerSheet'
 import { RecipeImage } from '../components/RecipeImage'
 import { Sheet, SheetAction } from '../components/Sheet'
 import { TONES } from '../components/tone'
@@ -117,12 +121,16 @@ function Ingredients({ recipe, pint }: { recipe: Recipe; pint: PintSize }) {
 export function RecipeDetailPage() {
   const { id } = useParams()
   const original = useRecipe(id)
-  const { ready, deleteRecipe } = useLibrary()
-  const { t, localize } = useI18n()
+  const { ready, deleteRecipe, folders, toggleInFolder } = useLibrary()
+  const { t, tn, localize } = useI18n()
   const showToast = useToast()
   const navigate = useNavigate()
   const [pint, setPint] = useState<PintSize | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [folderOpen, setFolderOpen] = useState(false)
+  // Set when the recipe was opened from inside a folder.
+  const [params] = useSearchParams()
+  const fromFolder = folders.find((folder) => folder.id === params.get('folder'))
 
   if (!original) {
     if (!ready) return null
@@ -149,6 +157,7 @@ export function RecipeDetailPage() {
   const activePint = pint ?? recipe.basePint
   const hasAmounts = recipe.ingredients.some((group) => group.items.some((item) => item.qty !== undefined))
   const isUserRecipe = recipe.origin === 'user'
+  const inFolders = folders.filter((folder) => folder.recipeIds.includes(recipe.id)).length
 
   const goBack = () => {
     if (window.history.state?.idx > 0) navigate(-1)
@@ -222,6 +231,30 @@ export function RecipeDetailPage() {
               )
             })}
           </ul>
+        </div>
+
+        {/* Folders are separate from favorites: a recipe can sit in a folder with or without the heart. */}
+        <div className="mt-6 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => setFolderOpen(true)}
+            className={`btn-secondary w-full shadow-soft ${inFolders ? 'bg-strawberry-soft text-raspberry' : ''}`}
+          >
+            {inFolders ? <FolderCheck className="size-5" aria-hidden /> : <FolderPlus className="size-5 text-raspberry" aria-hidden />}
+            {inFolders ? tn(inFolders, 'In {n} folder', 'In {n} folders') : t('Add to folder')}
+          </button>
+          {fromFolder?.recipeIds.includes(recipe.id) && (
+            <button
+              type="button"
+              onClick={async () => {
+                await toggleInFolder(fromFolder.id, recipe.id)
+                showToast(t('Removed from {folder}', { folder: fromFolder.name }))
+              }}
+              className="flex animate-pop-in items-center justify-center gap-2 py-2 text-sm font-extrabold text-raspberry"
+            >
+              <FolderMinus className="size-4" aria-hidden /> {t('Remove from {folder}', { folder: fromFolder.name })}
+            </button>
+          )}
         </div>
 
         <Section
@@ -340,6 +373,8 @@ export function RecipeDetailPage() {
           </div>
         )}
       </div>
+
+      <FolderPickerSheet open={folderOpen} onClose={() => setFolderOpen(false)} recipeId={recipe.id} />
 
       <Sheet open={menuOpen} onClose={() => setMenuOpen(false)} title={t('Delete this recipe?')}>
         <p className="mb-4 text-[15px] text-ink-soft">{t('“{name}” will be removed from this device. This can’t be undone.', { name: recipe.name })}</p>

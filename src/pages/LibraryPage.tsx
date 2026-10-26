@@ -1,144 +1,194 @@
-import { ChefHat, Download, Ellipsis, Heart, Upload } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { ChefHat, FolderHeart, FolderPlus, Heart, Settings } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { Segmented } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
+import { FolderRow, FolderTile } from '../components/FolderCover'
+import { FolderSheet } from '../components/FolderSheet'
 import { PageHeader } from '../components/PageHeader'
-import { RecipeGrid } from '../components/RecipeCard'
+import { RecipeCard, RecipeGrid } from '../components/RecipeCard'
+import { RearrangeBar, RearrangeButton } from '../components/Rearrange'
+import { ReorderableGrid } from '../components/ReorderableGrid'
 import { SearchBar } from '../components/SearchBar'
-import { Sheet, SheetAction } from '../components/Sheet'
+import { SettingsSheet } from '../components/SettingsSheet'
+import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useAllRecipes } from '../hooks/useRecipes'
-import { filterRecipes } from '../lib/search'
+import { searchRecipes } from '../lib/search'
+import type { Recipe } from '../types/recipe'
 
-type Tab = 'mine' | 'favorites'
+type Tab = 'mine' | 'favorites' | 'folders'
 
 export function LibraryPage() {
-  const { ready, userRecipes, favorites, exportBackup, importBackup } = useLibrary()
-  const allRecipes = useAllRecipes()
+  const { ready, userRecipes, favoriteIds, folders, folderView, reorderRecipes, reorderFavorites, reorderFolders } = useLibrary()
+  const { t, tn } = useI18n()
+  const all = useAllRecipes()
+  const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
-  const tab: Tab = params.get('tab') === 'favorites' ? 'favorites' : 'mine'
+  const tabParam = params.get('tab')
+  const tab: Tab = tabParam === 'favorites' || tabParam === 'folders' ? tabParam : 'mine'
   const [query, setQuery] = useState('')
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [toast, setToast] = useState<string | null>(null)
-  const fileInput = useRef<HTMLInputElement>(null)
+  const [sorting, setSorting] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [newFolderOpen, setNewFolderOpen] = useState(false)
 
-  useEffect(() => {
-    if (!toast) return
-    const timer = setTimeout(() => setToast(null), 3500)
-    return () => clearTimeout(timer)
-  }, [toast])
-
-  const favoriteRecipes = useMemo(() => allRecipes.filter((recipe) => favorites.has(recipe.id)), [allRecipes, favorites])
+  const favoriteRecipes = useMemo(
+    () => favoriteIds.map((id) => all.find((recipe) => recipe.id === id)).filter((recipe): recipe is Recipe => recipe !== undefined),
+    [favoriteIds, all],
+  )
   const source = tab === 'mine' ? userRecipes : favoriteRecipes
-  const results = useMemo(() => filterRecipes(source, { query }), [source, query])
+  const results = useMemo(() => searchRecipes(source, query), [source, query])
+  const count = tab === 'folders' ? folders.length : source.length
+  const rearranging = sorting && count > 1
 
-  const onImport = async (file: File | undefined) => {
-    if (!file) return
-    setMenuOpen(false)
-    try {
-      const count = await importBackup(file)
-      setToast(`Restored ${count} ${count === 1 ? 'recipe' : 'recipes'}`)
-    } catch (error) {
-      setToast(error instanceof Error ? error.message : 'Could not read that file')
-    } finally {
-      if (fileInput.current) fileInput.current.value = ''
+  const switchTab = (next: Tab) => {
+    setSorting(false)
+    setQuery('')
+    setParams(next === 'mine' ? {} : { tab: next }, { replace: true })
+  }
+
+  const folderList = (still: boolean) => (folder: (typeof folders)[number]) =>
+    folderView === 'list' ? <FolderRow folder={folder} still={still} /> : <FolderTile folder={folder} still={still} />
+  const folderLayout = folderView === 'list' ? 'flex flex-col gap-3' : 'grid grid-cols-2 gap-3'
+
+  const recipesTab = () => {
+    if (rearranging) {
+      return (
+        <ReorderableGrid
+          items={source}
+          onReorder={tab === 'mine' ? reorderRecipes : reorderFavorites}
+          renderItem={(recipe) => <RecipeCard recipe={recipe} still />}
+        />
+      )
     }
+    if (results.length > 0) return <RecipeGrid recipes={results} />
+    if (source.length > 0) {
+      return (
+        <EmptyState icon={ChefHat} title={t('Nothing found')}>
+          {t('No recipes match “{query}”.', { query })}
+        </EmptyState>
+      )
+    }
+    if (tab === 'mine') {
+      return (
+        <EmptyState
+          icon={ChefHat}
+          title={t('Your recipe box is empty')}
+          action={
+            <Link to="/new" className="btn-primary">
+              {t('Add a recipe')}
+            </Link>
+          }
+        >
+          {t('Tap the + button to save your own creations. They are stored safely on this device.')}
+        </EmptyState>
+      )
+    }
+    return (
+      <EmptyState
+        icon={Heart}
+        title={t('No favorites yet')}
+        action={
+          <Link to="/" className="btn-secondary">
+            {t('Discover recipes')}
+          </Link>
+        }
+      >
+        {t('Tap the heart on any recipe to keep it here.')}
+      </EmptyState>
+    )
+  }
+
+  const foldersTab = () => {
+    if (folders.length === 0) {
+      return (
+        <EmptyState
+          icon={FolderHeart}
+          title={t('No folders yet')}
+          action={
+            <button type="button" onClick={() => setNewFolderOpen(true)} className="btn-primary">
+              <FolderPlus className="size-5" aria-hidden /> {t('New folder')}
+            </button>
+          }
+        >
+          {t('Group recipes however you like: summer sorbets, protein treats, party desserts…')}
+        </EmptyState>
+      )
+    }
+    if (rearranging) {
+      return <ReorderableGrid items={folders} onReorder={reorderFolders} className={folderLayout} renderItem={folderList(true)} />
+    }
+    return (
+      <ul className={folderLayout}>
+        {folders.map((folder, index) => (
+          <li key={folder.id} className="animate-fade-up" style={{ animationDelay: `${Math.min(index, 10) * 45}ms` }}>
+            {folderList(false)(folder)}
+          </li>
+        ))}
+      </ul>
+    )
   }
 
   return (
     <div className="px-5">
       <PageHeader
-        eyebrow="Your collection"
-        title="Library"
+        eyebrow={t('Your collection')}
+        title={t('Library')}
         action={
-          <button type="button" onClick={() => setMenuOpen(true)} aria-label="Backup options" className="icon-btn mb-1 bg-white shadow-soft">
-            <Ellipsis className="size-5" aria-hidden />
+          <button type="button" onClick={() => setSettingsOpen(true)} aria-label={t('Settings')} title={t('Settings')} className="icon-btn mb-1 bg-white shadow-soft">
+            <Settings className="size-5" aria-hidden />
           </button>
         }
       />
 
       <Segmented
-        label="Library section"
+        label={t('Library section')}
         value={tab}
-        onChange={(value) => setParams(value === 'favorites' ? { tab: 'favorites' } : {}, { replace: true })}
+        onChange={switchTab}
         options={[
-          { value: 'mine', label: `My recipes · ${userRecipes.length}` },
-          { value: 'favorites', label: `Favorites · ${favoriteRecipes.length}` },
+          { value: 'mine', label: t('My recipes'), hint: tn(userRecipes.length, '{n} recipe', '{n} recipes') },
+          { value: 'favorites', label: t('Favorites'), hint: tn(favoriteRecipes.length, '{n} recipe', '{n} recipes') },
+          { value: 'folders', label: t('Folders'), hint: tn(folders.length, '{n} folder', '{n} folders') },
         ]}
       />
 
-      {source.length > 0 && (
-        <div className="mt-4">
-          <SearchBar value={query} onChange={setQuery} placeholder={tab === 'mine' ? 'Search your recipes' : 'Search favorites'} />
-        </div>
-      )}
-
-      <div className="mt-5">
-        {!ready ? null : results.length > 0 ? (
-          <RecipeGrid recipes={results} />
-        ) : source.length > 0 ? (
-          <EmptyState icon={ChefHat} title="Nothing found">
-            No recipes match “{query}”.
-          </EmptyState>
-        ) : tab === 'mine' ? (
-          <EmptyState
-            icon={ChefHat}
-            title="Your recipe box is empty"
-            action={
-              <Link to="/new" className="btn-primary">
-                Add a recipe
-              </Link>
-            }
-          >
-            Tap the + button to save your own creations. They are stored safely on this device.
-          </EmptyState>
+      <div className="mt-4 min-h-12">
+        {rearranging ? (
+          <RearrangeBar onDone={() => setSorting(false)} />
+        ) : tab === 'folders' ? (
+          folders.length > 0 && (
+            <div className="flex items-center gap-2">
+              <p className="flex-1 text-sm font-bold text-ink-soft">{tn(folders.length, '{n} folder', '{n} folders')}</p>
+              {folders.length > 1 && <RearrangeButton onClick={() => setSorting(true)} />}
+              <button type="button" onClick={() => setNewFolderOpen(true)} className="btn-secondary h-12 shadow-soft">
+                <FolderPlus className="size-5 text-raspberry" aria-hidden /> {t('New folder')}
+              </button>
+            </div>
+          )
         ) : (
-          <EmptyState
-            icon={Heart}
-            title="No favorites yet"
-            action={
-              <Link to="/" className="btn-secondary">
-                Discover recipes
-              </Link>
-            }
-          >
-            Tap the heart on any recipe to keep it here.
-          </EmptyState>
+          source.length > 0 && (
+            <SearchBar
+              value={query}
+              onChange={setQuery}
+              placeholder={t(tab === 'mine' ? 'Search your recipes' : 'Search favorites')}
+              trailing={source.length > 1 && !query ? <RearrangeButton onClick={() => setSorting(true)} /> : undefined}
+            />
+          )
         )}
       </div>
 
-      <Sheet open={menuOpen} onClose={() => setMenuOpen(false)} title="Backup">
-        <p className="mb-4 text-[15px] leading-relaxed text-ink-soft">
-          Your recipes and favorites live on this device only. Export a backup now and then, or use it to move them to another phone.
-        </p>
-        <div className="space-y-2">
-          <SheetAction
-            icon={Download}
-            label="Export backup"
-            detail="Save a .json file with all your recipes"
-            onClick={() => {
-              void exportBackup()
-              setMenuOpen(false)
-            }}
-          />
-          <SheetAction icon={Upload} label="Import backup" detail="Restore recipes from a backup file" onClick={() => fileInput.current?.click()} />
-        </div>
-        <input
-          ref={fileInput}
-          type="file"
-          accept="application/json,.json"
-          className="hidden"
-          aria-label="Backup file"
-          onChange={(event) => void onImport(event.target.files?.[0])}
-        />
-      </Sheet>
+      {/* Keyed on the tab so switching deals the new set of cards in. */}
+      <div key={tab} className="mt-5">
+        {!ready ? null : tab === 'folders' ? foldersTab() : recipesTab()}
+      </div>
 
-      {toast && (
-        <div role="status" className="fixed inset-x-0 bottom-28 z-40 mx-auto w-fit max-w-[calc(100%-2.5rem)] animate-pop-in rounded-full bg-ink px-5 py-3 text-sm font-bold text-cream shadow-soft">
-          {toast}
-        </div>
-      )}
+      <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <FolderSheet
+        open={newFolderOpen}
+        onClose={() => setNewFolderOpen(false)}
+        // A new folder is empty, and filling it is the next thing you want, so go straight in.
+        onCreated={(folder) => navigate(`/folder/${folder.id}`)}
+      />
     </div>
   )
 }
