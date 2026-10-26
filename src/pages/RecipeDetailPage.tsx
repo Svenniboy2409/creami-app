@@ -15,7 +15,7 @@ import {
   Trash2,
   type LucideIcon,
 } from 'lucide-react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Segmented } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
@@ -23,7 +23,6 @@ import { FavoriteButton } from '../components/FavoriteButton'
 import { FolderPickerSheet } from '../components/FolderPickerSheet'
 import { RecipeImage } from '../components/RecipeImage'
 import { Sheet, SheetAction } from '../components/Sheet'
-import { StatusBarScrim } from '../components/StatusBarScrim'
 import { TONES, type ToneClasses } from '../components/tone'
 import { CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
 import { useI18n } from '../hooks/i18nContext'
@@ -131,25 +130,6 @@ export function RecipeDetailPage() {
   const [pint, setPint] = useRemembered<PintSize | null>(`recipe:${id}:pint`, null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [folderOpen, setFolderOpen] = useState(false)
-  // Once the photo has scrolled away, the status bar needs its backdrop back.
-  const heroRef = useRef<HTMLDivElement>(null)
-  const [pastHero, setPastHero] = useState(false)
-  useEffect(() => {
-    let frame = 0
-    const check = () => {
-      frame = 0
-      const hero = heroRef.current
-      setPastHero(!!hero && hero.getBoundingClientRect().bottom < 72)
-    }
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(check)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      cancelAnimationFrame(frame)
-    }
-  }, [])
   // Set when the recipe was opened from inside a folder.
   const [params] = useSearchParams()
   const fromFolder = folders.find((folder) => folder.id === params.get('folder'))
@@ -189,10 +169,9 @@ export function RecipeDetailPage() {
 
   return (
     <article>
-      <StatusBarScrim visible={pastHero} />
       {/* The photo runs right to the top edge, under the status bar when the app
           is on the home screen; only Back and the heart sit on it. */}
-      <div ref={heroRef} className="relative h-[calc(min(100vw,28rem)*0.88_+_var(--safe-top))] overflow-hidden rounded-b-[2.25rem] shadow-soft">
+      <div className="relative h-[calc(min(100vw,28rem)*0.88_+_var(--safe-top))] overflow-hidden rounded-b-[2.25rem] shadow-soft">
         <RecipeImage recipe={recipe} className="animate-hero-in" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[calc(var(--safe-top)_+_6rem)] bg-linear-to-b from-ink/40 to-transparent" />
         <div className="pt-safe absolute inset-x-0 top-0">

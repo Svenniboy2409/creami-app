@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router'
 import { BottomNav } from './components/BottomNav'
-import { StatusBarScrim } from './components/StatusBarScrim'
 import { ToastProvider } from './components/Toast'
 import { I18nProvider } from './hooks/I18nProvider'
 import { LibraryProvider } from './hooks/LibraryProvider'
@@ -74,7 +73,6 @@ function Layout() {
   return (
     <>
       <PageMemory />
-      {!isRecipe && <StatusBarScrim />}
       <main className={`mx-auto min-h-dvh max-w-md ${isRecipe ? 'pb-[calc(3rem_+_env(safe-area-inset-bottom))]' : 'pb-36'}`}>
         {/* Keyed on the path so every page fades in as you arrive on it. */}
         <div key={pathname} className="animate-page-in">

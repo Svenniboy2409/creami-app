@@ -139,10 +139,9 @@ export function DiscoverPage() {
       <div ref={markerRef} className="h-px" aria-hidden />
       <div
         ref={rowRef}
-        className={`sticky top-[var(--safe-top)] z-20 -mx-5 px-5 py-2 transition-[background-color,box-shadow,backdrop-filter] duration-300 before:absolute before:inset-x-0 before:bottom-full before:h-[var(--safe-top)] before:transition-colors before:duration-300 ${
-          stuck
-            ? 'bg-cream/85 shadow-[0_12px_24px_-16px_rgb(59_42_42/0.35)] backdrop-blur-xl before:bg-cream/85'
-            : 'bg-cream/0 before:bg-transparent'
+        // Holds on just below the status bar; the page keeps scrolling under the clock above it, with no band there.
+        className={`sticky top-[var(--safe-top)] z-20 -mx-5 px-5 py-2 transition-[background-color,box-shadow,backdrop-filter] duration-300 ${
+          stuck ? 'bg-cream/85 shadow-[0_12px_24px_-16px_rgb(59_42_42/0.35)] backdrop-blur-xl' : 'bg-cream/0'
         }`}
       >
         <SearchBar

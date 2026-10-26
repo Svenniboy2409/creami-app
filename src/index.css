@@ -306,13 +306,6 @@
   padding-top: var(--safe-top);
 }
 
-/* Sits behind the status bar on cream pages, so its white clock stays readable.
-   As tall as the status bar, so it takes no room at all in a browser tab. */
-@utility status-scrim {
-  height: calc(var(--safe-top) * 1.35);
-  background: linear-gradient(to bottom, rgb(194 65 107 / 0.94), rgb(194 65 107 / 0.86) 62%, rgb(194 65 107 / 0));
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
