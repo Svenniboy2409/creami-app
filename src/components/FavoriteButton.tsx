@@ -42,25 +42,29 @@ export function FavoriteButton({
       onClick={onClick}
       aria-pressed={active}
       aria-label={t(active ? 'Remove {name} from favorites' : 'Save {name} to favorites', { name })}
-      className={`relative grid size-9 place-items-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-transform active:scale-90 ${className}`}
+      className={`grid size-9 place-items-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-transform active:scale-90 ${className}`}
     >
-      <Heart
-        key={pops}
-        className={`size-[18px] transition-colors ${active ? 'fill-raspberry text-raspberry' : 'text-ink-soft'} ${popping ? 'animate-heart-pop' : ''}`}
-        strokeWidth={2.2}
-        aria-hidden
-      />
-      {popping && (
-        <span key={`s${pops}`} aria-hidden className="pointer-events-none absolute inset-0">
-          {SPRINKLES.map((s, i) => (
-            <span
-              key={i}
-              className={`absolute left-1/2 top-1/2 h-1.5 w-1.5 animate-sprinkle rounded-full ${s.color}`}
-              style={{ '--dx': s.dx, '--dy': s.dy, animationDelay: '90ms' } as CSSProperties}
-            />
-          ))}
-        </span>
-      )}
+      {/* Its own positioned box, so the sprinkles centre on the heart whether
+          the button itself is placed absolutely (cards) or in a row (detail). */}
+      <span className="relative grid place-items-center">
+        <Heart
+          key={pops}
+          className={`size-[18px] transition-colors ${active ? 'fill-raspberry text-raspberry' : 'text-ink-soft'} ${popping ? 'animate-heart-pop' : ''}`}
+          strokeWidth={2.2}
+          aria-hidden
+        />
+        {popping && (
+          <span key={`s${pops}`} aria-hidden className="pointer-events-none absolute inset-0">
+            {SPRINKLES.map((s, i) => (
+              <span
+                key={i}
+                className={`absolute left-1/2 top-1/2 h-1.5 w-1.5 animate-sprinkle rounded-full ${s.color}`}
+                style={{ '--dx': s.dx, '--dy': s.dy, animationDelay: '90ms' } as CSSProperties}
+              />
+            ))}
+          </span>
+        )}
+      </span>
     </button>
   )
 }

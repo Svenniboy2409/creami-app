@@ -94,9 +94,33 @@ export const NL: Record<string, string> = {
   'Delete recipe': 'Recept verwijderen',
   'Recipe deleted': 'Recept verwijderd',
 
+  // Discover
+  'Find your next scoop': 'Vind je volgende ijsje',
+  'Fresh recipes are churning': 'Verse recepten zijn onderweg',
+  'Add your own recipe': 'Voeg je eigen recept toe',
+  'The first hand-picked recipes are on their way. In the meantime, add your own creations with the + button.':
+    'De eerste uitgekozen recepten zijn onderweg. Voeg in de tussentijd je eigen creaties toe met de +-knop.',
+  recipe: 'recept',
+  recipes: 'recepten',
+  'All categories': 'Alle categorieën',
+  'All machines': 'Alle machines',
+  'Clear filters': 'Filters wissen',
+  'No matching scoops': 'Geen ijsjes gevonden',
+  'Try another search term, category or machine.': 'Probeer een andere zoekterm, categorie of machine.',
+  'Open filters': 'Filters openen',
+  'Open filters ({n} on)': 'Filters openen ({n} aan)',
+
+  // Filter sheet
+  Filters: 'Filters',
+  Reset: 'Wissen',
+  All: 'Alle',
+  Machine: 'Machine',
+  'Show {n} recipe': 'Toon {n} recept',
+  'Show {n} recipes': 'Toon {n} recepten',
+
   // Search
   Search: 'Zoeken',
-  'Search recipes or ingredients': 'Zoek een recept of ingrediënt',
+  'Search recipes or ingredients': 'Zoek recept of ingrediënt',
   'Clear search': 'Zoekopdracht wissen',
   'Clear search and filters': 'Zoekopdracht en filters wissen',
 
