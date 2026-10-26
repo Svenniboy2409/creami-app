@@ -1,5 +1,6 @@
 import {
   ArrowLeft,
+  BookOpen,
   Check,
   ChefHat,
   Clock,
@@ -8,14 +9,13 @@ import {
   FolderPlus,
   Gauge,
   IceCreamBowl,
-  Languages,
   Lightbulb,
   Pencil,
   Snowflake,
   Trash2,
   type LucideIcon,
 } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Segmented } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
@@ -23,13 +23,15 @@ import { FavoriteButton } from '../components/FavoriteButton'
 import { FolderPickerSheet } from '../components/FolderPickerSheet'
 import { RecipeImage } from '../components/RecipeImage'
 import { Sheet, SheetAction } from '../components/Sheet'
-import { TONES } from '../components/tone'
+import { StatusBarScrim } from '../components/StatusBarScrim'
+import { TONES, type ToneClasses } from '../components/tone'
 import { CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
+import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useToast } from '../hooks/toastContext'
 import { useRecipe } from '../hooks/useRecipes'
-import { formatAmount, scaleGroups } from '../lib/scale'
+import { formatAmount, scaleGroups, scaleServings } from '../lib/scale'
 import type { PintSize, Recipe } from '../types/recipe'
 
 function formatMinutes(min: number, t: (key: string, vars?: Record<string, number>) => string): string {
@@ -63,7 +65,7 @@ function Section({ title, aside, children }: { title: string; aside?: ReactNode;
   )
 }
 
-function Ingredients({ recipe, pint }: { recipe: Recipe; pint: PintSize }) {
+function Ingredients({ recipe, pint, tone }: { recipe: Recipe; pint: PintSize; tone: ToneClasses }) {
   const { t } = useI18n()
   const [checked, setChecked] = useState<Set<string>>(new Set())
   const groups = scaleGroups(recipe.ingredients, recipe.basePint, pint)
@@ -78,8 +80,9 @@ function Ingredients({ recipe, pint }: { recipe: Recipe; pint: PintSize }) {
   return (
     <div className="space-y-4">
       {groups.map((group, g) => (
-        <div key={g} className="card overflow-hidden">
-          {group.title && <h3 className="bg-cream-deep/60 px-4 py-2.5 text-base font-semibold">{group.title}</h3>}
+        // A hairline all round, so the white card's rounded top shows against the cream page as well as its bottom.
+        <div key={g} className="card overflow-hidden ring-1 ring-cream-deep">
+          {group.title && <h3 className={`px-4 py-2.5 text-base font-semibold ${tone.soft} ${tone.text}`}>{group.title}</h3>}
           <ul className="divide-y divide-cream-deep">
             {group.items.map((item, i) => {
               const key = `${g}-${i}`
@@ -124,10 +127,30 @@ export function RecipeDetailPage() {
   const { ready, deleteRecipe, folders, toggleInFolder } = useLibrary()
   const { t, tn, localize } = useI18n()
   const showToast = useToast()
+  const { openEdit } = useRecipeEditor()
   const navigate = useNavigate()
   const [pint, setPint] = useState<PintSize | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [folderOpen, setFolderOpen] = useState(false)
+  // Once the photo has scrolled away, the status bar needs its backdrop back.
+  const heroRef = useRef<HTMLDivElement>(null)
+  const [pastHero, setPastHero] = useState(false)
+  useEffect(() => {
+    let frame = 0
+    const check = () => {
+      frame = 0
+      const hero = heroRef.current
+      setPastHero(!!hero && hero.getBoundingClientRect().bottom < 72)
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(frame)
+    }
+  }, [])
   // Set when the recipe was opened from inside a folder.
   const [params] = useSearchParams()
   const fromFolder = folders.find((folder) => folder.id === params.get('folder'))
@@ -157,6 +180,7 @@ export function RecipeDetailPage() {
   const activePint = pint ?? recipe.basePint
   const hasAmounts = recipe.ingredients.some((group) => group.items.some((item) => item.qty !== undefined))
   const isUserRecipe = recipe.origin === 'user'
+  const servings = scaleServings(recipe.servings, activePint / recipe.basePint)
   const inFolders = folders.filter((folder) => folder.recipeIds.includes(recipe.id)).length
 
   const goBack = () => {
@@ -165,24 +189,19 @@ export function RecipeDetailPage() {
   }
 
   return (
-    <article className="animate-pop-in">
-      <div className="relative">
-        <div className="aspect-[4/3.4] overflow-hidden rounded-b-[2.25rem] shadow-soft">
-          <RecipeImage recipe={recipe} />
-        </div>
+    <article>
+      <StatusBarScrim visible={pastHero} />
+      {/* The photo runs right to the top edge, under the status bar when the app
+          is on the home screen; only Back and the heart sit on it. */}
+      <div ref={heroRef} className="relative h-[calc(min(100vw,28rem)*0.88_+_var(--safe-top))] overflow-hidden rounded-b-[2.25rem] shadow-soft">
+        <RecipeImage recipe={recipe} className="animate-hero-in" />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[calc(var(--safe-top)_+_6rem)] bg-linear-to-b from-ink/40 to-transparent" />
         <div className="pt-safe absolute inset-x-0 top-0">
           <div className="flex items-center justify-between p-4">
             <button type="button" onClick={goBack} aria-label={t('Back')} className="icon-btn">
               <ArrowLeft className="size-5" aria-hidden />
             </button>
-            <div className="flex gap-2">
-              {isUserRecipe && (
-                <Link to={`/recipe/${recipe.id}/edit`} aria-label={t('Edit recipe')} className="icon-btn">
-                  <Pencil className="size-[18px]" aria-hidden />
-                </Link>
-              )}
-              <FavoriteButton id={recipe.id} name={recipe.name} className="size-11" toast />
-            </div>
+            <FavoriteButton id={recipe.id} name={recipe.name} className="size-11" toast />
           </div>
         </div>
       </div>
@@ -260,8 +279,10 @@ export function RecipeDetailPage() {
         <Section
           title={t('Ingredients')}
           aside={
-            recipe.servings && activePint === recipe.basePint ? (
-              <span className="text-sm font-bold text-ink-soft">{t('{servings} servings', { servings: recipe.servings })}</span>
+            servings ? (
+              <span key={servings} className="inline-block animate-chip-pop text-sm font-bold text-ink-soft">
+                {t('{servings} servings', { servings })}
+              </span>
             ) : null
           }
         >
@@ -277,14 +298,9 @@ export function RecipeDetailPage() {
                   hint: PINT_SIZES[size].detail.split(' · ')[0],
                 }))}
               />
-              {activePint !== recipe.basePint && (
-                <p className="mt-2 text-center text-xs font-semibold text-ink-soft">
-                  {t('Amounts converted from the original {size} recipe — stay below the max fill line.', { size: PINT_SIZES[recipe.basePint].label })}
-                </p>
-              )}
             </div>
           )}
-          <Ingredients recipe={recipe} pint={activePint} />
+          <Ingredients recipe={recipe} pint={activePint} tone={tone} />
         </Section>
 
         <Section title={t('Method')}>
@@ -347,11 +363,11 @@ export function RecipeDetailPage() {
           </Section>
         )}
 
-        {recipe.credits && (
+        {/* Who made it and where it came from; which language it was translated from isn't worth the space. */}
+        {(recipe.credits?.author || recipe.credits?.url) && (
           <p className="mt-9 flex items-start gap-2 text-sm text-ink-soft">
-            <Languages className="mt-0.5 size-4 shrink-0" aria-hidden />
+            <BookOpen className="mt-0.5 size-4 shrink-0" aria-hidden />
             <span>
-              {recipe.credits.translatedFrom && <>{t('Translated from {language}.', { language: t(recipe.credits.translatedFrom) })} </>}
               {recipe.credits.author && <>{t('Original by {author}.', { author: recipe.credits.author })} </>}
               {recipe.credits.url && (
                 <a href={recipe.credits.url} target="_blank" rel="noreferrer" className="font-bold text-raspberry underline underline-offset-2">
@@ -364,9 +380,9 @@ export function RecipeDetailPage() {
 
         {isUserRecipe && (
           <div className="mt-10 flex gap-2">
-            <Link to={`/recipe/${recipe.id}/edit`} className="btn-secondary flex-1">
+            <button type="button" onClick={() => openEdit(original)} className="btn-secondary flex-1">
               <Pencil className="size-4" aria-hidden /> {t('Edit')}
-            </Link>
+            </button>
             <button type="button" onClick={() => setMenuOpen(true)} className="btn-secondary flex-1 text-raspberry">
               <Trash2 className="size-4" aria-hidden /> {t('Delete')}
             </button>

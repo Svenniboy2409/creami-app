@@ -92,8 +92,11 @@ describe('Dutch dictionary', () => {
       ...SUGGESTED_TAGS,
       ...['tbsp', 'tsp', 'cup', 'scoop', 'pinch', 'pcs'],
       ...['Calories', 'Protein', 'Carbs', 'Sugar', 'Fat', 'per pint', 'per serving'],
-      ...CURATED_RECIPES.map((r) => r.credits?.translatedFrom).filter((x) => x !== undefined),
       'This file is not a Creami Recipes backup.',
+      // What findProblem() in recipeDraft.ts reports
+      'Give your recipe a name.',
+      'Add at least one ingredient.',
+      'Add at least one step.',
     ]
     expect(labels.filter((label) => !(label in NL))).toEqual([])
   })

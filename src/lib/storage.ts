@@ -1,5 +1,6 @@
 import { createStore, del, get, set, values, type UseStore } from 'idb-keyval'
 import type { Folder, Recipe } from '../types/recipe'
+import type { SavedDraft } from './recipeDraft'
 
 // Opened lazily so a browser without IndexedDB still renders the curated recipes.
 let recipeStore: UseStore | undefined
@@ -10,6 +11,7 @@ const prefs = () => (prefStore ??= createStore('creami-prefs', 'prefs'))
 const FAVORITES_KEY = 'favorites'
 const FOLDERS_KEY = 'folders'
 const RECIPE_ORDER_KEY = 'recipe-order'
+const DRAFTS_KEY = 'drafts'
 
 export async function listUserRecipes(): Promise<Recipe[]> {
   const all = await values<Recipe>(recipes())
@@ -50,6 +52,15 @@ export function setRecipeOrder(ids: string[]): Promise<void> {
   return set(RECIPE_ORDER_KEY, ids, prefs())
 }
 
+/** Drafts of new recipes, most recently saved first. */
+export async function getDrafts(): Promise<SavedDraft[]> {
+  return (await get<SavedDraft[]>(DRAFTS_KEY, prefs())) ?? []
+}
+
+export function setDrafts(drafts: SavedDraft[]): Promise<void> {
+  return set(DRAFTS_KEY, drafts, prefs())
+}
+
 /**
  * Puts items in a saved order. Anything the order doesn't know yet (a recipe
  * added since the last rearranging) goes first, in the order it came in.
@@ -74,13 +85,14 @@ export async function requestPersistence(): Promise<void> {
 
 export interface Backup {
   app: 'creami-recipes'
-  /** 1: recipes and favorites. 2: also folders and the order of your recipes. */
+  /** 1: recipes and favorites. 2: also folders, the order of your recipes and drafts. */
   version: 1 | 2
   exportedAt: string
   recipes: Recipe[]
   favorites: string[]
   folders?: Folder[]
   recipeOrder?: string[]
+  drafts?: SavedDraft[]
 }
 
 export async function createBackup(): Promise<Backup> {
@@ -92,6 +104,7 @@ export async function createBackup(): Promise<Backup> {
     favorites: await getFavorites(),
     folders: await getFolders(),
     recipeOrder: await getRecipeOrder(),
+    drafts: await getDrafts(),
   }
 }
 
@@ -146,6 +159,13 @@ export async function restoreBackup(data: unknown): Promise<number> {
   }
   if (Array.isArray(backup.recipeOrder)) {
     await setRecipeOrder(union(strings(backup.recipeOrder), await getRecipeOrder()))
+  }
+  if (Array.isArray(backup.drafts)) {
+    const incoming = backup.drafts.filter(
+      (d): d is SavedDraft => typeof d?.id === 'string' && typeof d.draft === 'object' && d.draft !== null && Array.isArray(d.draft.groups) && Array.isArray(d.draft.steps),
+    )
+    const current = await getDrafts()
+    await setDrafts([...incoming, ...current.filter((d) => !incoming.some((i) => i.id === d.id))])
   }
   return valid.length
 }

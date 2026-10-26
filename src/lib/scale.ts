@@ -48,3 +48,18 @@ export function formatAmount(qty: number | undefined, unit: string | undefined):
   const amount = formatQty(qty, unit)
   return unit ? `${amount} ${unit}` : amount
 }
+
+const NUMBER = /\d+(?:[.,]\d+)?/g
+
+/**
+ * Servings for another pint size, in whole portions: "4–6" from a 24 oz pint is
+ * "3–4" from a 16 oz one. Undefined when there is no number in the text to scale.
+ */
+export function scaleServings(servings: string | undefined, factor: number): string | undefined {
+  if (!servings) return undefined
+  if (factor === 1) return servings
+  if (!servings.match(NUMBER)) return undefined
+  const scaled = servings.replace(NUMBER, (n) => String(Math.max(1, Math.round(Number(n.replace(',', '.')) * factor))))
+  // A range whose two ends meet after rounding ("3–3") is just the one number.
+  return scaled.replace(/^(\d+)\s*[–-]\s*\1$/, '$1')
+}

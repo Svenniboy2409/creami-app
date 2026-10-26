@@ -1,7 +1,15 @@
 import type { Tone } from '../data/creami'
 
+export interface ToneClasses {
+  solid: string
+  soft: string
+  text: string
+  fill: string
+  gradient: string
+}
+
 // Full class strings so Tailwind can see them at build time.
-export const TONES: Record<Tone, { solid: string; soft: string; text: string; fill: string; gradient: string }> = {
+export const TONES: Record<Tone, ToneClasses> = {
   strawberry: {
     solid: 'bg-strawberry',
     soft: 'bg-strawberry-soft',

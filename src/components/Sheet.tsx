@@ -10,6 +10,8 @@ interface Props {
   action?: ReactNode
   /** Stays pinned below the scrolling content, e.g. a "Show 5 recipes" button. */
   footer?: ReactNode
+  /** Nearly full height whatever the content, for long forms. */
+  tall?: boolean
 }
 
 const CLOSE_MS = 260 // must match the slide-out transition below
@@ -29,7 +31,7 @@ function lockPage(lock: boolean) {
  * when opened, can be pulled down by its grip to close, and slides away again
  * when `open` turns false — so callers only ever flip `open`.
  */
-export function Sheet({ open, onClose, title, children, action, footer }: Props) {
+export function Sheet({ open, onClose, title, children, action, footer, tall = false }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   // Still on screen while it slides out after `open` has gone false.
@@ -47,7 +49,17 @@ export function Sheet({ open, onClose, title, children, action, footer }: Props)
     const dialog = dialogRef.current
     if (!dialog) return
     if (open) {
-      if (!dialog.open) dialog.showModal()
+      if (dialog.open) return
+      const pageY = window.scrollY
+      dialog.showModal()
+      // Opening moves focus to the first button in the sheet, and the browser
+      // scrolls whatever it can to bring that button into view — while the
+      // sheet is still below the screen, about to slide up. That scroll undid
+      // the slide: the sheet showed at the top of the screen and then dropped
+      // into place. The dialog can't scroll any more (overflow: clip), and
+      // anything that did scroll is put back before the first frame is drawn.
+      dialog.scrollTop = 0
+      if (window.scrollY !== pageY) window.scrollTo(0, pageY)
       return
     }
     if (!dialog.open) return
@@ -96,7 +108,9 @@ export function Sheet({ open, onClose, title, children, action, footer }: Props)
     drag.current = null
     setDragging(false)
     if (dragY > DISMISS_PX || (dragY > 24 && d.speed > FLICK)) onClose()
-    else setDragY(0)
+    // Back into place: either the sheet is closing (and slides out from where it
+    // is), or whoever owns it chose to stay open, e.g. to ask about unsaved work.
+    setDragY(0)
   }
 
   // How far the sheet has travelled towards closed, 0 → 1, so the backdrop
@@ -123,14 +137,16 @@ export function Sheet({ open, onClose, title, children, action, footer }: Props)
       onClose={() => {
         if (open) onClose()
       }}
-      className="fixed inset-0 m-0 h-full max-h-none w-full max-w-none overflow-hidden bg-transparent p-0 text-ink backdrop:bg-transparent"
+      className="fixed inset-0 m-0 h-full max-h-none w-full max-w-none overflow-clip bg-transparent p-0 text-ink backdrop:bg-transparent"
     >
       {shown && (
         <>
           <div className="absolute inset-0 animate-backdrop-in bg-ink/40 backdrop-blur-[2px]" style={backdropStyle} onClick={onClose} aria-hidden />
           <div
             ref={panelRef}
-            className="absolute inset-x-0 bottom-0 mx-auto flex max-h-[88dvh] w-full max-w-md animate-sheet-up flex-col rounded-t-[2rem] bg-cream shadow-[0_-12px_40px_-12px_rgb(59_42_42/0.35)]"
+            className={`absolute inset-x-0 bottom-0 mx-auto flex w-full max-w-md animate-sheet-up flex-col rounded-t-[2rem] bg-cream shadow-[0_-12px_40px_-12px_rgb(59_42_42/0.35)] ${
+              tall ? 'h-[calc(100dvh-var(--safe-top)-1rem)]' : 'max-h-[min(88dvh,calc(100dvh-var(--safe-top)-1rem))]'
+            }`}
             style={panelStyle}
           >
             <div {...handle} className="shrink-0 cursor-grab touch-none select-none px-5 pt-3 active:cursor-grabbing">
@@ -143,7 +159,9 @@ export function Sheet({ open, onClose, title, children, action, footer }: Props)
                 {action}
               </div>
             </div>
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6 pt-1">{children}</div>
+            <div data-sheet-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6 pt-1">
+              {children}
+            </div>
             <div className="pb-safe shrink-0">{footer && <div className="border-t border-cream-deep px-5 pb-4 pt-3">{footer}</div>}</div>
           </div>
         </>

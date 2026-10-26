@@ -50,7 +50,6 @@ export const NL: Record<string, string> = {
   scoop: 'schep',
   pinch: 'snufje',
   pcs: 'st.',
-  French: 'het Frans',
 
   // Recipe cards and detail
   '{n} min': '{n} min',
@@ -74,8 +73,6 @@ export const NL: Record<string, string> = {
   '{servings} servings': '{servings} porties',
   'Pint size': 'Pintmaat',
   '{size} pint': '{size}-pint',
-  'Amounts converted from the original {size} recipe — stay below the max fill line.':
-    'Hoeveelheden omgerekend van het originele {size}-recept — blijf onder de max-vullijn.',
   Method: 'Bereiding',
   'Run: {program}': 'Start: {program}',
   Tips: 'Tips',
@@ -86,7 +83,6 @@ export const NL: Record<string, string> = {
   Carbs: 'Koolhydraten',
   Sugar: 'Suiker',
   Fat: 'Vet',
-  'Translated from {language}.': 'Vertaald uit {language}.',
   'Original by {author}.': 'Origineel van {author}.',
   'View source': 'Bekijk de bron',
   'Delete this recipe?': 'Dit recept verwijderen?',
@@ -272,7 +268,24 @@ export const NL: Record<string, string> = {
   'One tip per line\nRe-spin once if it looks crumbly': 'Eén tip per regel\nNog een keer re-spin als het kruimelig is',
   Tags: 'Tags',
   'Save changes': 'Wijzigingen opslaan',
+
+  // Drafts and closing the recipe pop-up
+  'Add a recipe ({n} drafts waiting)': 'Recept toevoegen ({n} concepten wachten)',
+  'Save as draft': 'Bewaar als concept',
+  'Saved as draft': 'Opgeslagen als concept',
+  'Keep this recipe for later?': 'Dit recept bewaren voor later?',
+  'You can save it as a draft and carry on later with the + button.': 'Je kunt het als concept bewaren en later verdergaan via de +-knop.',
+  'Your changes to this recipe haven’t been saved.': 'Je wijzigingen aan dit recept zijn nog niet opgeslagen.',
+  'Carry on later with the + button': 'Ga later verder via de +-knop',
+  'Discard changes': 'Wijzigingen weggooien',
+  'Discard these changes': 'Deze wijzigingen weggooien',
+  'Discard recipe': 'Recept weggooien',
+  'Keep editing': 'Verder bewerken',
+  'Start from scratch': 'Begin met een leeg recept',
+  'Carry on with a draft': 'Verder met een concept',
+  'Untitled recipe': 'Naamloos recept',
+  'Draft · {date}': 'Concept · {date}',
+  'Draft deleted': 'Concept verwijderd',
+  'Delete draft “{name}”': 'Concept “{name}” verwijderen',
   'Save recipe': 'Recept opslaan',
-  'Can’t edit this recipe': 'Dit recept kan niet worden bewerkt',
-  'Only recipes you added yourself can be edited.': 'Alleen recepten die je zelf hebt toegevoegd kun je bewerken.',
 }

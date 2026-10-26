@@ -2,10 +2,12 @@ import 'fake-indexeddb/auto'
 import { describe, expect, it } from 'vitest'
 import type { Recipe } from '../types/recipe'
 import type { Folder } from '../types/recipe'
+import { toDraft } from './recipeDraft'
 import {
   applyOrder,
   createBackup,
   deleteUserRecipe,
+  getDrafts,
   getFavorites,
   getFolders,
   getRecipeOrder,
@@ -14,6 +16,7 @@ import {
   newRecipeId,
   restoreBackup,
   saveUserRecipe,
+  setDrafts,
   setFavorites,
   setFolders,
   setRecipeOrder,
@@ -84,6 +87,18 @@ describe('storage', () => {
     await restoreBackup({ app: 'creami-recipes', version: 2, recipes: [], folders: [{ id: 1 }, { id: 'ok', name: 'Fine', recipeIds: ['a', 2] }] })
     const folders = await getFolders()
     expect(folders.map((f) => [f.id, f.recipeIds])).toEqual([['ok', ['a']]])
+  })
+
+  it('keeps drafts in a backup and merges them back by id', async () => {
+    const draft = toDraft()
+    await setDrafts([{ id: 'd1', savedAt: '2026-10-01', draft: { ...draft, name: 'Half-done sorbet' } }])
+    const backup = await createBackup()
+    await setDrafts([{ id: 'd2', savedAt: '2026-10-02', draft }])
+    await restoreBackup(JSON.parse(JSON.stringify(backup)))
+    expect((await getDrafts()).map((d) => [d.id, d.draft.name])).toEqual([
+      ['d1', 'Half-done sorbet'],
+      ['d2', ''],
+    ])
   })
 
   it('rejects files that are not a backup', async () => {

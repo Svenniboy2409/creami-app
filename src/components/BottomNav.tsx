@@ -1,6 +1,8 @@
 import { BookHeart, Compass, Plus, type LucideIcon } from 'lucide-react'
-import { Link, NavLink, useLocation } from 'react-router'
+import { NavLink, useLocation } from 'react-router'
 import { useI18n } from '../hooks/i18nContext'
+import { useLibrary } from '../hooks/libraryContext'
+import { useRecipeEditor } from '../hooks/recipeEditorContext'
 
 function Tab({ to, label, icon: Icon, alsoActive = false }: { to: string; label: string; icon: LucideIcon; alsoActive?: boolean }) {
   return (
@@ -32,6 +34,8 @@ export function BottomNav() {
   const { t } = useI18n()
   // A folder belongs to the Library, so its tab stays lit inside one.
   const inFolder = useLocation().pathname.startsWith('/folder/')
+  const { openNew } = useRecipeEditor()
+  const drafts = useLibrary().drafts.length
   return (
     <nav aria-label={t('Main')} className="pb-safe fixed inset-x-0 bottom-0 z-30">
       <div className="mx-auto mb-3 max-w-md px-4">
@@ -39,13 +43,24 @@ export function BottomNav() {
           <Tab to="/" label={t('Discover')} icon={Compass} />
           <div className="w-20 shrink-0" aria-hidden />
           <Tab to="/library" label={t('Library')} icon={BookHeart} alsoActive={inFolder} />
-          <Link
-            to="/new"
-            aria-label={t('Add a recipe')}
+          <button
+            type="button"
+            onClick={openNew}
+            aria-label={drafts ? t('Add a recipe ({n} drafts waiting)', { n: drafts }) : t('Add a recipe')}
             className="absolute left-1/2 top-0 grid size-16 -translate-x-1/2 -translate-y-1/3 place-items-center rounded-full bg-linear-to-br from-strawberry to-raspberry text-white shadow-lift ring-[6px] ring-cream transition-transform active:scale-95"
           >
             <Plus className="size-8" strokeWidth={2.6} aria-hidden />
-          </Link>
+            {/* Drafts waiting to be finished. */}
+            {drafts > 0 && (
+              <span
+                key={drafts}
+                aria-hidden
+                className="absolute -right-1 -top-1 grid h-6 min-w-6 animate-badge-pop place-items-center rounded-full bg-ink px-1.5 text-xs font-extrabold text-cream ring-[3px] ring-cream"
+              >
+                {drafts}
+              </span>
+            )}
+          </button>
         </div>
       </div>
     </nav>

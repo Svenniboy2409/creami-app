@@ -3,13 +3,13 @@
 A mobile web app with frozen treats for every Ninja CREAMi: the Original, Breeze, Deluxe and Swirl (Scoop & Swirl).
 
 - **Discover**: hand-picked recipes with photos, ingredients, a step-by-step method and the right Creami program for each step. Search forgives typos ("vanila" finds Vanilla) and the search bar stays at the top while you scroll. Filter by category, machine, program and tags in the filter sheet.
-- **+**: add your own recipes, with a photo taken on your phone.
+- **+**: add your own recipes in a pop-up, with a photo taken on your phone. Not finished yet? **Save as draft**, and the + button (which shows how many drafts are waiting) offers to carry on with it next time.
 - **Library**: your own recipes, the favorites you saved with the heart, and **folders** you fill with any recipe. Tap the rearrange button to drag recipes and folders into your own order.
 - **Settings** (the gear in the Library): English or Dutch, folders as tiles or a list, and backups.
 
 Every recipe can be converted between a 16 oz pint (Original, Breeze, Swirl) and a 24 oz Deluxe pint.
 
-Sheets slide up and can be pulled down to close, and everything animates gently; with "reduce motion" switched on in your phone's settings the animations are turned off.
+On a recipe the photo runs to the very top of the screen, and the amounts and servings convert between pint sizes. Sheets slide up and can be pulled down to close, and everything animates gently; with "reduce motion" switched on in your phone's settings the animations are turned off.
 
 ## Using the app
 
@@ -43,7 +43,8 @@ Built with Vite, React, TypeScript, Tailwind CSS v4, React Router (hash routing 
 | `src/lib/` | Storage (IndexedDB), pint scaling, quantity parsing, search, image compression, translations |
 | `src/lib/strings-nl.ts` | The Dutch interface text, keyed by the English |
 | `src/components/` | Cards, sheets, toasts, the filter sheet, folders and the drag-to-rearrange grid |
-| `src/pages/` | Discover, Library, folder, recipe detail and the add/edit form |
+| `src/pages/` | Discover, Library, folder and recipe detail |
+| `src/components/RecipeEditor.tsx`, `src/lib/recipeDraft.ts` | The add/edit recipe pop-up and drafts |
 
 ### Translations
 

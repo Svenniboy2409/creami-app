@@ -52,6 +52,11 @@
   --animate-chip-pop: chip-pop 320ms cubic-bezier(0.2, 0.9, 0.3, 1.5);
   --animate-badge-pop: badge-pop 360ms cubic-bezier(0.2, 0.9, 0.3, 1.6) both;
   --animate-wiggle: wiggle 280ms ease-in-out infinite alternate;
+  --animate-shake: shake 420ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  /* The same shake under a second name: switching between the two replays it
+     without re-creating the field, which would take the cursor out of it. */
+  --animate-shake-again: shake-again 420ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  --animate-hero-in: hero-in 700ms cubic-bezier(0.2, 0.8, 0.3, 1);
 
   @keyframes pop-in {
     from {
@@ -177,6 +182,48 @@
     }
   }
 
+  /* "Not like that": a short sideways shake for a field that needs attention. */
+  @keyframes shake {
+    15%,
+    85% {
+      transform: translateX(-2px);
+    }
+    30%,
+    70% {
+      transform: translateX(5px);
+    }
+    45% {
+      transform: translateX(-7px);
+    }
+    60% {
+      transform: translateX(7px);
+    }
+  }
+
+  @keyframes shake-again {
+    15%,
+    85% {
+      transform: translateX(-2px);
+    }
+    30%,
+    70% {
+      transform: translateX(5px);
+    }
+    45% {
+      transform: translateX(-7px);
+    }
+    60% {
+      transform: translateX(7px);
+    }
+  }
+
+  /* A recipe's photo settles into place as its page opens. */
+  @keyframes hero-in {
+    from {
+      transform: scale(1.08);
+    }
+  }
+
   @keyframes badge-pop {
     0% {
       transform: scale(0.3);
@@ -193,6 +240,13 @@
 }
 
 @layer base {
+  :root {
+    /* The status bar's height when the app runs from the home screen, where it
+       draws under a see-through status bar. 0 in a browser tab, whose own bar
+       sits above the page. */
+    --safe-top: env(safe-area-inset-top, 0px);
+  }
+
   html {
     color-scheme: light;
     -webkit-tap-highlight-color: transparent;
@@ -249,7 +303,14 @@
 }
 
 @utility pt-safe {
-  padding-top: env(safe-area-inset-top);
+  padding-top: var(--safe-top);
+}
+
+/* Sits behind the status bar on cream pages, so its white clock stays readable.
+   As tall as the status bar, so it takes no room at all in a browser tab. */
+@utility status-scrim {
+  height: calc(var(--safe-top) * 1.35);
+  background: linear-gradient(to bottom, rgb(194 65 107 / 0.94), rgb(194 65 107 / 0.86) 62%, rgb(194 65 107 / 0));
 }
 
 @media (prefers-reduced-motion: reduce) {

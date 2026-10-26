@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatAmount, formatQty, scaleGroups } from './scale'
+import { formatAmount, formatQty, scaleGroups, scaleServings } from './scale'
 
 describe('scaleGroups', () => {
   const groups = [{ title: 'Base', items: [{ qty: 100, unit: 'g', name: 'sugar' }, { name: 'pinch of salt' }] }]
@@ -46,5 +46,30 @@ describe('formatAmount', () => {
     expect(formatAmount(150, 'g')).toBe('150 g')
     expect(formatAmount(3, undefined)).toBe('3')
     expect(formatAmount(undefined, 'pinch')).toBe('pinch')
+  })
+})
+
+describe('scaleServings', () => {
+  it('converts a range to whole portions', () => {
+    expect(scaleServings('4–6', 16 / 24)).toBe('3–4')
+    expect(scaleServings('4-6', 24 / 16)).toBe('6-9')
+  })
+
+  it('rounds a single number and never goes below one', () => {
+    expect(scaleServings('4', 16 / 24)).toBe('3')
+    expect(scaleServings('1', 16 / 24)).toBe('1')
+  })
+
+  it('collapses a range whose ends meet', () => {
+    expect(scaleServings('1–2', 16 / 24)).toBe('1')
+  })
+
+  it('leaves the text alone at the original size', () => {
+    expect(scaleServings('4–6', 1)).toBe('4–6')
+  })
+
+  it('gives up on text without a number', () => {
+    expect(scaleServings('a family', 16 / 24)).toBeUndefined()
+    expect(scaleServings(undefined, 16 / 24)).toBeUndefined()
   })
 })

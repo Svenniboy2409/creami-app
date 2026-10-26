@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { getFolderView, storeFolderView, type FolderView } from '../lib/prefs'
+import type { SavedDraft } from '../lib/recipeDraft'
 import {
   applyOrder,
   createBackup,
   deleteUserRecipe,
+  getDrafts,
   getFavorites,
   getFolders,
   getRecipeOrder,
@@ -12,6 +14,7 @@ import {
   requestPersistence,
   restoreBackup,
   saveUserRecipe,
+  setDrafts as persistDrafts,
   setFavorites as persistFavorites,
   setFolders as persistFolders,
   setRecipeOrder as persistRecipeOrder,
@@ -19,7 +22,7 @@ import {
 import type { Folder, Recipe } from '../types/recipe'
 import { LibraryContext, type LibraryState } from './libraryContext'
 
-const loadLibrary = () => Promise.all([listUserRecipes(), getFavorites(), getFolders(), getRecipeOrder()])
+const loadLibrary = () => Promise.all([listUserRecipes(), getFavorites(), getFolders(), getRecipeOrder(), getDrafts()])
 
 /**
  * State that is also written to storage on every change. The latest value is
@@ -51,16 +54,18 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [folders, updateFolders, loadFolders, latestFolders] = useStoredList<Folder>(persistFolders)
   // Only read through the order of userRecipes, so its value isn't needed here.
   const [, updateRecipeOrder, loadRecipeOrder] = useStoredList<string>(persistRecipeOrder)
+  const [drafts, updateDrafts, loadDrafts] = useStoredList<SavedDraft>(persistDrafts)
   const [folderView, setFolderViewState] = useState<FolderView>(getFolderView)
 
   const apply = useCallback(
-    ([recipes, favs, folderList, order]: Awaited<ReturnType<typeof loadLibrary>>) => {
+    ([recipes, favs, folderList, order, draftList]: Awaited<ReturnType<typeof loadLibrary>>) => {
       setUserRecipes(applyOrder(recipes, order))
       loadFavorites(favs)
       loadFolders(folderList)
       loadRecipeOrder(order)
+      loadDrafts(draftList)
     },
-    [loadFavorites, loadFolders, loadRecipeOrder],
+    [loadFavorites, loadFolders, loadRecipeOrder, loadDrafts],
   )
 
   useEffect(() => {
@@ -175,6 +180,16 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     [changeFolder],
   )
 
+  const saveDraft = useCallback(
+    async (draft: SavedDraft) => {
+      await updateDrafts((current) => [draft, ...current.filter((d) => d.id !== draft.id)])
+      void requestPersistence()
+    },
+    [updateDrafts],
+  )
+
+  const deleteDraft = useCallback((id: string) => updateDrafts((current) => current.filter((d) => d.id !== id)), [updateDrafts])
+
   const setFolderView = useCallback((view: FolderView) => {
     storeFolderView(view)
     setFolderViewState(view)
@@ -207,6 +222,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       favorites,
       favoriteIds,
       folders,
+      drafts,
       folderView,
       setFolderView,
       saveRecipe,
@@ -221,6 +237,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       addToFolder,
       reorderFolders,
       reorderFolder,
+      saveDraft,
+      deleteDraft,
       exportBackup,
       importBackup,
     }),
@@ -230,6 +248,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       favorites,
       favoriteIds,
       folders,
+      drafts,
       folderView,
       setFolderView,
       saveRecipe,
@@ -244,6 +263,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       addToFolder,
       reorderFolders,
       reorderFolder,
+      saveDraft,
+      deleteDraft,
       exportBackup,
       importBackup,
     ],

@@ -1,6 +1,6 @@
 import { IceCreamCone, SearchX, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { ChipRow } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
 import { FilterSheet, type FilterGroup } from '../components/FilterSheet'
@@ -11,6 +11,7 @@ import { CATEGORIES, MODEL_ORDER, MODELS } from '../data/creami'
 import { CURATED_RECIPES } from '../data/recipes'
 import { useCountUp } from '../hooks/useCountUp'
 import { useI18n } from '../hooks/i18nContext'
+import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useStuck } from '../hooks/useStuck'
 import { filterRecipes, presentValues } from '../lib/search'
 import type { Category, CreamiModel } from '../types/recipe'
@@ -20,6 +21,7 @@ type FilterKey = (typeof FILTER_KEYS)[number]
 
 export function DiscoverPage() {
   const { t } = useI18n()
+  const { openNew } = useRecipeEditor()
   // Search and filters live in the URL so they survive opening a recipe and coming back.
   const [params, setParams] = useSearchParams()
   const query = params.get('q') ?? ''
@@ -115,9 +117,9 @@ export function DiscoverPage() {
           icon={IceCreamCone}
           title={t('Fresh recipes are churning')}
           action={
-            <Link to="/new" className="btn-primary">
+            <button type="button" onClick={openNew} className="btn-primary">
               {t('Add your own recipe')}
-            </Link>
+            </button>
           }
         >
           {t('The first hand-picked recipes are on their way. In the meantime, add your own creations with the + button.')}
@@ -134,7 +136,7 @@ export function DiscoverPage() {
       <div ref={markerRef} className="h-px" aria-hidden />
       <div
         ref={rowRef}
-        className={`sticky top-[env(safe-area-inset-top)] z-20 -mx-5 px-5 py-2 transition-[background-color,box-shadow,backdrop-filter] duration-300 before:absolute before:inset-x-0 before:bottom-full before:h-[env(safe-area-inset-top)] before:transition-colors before:duration-300 ${
+        className={`sticky top-[var(--safe-top)] z-20 -mx-5 px-5 py-2 transition-[background-color,box-shadow,backdrop-filter] duration-300 before:absolute before:inset-x-0 before:bottom-full before:h-[var(--safe-top)] before:transition-colors before:duration-300 ${
           stuck
             ? 'bg-cream/85 shadow-[0_12px_24px_-16px_rgb(59_42_42/0.35)] backdrop-blur-xl before:bg-cream/85'
             : 'bg-cream/0 before:bg-transparent'

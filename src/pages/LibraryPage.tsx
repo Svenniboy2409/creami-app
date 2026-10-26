@@ -13,6 +13,7 @@ import { SearchBar } from '../components/SearchBar'
 import { SettingsSheet } from '../components/SettingsSheet'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
+import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useAllRecipes } from '../hooks/useRecipes'
 import { searchRecipes } from '../lib/search'
 import type { Recipe } from '../types/recipe'
@@ -22,6 +23,7 @@ type Tab = 'mine' | 'favorites' | 'folders'
 export function LibraryPage() {
   const { ready, userRecipes, favoriteIds, folders, folderView, reorderRecipes, reorderFavorites, reorderFolders } = useLibrary()
   const { t, tn } = useI18n()
+  const { openNew } = useRecipeEditor()
   const all = useAllRecipes()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
@@ -75,9 +77,9 @@ export function LibraryPage() {
           icon={ChefHat}
           title={t('Your recipe box is empty')}
           action={
-            <Link to="/new" className="btn-primary">
+            <button type="button" onClick={openNew} className="btn-primary">
               {t('Add a recipe')}
-            </Link>
+            </button>
           }
         >
           {t('Tap the + button to save your own creations. They are stored safely on this device.')}

@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 import type { FolderView } from '../lib/prefs'
+import type { SavedDraft } from '../lib/recipeDraft'
 import type { Folder, Recipe } from '../types/recipe'
 
 export interface LibraryState {
@@ -10,6 +11,8 @@ export interface LibraryState {
   /** Favorite ids in the order they are shown, newest first. */
   favoriteIds: string[]
   folders: Folder[]
+  /** Unfinished new recipes, most recently saved first. */
+  drafts: SavedDraft[]
   folderView: FolderView
   setFolderView: (view: FolderView) => void
   saveRecipe: (recipe: Recipe) => Promise<void>
@@ -25,6 +28,9 @@ export interface LibraryState {
   addToFolder: (folderId: string, recipeIds: string[]) => Promise<void>
   reorderFolders: (ids: string[]) => Promise<void>
   reorderFolder: (folderId: string, recipeIds: string[]) => Promise<void>
+  /** Saves a draft, replacing one with the same id, and puts it first. */
+  saveDraft: (draft: SavedDraft) => Promise<void>
+  deleteDraft: (id: string) => Promise<void>
   exportBackup: () => Promise<void>
   importBackup: (file: File) => Promise<number>
 }
