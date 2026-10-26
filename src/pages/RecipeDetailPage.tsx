@@ -218,7 +218,14 @@ export function RecipeDetailPage() {
           </ul>
         </div>
 
-        <Section title="Ingredients" aside={recipe.servings ? <span className="text-sm font-bold text-ink-soft">{recipe.servings} servings</span> : null}>
+        <Section
+          title="Ingredients"
+          aside={
+            recipe.servings && activePint === recipe.basePint ? (
+              <span className="text-sm font-bold text-ink-soft">{recipe.servings} servings</span>
+            ) : null
+          }
+        >
           {hasAmounts && (
             <div className="mb-4">
               <Segmented

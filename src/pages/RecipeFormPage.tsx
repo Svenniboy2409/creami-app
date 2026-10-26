@@ -87,7 +87,7 @@ function toDraft(recipe?: Recipe): Draft {
     basePint: recipe.basePint,
     prepMin: String(recipe.times.prepMin),
     freezeHours: String(recipe.times.freezeHours),
-    servings: recipe.servings ? String(recipe.servings) : '',
+    servings: recipe.servings ?? '',
     difficulty: recipe.difficulty ?? '',
     groups: recipe.ingredients.map((group) => ({
       key: nextKey(),
@@ -127,7 +127,7 @@ function toRecipe(draft: Draft, existing?: Recipe): Recipe {
     models: draft.models.length ? draft.models : ['original'],
     program: draft.program.trim() || 'Ice Cream',
     basePint: draft.basePint,
-    servings: toInt(draft.servings, 0) || undefined,
+    servings: clean(draft.servings),
     difficulty: draft.difficulty || undefined,
     times: { prepMin: toInt(draft.prepMin, 0), freezeHours: toInt(draft.freezeHours, 24) },
     ingredients: draft.groups
@@ -400,7 +400,7 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
               <input className="field" inputMode="numeric" value={draft.freezeHours} onChange={(e) => change({ freezeHours: e.target.value })} />
             </Label>
             <Label text="Servings">
-              <input className="field" inputMode="numeric" value={draft.servings} onChange={(e) => change({ servings: e.target.value })} placeholder="–" />
+              <input className="field" value={draft.servings} onChange={(e) => change({ servings: e.target.value })} placeholder="4–6" />
             </Label>
           </div>
         </Card>

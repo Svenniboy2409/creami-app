@@ -58,7 +58,8 @@ export interface Recipe {
   models: CreamiModel[]
   program: string
   basePint: PintSize
-  servings?: number
+  /** Free text so ranges like "4–6" work. */
+  servings?: string
   difficulty?: Difficulty
   times: { prepMin: number; freezeHours: number }
   ingredients: IngredientGroup[]

@@ -63,6 +63,7 @@ export const DIFFICULTIES: Record<Difficulty, string> = {
 
 export const SUGGESTED_TAGS = [
   'high-protein',
+  'egg-free',
   'low-sugar',
   'vegan',
   'dairy-free',
