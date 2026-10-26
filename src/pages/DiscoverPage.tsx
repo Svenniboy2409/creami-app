@@ -32,7 +32,10 @@ export function DiscoverPage() {
   const [stuck, markerRef] = useStuck(rowRef)
 
   const update = (changes: Partial<Record<FilterKey | 'q', string>>) => {
-    const next = new URLSearchParams(params)
+    // Start from the address bar, not from `params`: the router redraws a
+    // moment after the URL changes, so a chip tapped just before typing (or
+    // two chips in quick succession) would otherwise be undone by the next change.
+    const next = new URLSearchParams(window.location.hash.split('?')[1] ?? '')
     for (const [key, value] of Object.entries(changes)) {
       if (value && value !== 'all') next.set(key, value)
       else next.delete(key)

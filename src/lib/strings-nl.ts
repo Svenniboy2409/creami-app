@@ -287,5 +287,6 @@ export const NL: Record<string, string> = {
   'Draft · {date}': 'Concept · {date}',
   'Draft deleted': 'Concept verwijderd',
   'Delete draft “{name}”': 'Concept “{name}” verwijderen',
+  'Picked up where you left off': 'Verder waar je gebleven was',
   'Save recipe': 'Recept opslaan',
 }

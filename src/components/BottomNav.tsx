@@ -3,12 +3,20 @@ import { NavLink, useLocation } from 'react-router'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useRecipeEditor } from '../hooks/recipeEditorContext'
+import { recall } from '../lib/pageMemory'
 
 function Tab({ to, label, icon: Icon, alsoActive = false }: { to: string; label: string; icon: LucideIcon; alsoActive?: boolean }) {
+  const location = useLocation()
+  const here = location.pathname === to
   return (
     <NavLink
-      to={to}
+      // Back to the page as you left it: same filters, search and tab.
+      to={{ pathname: to, search: here ? location.search : (recall<string>(`search:${to}`) ?? '') }}
       end
+      onClick={() => {
+        // Tapping the tab you are already on takes you back to its top.
+        if (here) window.scrollTo({ top: 0, behavior: 'smooth' })
+      }}
       className={({ isActive }) =>
         `flex flex-1 flex-col items-center gap-0.5 py-2 text-xs font-bold transition-colors ${
           isActive || alsoActive ? 'text-raspberry' : 'text-ink-soft hover:text-ink'

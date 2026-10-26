@@ -1,11 +1,12 @@
 import { ArrowDown, ArrowUp, Camera, FilePen, ImagePlus, LoaderCircle, Plus, Trash2, X } from 'lucide-react'
-import { useId, useRef, useState, type ReactNode, type RefObject } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { useNavigate } from 'react-router'
 import { CATEGORIES, CATEGORY_ORDER, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES, PROGRAMS, SUGGESTED_TAGS } from '../data/creami'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useToast } from '../hooks/toastContext'
 import { compressImage } from '../lib/image'
+import { setEditorBackup, type EditorBackup } from '../lib/storage'
 import {
   emptyItem,
   emptyStep,
@@ -32,6 +33,8 @@ export interface EditorSession {
   initial: Draft
   existing?: Recipe
   draftId?: string
+  /** Brought back after the app was closed underneath it: it holds unsaved work from the start. */
+  restored?: boolean
 }
 
 function Card({
@@ -106,7 +109,7 @@ export function RecipeEditorSheet({ session, open, onClose }: { session: EditorS
   const { saveRecipe, saveDraft, deleteDraft } = useLibrary()
   const { existing, draftId } = session
   const [draft, setDraft] = useState<Draft>(session.initial)
-  const [dirty, setDirty] = useState(false)
+  const [dirty, setDirty] = useState(session.restored ?? false)
   const [saving, setSaving] = useState(false)
   const [processingImage, setProcessingImage] = useState(false)
   const [asking, setAsking] = useState(false)
@@ -116,6 +119,42 @@ export function RecipeEditorSheet({ session, open, onClose }: { session: EditorS
   const ingredientsRef = useRef<HTMLElement>(null)
   const stepsRef = useRef<HTMLElement>(null)
   const ids = useId()
+
+  // iOS can close a home-screen app in the background without warning. While
+  // there is unsaved work in the pop-up it is kept in storage, a moment after
+  // each change and at once when the app is put away, and the pop-up opens
+  // again with it next time. Every way of closing it forgets the copy.
+  const closed = useRef(false)
+  const pending = useRef<EditorBackup | null>(null)
+  useEffect(() => {
+    if (!dirty || closed.current) return
+    pending.current = { existingId: existing?.id, draftId, draft, savedAt: new Date().toISOString() }
+    const timer = window.setTimeout(() => {
+      if (pending.current) void setEditorBackup(pending.current)
+      pending.current = null
+    }, 400)
+    return () => window.clearTimeout(timer)
+  }, [draft, dirty, existing, draftId])
+  useEffect(() => {
+    const flush = () => {
+      if (pending.current) void setEditorBackup(pending.current)
+      pending.current = null
+    }
+    const onHide = () => document.visibilityState === 'hidden' && flush()
+    document.addEventListener('visibilitychange', onHide)
+    window.addEventListener('pagehide', flush)
+    return () => {
+      document.removeEventListener('visibilitychange', onHide)
+      window.removeEventListener('pagehide', flush)
+    }
+  }, [])
+
+  const finish = () => {
+    closed.current = true
+    pending.current = null
+    void setEditorBackup()
+    onClose()
+  }
 
   const change = (patch: Partial<Draft>) => {
     setDraft((current) => ({ ...current, ...patch }))
@@ -154,13 +193,13 @@ export function RecipeEditorSheet({ session, open, onClose }: { session: EditorS
   // Closing with work in it asks first; with nothing changed it just closes.
   const requestClose = () => {
     if (dirty && (existing || hasContent(draft))) setAsking(true)
-    else onClose()
+    else finish()
   }
 
   const keepAsDraft = async () => {
     await saveDraft({ id: draftId ?? newDraftId(), savedAt: new Date().toISOString(), draft })
     setAsking(false)
-    onClose()
+    finish()
     showToast(t('Saved as draft'))
   }
 
@@ -186,7 +225,7 @@ export function RecipeEditorSheet({ session, open, onClose }: { session: EditorS
       const recipe = toRecipe(draft, existing)
       await saveRecipe(recipe)
       if (draftId) await deleteDraft(draftId)
-      onClose()
+      finish()
       showToast(t(existing ? 'Changes saved' : 'Recipe saved'))
       if (!existing) navigate(`/recipe/${recipe.id}`)
     } catch {
@@ -538,7 +577,7 @@ export function RecipeEditorSheet({ session, open, onClose }: { session: EditorS
             danger
             onClick={() => {
               setAsking(false)
-              onClose()
+              finish()
             }}
           />
           <button type="button" onClick={() => setAsking(false)} className="w-full py-3 font-bold text-ink-soft">

@@ -1,9 +1,10 @@
 import { FilePen, Plus, Trash2 } from 'lucide-react'
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { RecipeEditorSheet, type EditorSession } from '../components/RecipeEditor'
 import { RecipeImage } from '../components/RecipeImage'
 import { Sheet } from '../components/Sheet'
 import { rekey, toDraft, type SavedDraft } from '../lib/recipeDraft'
+import { getEditorBackup } from '../lib/storage'
 import type { Recipe } from '../types/recipe'
 import { useI18n } from './i18nContext'
 import { useLibrary } from './libraryContext'
@@ -14,7 +15,9 @@ let sessions = 0
 
 /** The recipe pop-up, reachable from anywhere: the + button, empty states, Edit on a recipe. */
 export function RecipeEditorProvider({ children }: { children: ReactNode }) {
-  const { drafts } = useLibrary()
+  const { ready, userRecipes, drafts } = useLibrary()
+  const { t } = useI18n()
+  const showToast = useToast()
   const [choosing, setChoosing] = useState(false)
   const [session, setSession] = useState<EditorSession | null>(null)
   const [editing, setEditing] = useState(false)
@@ -30,6 +33,19 @@ export function RecipeEditorProvider({ children }: { children: ReactNode }) {
   }, [drafts.length, start])
 
   const openEdit = useCallback((recipe: Recipe) => start({ existing: recipe, initial: toDraft(recipe) }), [start])
+
+  // Was the app closed while the pop-up held unsaved work? Then open it again with that work.
+  const recovered = useRef(false)
+  useEffect(() => {
+    if (!ready || recovered.current) return
+    recovered.current = true
+    void getEditorBackup().then((backup) => {
+      if (!backup) return
+      const existing = backup.existingId ? userRecipes.find((recipe) => recipe.id === backup.existingId) : undefined
+      start({ existing, draftId: backup.draftId, initial: rekey(backup.draft), restored: true })
+      showToast(t('Picked up where you left off'))
+    })
+  }, [ready, userRecipes, start, showToast, t])
 
   const value = useMemo<RecipeEditorState>(() => ({ openNew, openEdit }), [openNew, openEdit])
 

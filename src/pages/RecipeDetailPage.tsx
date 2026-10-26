@@ -31,6 +31,7 @@ import { useLibrary } from '../hooks/libraryContext'
 import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useToast } from '../hooks/toastContext'
 import { useRecipe } from '../hooks/useRecipes'
+import { useRemembered } from '../lib/pageMemory'
 import { formatAmount, scaleGroups, scaleServings } from '../lib/scale'
 import type { PintSize, Recipe } from '../types/recipe'
 
@@ -65,17 +66,15 @@ function Section({ title, aside, children }: { title: string; aside?: ReactNode;
   )
 }
 
+const NOTHING_TICKED: string[] = []
+
 function Ingredients({ recipe, pint, tone }: { recipe: Recipe; pint: PintSize; tone: ToneClasses }) {
   const { t } = useI18n()
-  const [checked, setChecked] = useState<Set<string>>(new Set())
+  // Ticked-off ingredients stay ticked while the app is open, even after looking at another recipe.
+  const [ticked, setTicked] = useRemembered<string[]>(`recipe:${recipe.id}:checked`, NOTHING_TICKED)
+  const checked = new Set(ticked)
   const groups = scaleGroups(recipe.ingredients, recipe.basePint, pint)
-  const toggle = (key: string) =>
-    setChecked((current) => {
-      const next = new Set(current)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
+  const toggle = (key: string) => setTicked((current) => (current.includes(key) ? current.filter((k) => k !== key) : [...current, key]))
 
   return (
     <div className="space-y-4">
@@ -129,7 +128,7 @@ export function RecipeDetailPage() {
   const showToast = useToast()
   const { openEdit } = useRecipeEditor()
   const navigate = useNavigate()
-  const [pint, setPint] = useState<PintSize | null>(null)
+  const [pint, setPint] = useRemembered<PintSize | null>(`recipe:${id}:pint`, null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [folderOpen, setFolderOpen] = useState(false)
   // Once the photo has scrolled away, the status bar needs its backdrop back.

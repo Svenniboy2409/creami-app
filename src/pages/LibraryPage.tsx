@@ -15,6 +15,7 @@ import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useAllRecipes } from '../hooks/useRecipes'
+import { useRemembered } from '../lib/pageMemory'
 import { searchRecipes } from '../lib/search'
 import type { Recipe } from '../types/recipe'
 
@@ -29,7 +30,8 @@ export function LibraryPage() {
   const [params, setParams] = useSearchParams()
   const tabParam = params.get('tab')
   const tab: Tab = tabParam === 'favorites' || tabParam === 'folders' ? tabParam : 'mine'
-  const [query, setQuery] = useState('')
+  // Each tab keeps its own search for as long as the app is open.
+  const [query, setQuery] = useRemembered(`library:query:${tab}`, '')
   const [sorting, setSorting] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [newFolderOpen, setNewFolderOpen] = useState(false)
@@ -45,7 +47,6 @@ export function LibraryPage() {
 
   const switchTab = (next: Tab) => {
     setSorting(false)
-    setQuery('')
     setParams(next === 'mine' ? {} : { tab: next }, { replace: true })
   }
 

@@ -1,33 +1,68 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
-import { HashRouter, Navigate, Outlet, Route, Routes, useLocation, useNavigationType } from 'react-router'
+import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router'
 import { BottomNav } from './components/BottomNav'
 import { StatusBarScrim } from './components/StatusBarScrim'
 import { ToastProvider } from './components/Toast'
 import { I18nProvider } from './hooks/I18nProvider'
 import { LibraryProvider } from './hooks/LibraryProvider'
 import { RecipeEditorProvider } from './hooks/RecipeEditorProvider'
+import { recall, remember } from './lib/pageMemory'
 import { DiscoverPage } from './pages/DiscoverPage'
 import { FolderPage } from './pages/FolderPage'
 import { LibraryPage } from './pages/LibraryPage'
 import { RecipeDetailPage } from './pages/RecipeDetailPage'
 
-/** Starts new pages at the top, and restores the scroll position when going back. */
-function ScrollMemory() {
-  const location = useLocation()
-  const navigationType = useNavigationType()
-  const positions = useRef(new Map<string, number>())
-  const currentKey = useRef(location.key)
+/** Which remembered scroll position a location uses: one per page, and one per Library tab. */
+function scrollKey(pathname: string, search: string): string {
+  if (pathname !== '/library') return pathname
+  return `${pathname}?${new URLSearchParams(search).get('tab') ?? 'mine'}`
+}
+
+/**
+ * Every page opens where you left it, whether you come back with Back or
+ * through the bottom bar: its own scroll position, kept while the app is open.
+ * Discover and the Library also get back the filters, search and tab they had.
+ */
+function PageMemory() {
+  const { pathname, search } = useLocation()
+  const key = scrollKey(pathname, search)
+  const current = useRef(key)
 
   useEffect(() => {
-    const remember = () => positions.current.set(currentKey.current, window.scrollY)
-    window.addEventListener('scroll', remember, { passive: true })
-    return () => window.removeEventListener('scroll', remember)
+    const record = () => remember(`scroll:${current.current}`, window.scrollY)
+    window.addEventListener('scroll', record, { passive: true })
+    return () => window.removeEventListener('scroll', record)
   }, [])
 
+  useEffect(() => {
+    if (pathname === '/' || pathname === '/library') remember(`search:${pathname}`, search)
+  }, [pathname, search])
+
   useLayoutEffect(() => {
-    currentKey.current = location.key
-    window.scrollTo(0, navigationType === 'POP' ? (positions.current.get(location.key) ?? 0) : 0)
-  }, [location.key, navigationType])
+    current.current = key
+    const target = recall<number>(`scroll:${key}`) ?? 0
+    window.scrollTo(0, target)
+    if (!target) return
+    // A page that is still filling in (the library loading, photos taking
+    // their height) can be too short to reach the spot yet, so keep trying for
+    // a moment — unless you start scrolling yourself.
+    let frames = 0
+    let frame = 0
+    const retry = () => {
+      if (Math.abs(window.scrollY - target) < 2 || ++frames > 40) return
+      window.scrollTo(0, target)
+      frame = requestAnimationFrame(retry)
+    }
+    const stop = () => cancelAnimationFrame(frame)
+    frame = requestAnimationFrame(retry)
+    window.addEventListener('touchstart', stop, { once: true, passive: true })
+    window.addEventListener('wheel', stop, { once: true, passive: true })
+    return () => {
+      stop()
+      window.removeEventListener('touchstart', stop)
+      window.removeEventListener('wheel', stop)
+    }
+  }, [key])
 
   return null
 }
@@ -38,7 +73,7 @@ function Layout() {
   const isRecipe = pathname.startsWith('/recipe/')
   return (
     <>
-      <ScrollMemory />
+      <PageMemory />
       {!isRecipe && <StatusBarScrim />}
       <main className={`mx-auto min-h-dvh max-w-md ${isRecipe ? 'pb-[calc(3rem_+_env(safe-area-inset-bottom))]' : 'pb-36'}`}>
         {/* Keyed on the path so every page fades in as you arrive on it. */}

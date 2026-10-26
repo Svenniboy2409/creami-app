@@ -9,6 +9,8 @@ A mobile web app with frozen treats for every Ninja CREAMi: the Original, Breeze
 
 Every recipe can be converted between a 16 oz pint (Original, Breeze, Swirl) and a 24 oz Deluxe pint.
 
+While the app is open, every page remembers where you were: Discover its search and filters, the Library its tab and search, every page its scroll position, and a recipe its pint size and ticked-off ingredients. Tap the active tab in the bottom bar to jump back to the top. A recipe you were still typing in the pop-up comes back even if your phone closed the app in between.
+
 On a recipe the photo runs to the very top of the screen, and the amounts and servings convert between pint sizes. Sheets slide up and can be pulled down to close, and everything animates gently; with "reduce motion" switched on in your phone's settings the animations are turned off.
 
 ## Using the app

@@ -1,6 +1,6 @@
 import { createStore, del, get, set, values, type UseStore } from 'idb-keyval'
 import type { Folder, Recipe } from '../types/recipe'
-import type { SavedDraft } from './recipeDraft'
+import type { Draft, SavedDraft } from './recipeDraft'
 
 // Opened lazily so a browser without IndexedDB still renders the curated recipes.
 let recipeStore: UseStore | undefined
@@ -12,6 +12,7 @@ const FAVORITES_KEY = 'favorites'
 const FOLDERS_KEY = 'folders'
 const RECIPE_ORDER_KEY = 'recipe-order'
 const DRAFTS_KEY = 'drafts'
+const EDITOR_KEY = 'open-editor'
 
 export async function listUserRecipes(): Promise<Recipe[]> {
   const all = await values<Recipe>(recipes())
@@ -59,6 +60,23 @@ export async function getDrafts(): Promise<SavedDraft[]> {
 
 export function setDrafts(drafts: SavedDraft[]): Promise<void> {
   return set(DRAFTS_KEY, drafts, prefs())
+}
+
+/** What was in the recipe pop-up while it was open, in case the app is closed underneath it. */
+export interface EditorBackup {
+  existingId?: string
+  draftId?: string
+  draft: Draft
+  savedAt: string
+}
+
+export function getEditorBackup(): Promise<EditorBackup | undefined> {
+  return get<EditorBackup>(EDITOR_KEY, prefs())
+}
+
+/** Saves what is in the pop-up, or forgets it when called without. */
+export function setEditorBackup(backup?: EditorBackup): Promise<void> {
+  return backup ? set(EDITOR_KEY, backup, prefs()) : del(EDITOR_KEY, prefs())
 }
 
 /**
