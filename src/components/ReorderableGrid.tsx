@@ -183,8 +183,12 @@ export function ReorderableGrid<T extends { id: string }>({ items, onReorder, re
           >
             <div
               className={`rounded-tile transition-[transform,box-shadow] duration-200 ${
-                dragging ? 'rotate-[1.5deg] scale-[1.05] shadow-lift' : 'ring-2 ring-strawberry/40 ring-offset-2 ring-offset-cream'
+                dragging
+                  ? 'rotate-[1.5deg] scale-[1.05] shadow-lift'
+                  : `ring-2 ring-strawberry/40 ring-offset-2 ring-offset-cream ${from === null ? 'animate-wiggle' : ''}`
               }`}
+              // Out of step with their neighbours, so the grid shimmers rather than rocking as one.
+              style={{ animationDelay: `${-((i * 97) % 280)}ms` }}
             >
               {renderItem(item)}
             </div>

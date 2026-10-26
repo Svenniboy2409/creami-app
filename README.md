@@ -2,11 +2,14 @@
 
 A mobile web app with frozen treats for every Ninja CREAMi: the Original, Breeze, Deluxe and Swirl (Scoop & Swirl).
 
-- **Discover**: hand-picked recipes with photos, ingredients, a step-by-step method and the right Creami program for each step.
+- **Discover**: hand-picked recipes with photos, ingredients, a step-by-step method and the right Creami program for each step. Search forgives typos ("vanila" finds Vanilla) and the search bar stays at the top while you scroll. Filter by category, machine, program and tags in the filter sheet.
 - **+**: add your own recipes, with a photo taken on your phone.
-- **Library**: your own recipes and the favorites you saved with the heart.
+- **Library**: your own recipes, the favorites you saved with the heart, and **folders** you fill with any recipe. Tap the rearrange button to drag recipes and folders into your own order.
+- **Settings** (the gear in the Library): English or Dutch, folders as tiles or a list, and backups.
 
 Every recipe can be converted between a 16 oz pint (Original, Breeze, Swirl) and a 24 oz Deluxe pint.
+
+Sheets slide up and can be pulled down to close, and everything animates gently; with "reduce motion" switched on in your phone's settings the animations are turned off.
 
 ## Using the app
 
@@ -14,7 +17,7 @@ The app runs on GitHub Pages: <https://svenniboy2409.github.io/creami-app/>
 
 To install it on your phone, open the link in Safari (iPhone) or Chrome (Android) and choose **Add to Home Screen**. It then opens full screen like a normal app and also works offline.
 
-Your own recipes and favorites are stored **only on that device**, in the browser's IndexedDB. Open **Library → ••• → Export backup** now and then to save a backup file. You can also use that file to move your recipes to another phone with **Import backup**.
+Your own recipes, favorites and folders are stored **only on that device**, in the browser's IndexedDB. Open **Library → ⚙ Settings → Export backup** now and then to save a backup file. You can also use that file to move everything to another phone with **Import backup**. Backups from earlier versions of the app still import.
 
 ## Development
 
@@ -37,8 +40,14 @@ Built with Vite, React, TypeScript, Tailwind CSS v4, React Router (hash routing 
 | `src/data/creami.ts` | Creami models, programs, categories and tags |
 | `src/data/recipes/` | Curated recipes shown on Discover |
 | `src/assets/recipes/` | Photos for curated recipes |
-| `src/lib/` | Storage (IndexedDB), pint scaling, quantity parsing, search, image compression |
-| `src/pages/` | Discover, Library, recipe detail and the add/edit form |
+| `src/lib/` | Storage (IndexedDB), pint scaling, quantity parsing, search, image compression, translations |
+| `src/lib/strings-nl.ts` | The Dutch interface text, keyed by the English |
+| `src/components/` | Cards, sheets, toasts, the filter sheet, folders and the drag-to-rearrange grid |
+| `src/pages/` | Discover, Library, folder, recipe detail and the add/edit form |
+
+### Translations
+
+Interface text goes through `t('English text')` from `useI18n()`; add the Dutch version to `src/lib/strings-nl.ts`. A test fails when a string has no Dutch version. Program names (Ice Cream, Gelato, Re-spin…) and "pint" stay in English, as on the machine. A curated recipe can carry its Dutch text in `translations.nl`; your own recipes stay as you wrote them.
 
 ### Adding a curated recipe
 
@@ -65,7 +74,8 @@ Built with Vite, React, TypeScript, Tailwind CSS v4, React Router (hash routing 
    }
    ```
 
-3. Add it to the `CURATED_RECIPES` array in `src/data/recipes/index.ts`.
+3. Optionally add a Dutch version under `translations: { nl: { name, tagline, description, ingredients, steps, tips } }`. Keep the same amounts and units in the translated ingredients.
+4. Add it to the `CURATED_RECIPES` array in `src/data/recipes/index.ts`.
 
 ## Deployment
 

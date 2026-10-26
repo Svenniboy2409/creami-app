@@ -33,6 +33,7 @@ export const NL: Record<string, string> = {
   Advanced: 'Gevorderd',
   '16 oz pints': '16 oz-pints',
   '24 oz pints': '24 oz-pints',
+  'Scoop & Swirl': 'Scoop & Swirl',
   'high-protein': 'eiwitrijk',
   'egg-free': 'eivrij',
   'low-sugar': 'suikerarm',
