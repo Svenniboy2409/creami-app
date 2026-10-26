@@ -5,7 +5,9 @@ import { ChipRow, Segmented } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
 import { RecipeImage } from '../components/RecipeImage'
 import { CATEGORIES, CATEGORY_ORDER, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES, PROGRAMS, SUGGESTED_TAGS } from '../data/creami'
+import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
+import { useToast } from '../hooks/toastContext'
 import { useRecipe } from '../hooks/useRecipes'
 import { compressImage } from '../lib/image'
 import { parseQty } from '../lib/quantity'
@@ -148,10 +150,10 @@ function toRecipe(draft: Draft, existing?: Recipe): Recipe {
   }
 }
 
-function validate(draft: Draft): string | null {
-  if (!draft.name.trim()) return 'Give your recipe a name.'
-  if (!draft.groups.some((group) => group.items.some((item) => item.name.trim()))) return 'Add at least one ingredient.'
-  if (!draft.steps.some((step) => step.text.trim())) return 'Add at least one step.'
+function validate(draft: Draft, t: (key: string) => string): string | null {
+  if (!draft.name.trim()) return t('Give your recipe a name.')
+  if (!draft.groups.some((group) => group.items.some((item) => item.name.trim()))) return t('Add at least one ingredient.')
+  if (!draft.steps.some((step) => step.text.trim())) return t('Add at least one step.')
   return null
 }
 
@@ -166,11 +168,12 @@ function Card({ title, children, hint }: { title: string; children: ReactNode; h
 }
 
 function Label({ text, children, optional }: { text: string; children: ReactNode; optional?: boolean }) {
+  const { t } = useI18n()
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-bold text-ink-soft">
         {text}
-        {optional && <span className="font-semibold text-ink-faint"> · optional</span>}
+        {optional && <span className="font-semibold text-ink-faint"> · {t('optional')}</span>}
       </span>
       {children}
     </label>
@@ -194,6 +197,8 @@ function SmallIconButton({ label, onClick, disabled, children }: { label: string
 function RecipeForm({ existing }: { existing?: Recipe }) {
   const navigate = useNavigate()
   const { saveRecipe } = useLibrary()
+  const { t } = useI18n()
+  const showToast = useToast()
   const [draft, setDraft] = useState<Draft>(() => toDraft(existing))
   const [dirty, setDirty] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -230,20 +235,20 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
     try {
       change({ image: await compressImage(file) })
     } catch {
-      setError('That photo could not be loaded. Try a JPEG or PNG.')
+      setError(t('That photo could not be loaded. Try a JPEG or PNG.'))
     } finally {
       setProcessingImage(false)
     }
   }
 
   const cancel = () => {
-    if (dirty && !window.confirm('Discard your changes?')) return
+    if (dirty && !window.confirm(t('Discard your changes?'))) return
     if (window.history.state?.idx > 0) navigate(-1)
     else navigate(existing ? `/recipe/${existing.id}` : '/library')
   }
 
   const submit = async () => {
-    const problem = validate(draft)
+    const problem = validate(draft, t)
     if (problem) {
       setError(problem)
       requestAnimationFrame(() => errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
@@ -254,8 +259,9 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
       const recipe = toRecipe(draft, existing)
       await saveRecipe(recipe)
       navigate(`/recipe/${recipe.id}`, { replace: true })
+      showToast(t(existing ? 'Changes saved' : 'Recipe saved'))
     } catch {
-      setError('Saving failed. Is your storage full?')
+      setError(t('Saving failed. Is your storage full?'))
       setSaving(false)
     }
   }
@@ -271,74 +277,74 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
     >
       <header className="pt-safe sticky top-0 z-20 -mx-5 bg-cream/90 px-5 backdrop-blur-lg">
         <div className="flex items-center gap-3 py-3">
-          <button type="button" onClick={cancel} aria-label="Cancel" className="icon-btn bg-white shadow-sm">
+          <button type="button" onClick={cancel} aria-label={t('Cancel')} className="icon-btn bg-white shadow-sm">
             <X className="size-5" aria-hidden />
           </button>
-          <h1 className="flex-1 text-xl font-semibold">{existing ? 'Edit recipe' : 'New recipe'}</h1>
+          <h1 className="flex-1 text-xl font-semibold">{t(existing ? 'Edit recipe' : 'New recipe')}</h1>
         </div>
       </header>
 
       <div className="mt-2 space-y-4">
         <div className="relative overflow-hidden rounded-tile shadow-soft">
           <label className="block cursor-pointer">
-            <input type="file" accept="image/*" className="sr-only" onChange={(event) => void onPhoto(event.target.files?.[0])} aria-label="Recipe photo" />
+            <input type="file" accept="image/*" className="sr-only" onChange={(event) => void onPhoto(event.target.files?.[0])} aria-label={t('Recipe photo')} />
             {draft.image ? (
               <div className="aspect-[4/3]">
-                <RecipeImage recipe={{ image: draft.image, name: 'Recipe photo', category: draft.category }} />
+                <RecipeImage recipe={{ image: draft.image, name: t('Recipe photo'), category: draft.category }} />
               </div>
             ) : (
               <div className="flex aspect-[4/3] flex-col items-center justify-center gap-2 border-2 border-dashed border-strawberry bg-strawberry-soft/60 text-raspberry">
                 <ImagePlus className="size-10" strokeWidth={1.6} aria-hidden />
-                <span className="font-extrabold">Add a photo</span>
-                <span className="text-sm font-semibold text-ink-soft">Take one or pick from your gallery</span>
+                <span className="font-extrabold">{t('Add a photo')}</span>
+                <span className="text-sm font-semibold text-ink-soft">{t('Take one or pick from your gallery')}</span>
               </div>
             )}
             {processingImage && (
               <div className="absolute inset-0 grid place-items-center bg-white/60">
-                <LoaderCircle className="size-8 animate-spin text-raspberry" aria-label="Processing photo" />
+                <LoaderCircle className="size-8 animate-spin text-raspberry" aria-label={t('Processing photo')} />
               </div>
             )}
           </label>
           {draft.image && (
             <div className="absolute bottom-3 right-3 flex gap-2">
               <span className="pointer-events-none flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-2 text-sm font-bold shadow-sm">
-                <Camera className="size-4" aria-hidden /> Tap to change
+                <Camera className="size-4" aria-hidden /> {t('Tap to change')}
               </span>
-              <button type="button" onClick={() => change({ image: undefined })} aria-label="Remove photo" className="icon-btn size-9">
+              <button type="button" onClick={() => change({ image: undefined })} aria-label={t('Remove photo')} className="icon-btn size-9">
                 <Trash2 className="size-4" aria-hidden />
               </button>
             </div>
           )}
         </div>
 
-        <Card title="The basics">
-          <Label text="Name">
-            <input className="field" value={draft.name} onChange={(e) => change({ name: e.target.value })} placeholder="Salted caramel gelato" required />
+        <Card title={t('The basics')}>
+          <Label text={t('Name')}>
+            <input className="field" value={draft.name} onChange={(e) => change({ name: e.target.value })} placeholder={t('Salted caramel gelato')} required />
           </Label>
-          <Label text="Tagline" optional>
-            <input className="field" value={draft.tagline} onChange={(e) => change({ tagline: e.target.value })} placeholder="Silky, sweet and a little salty" />
+          <Label text={t('Tagline')} optional>
+            <input className="field" value={draft.tagline} onChange={(e) => change({ tagline: e.target.value })} placeholder={t('Silky, sweet and a little salty')} />
           </Label>
-          <Label text="Description" optional>
+          <Label text={t('Description')} optional>
             <textarea
               className="field min-h-24 resize-y"
               value={draft.description}
               onChange={(e) => change({ description: e.target.value })}
-              placeholder="What makes this one special?"
+              placeholder={t('What makes this one special?')}
             />
           </Label>
         </Card>
 
-        <Card title="Type & program">
+        <Card title={t('Type & program')}>
           <div>
-            <span className="mb-1.5 block text-sm font-bold text-ink-soft">Category</span>
+            <span className="mb-1.5 block text-sm font-bold text-ink-soft">{t('Category')}</span>
             <ChipRow
-              label="Category"
+              label={t('Category')}
               value={draft.category}
               onChange={(category) => change({ category })}
-              options={CATEGORY_ORDER.map((c) => ({ value: c, label: CATEGORIES[c].label }))}
+              options={CATEGORY_ORDER.map((c) => ({ value: c, label: t(CATEGORIES[c].label) }))}
             />
           </div>
-          <Label text="Main program">
+          <Label text={t('Main program')}>
             <input className="field" list={`${ids}-programs`} value={draft.program} onChange={(e) => change({ program: e.target.value })} placeholder="Ice Cream" />
           </Label>
           <datalist id={`${ids}-programs`}>
@@ -348,18 +354,18 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
           </datalist>
           <div>
             <span className="mb-1.5 block text-sm font-bold text-ink-soft">
-              Difficulty <span className="font-semibold text-ink-faint"> · optional</span>
+              {t('Difficulty')} <span className="font-semibold text-ink-faint"> · {t('optional')}</span>
             </span>
             <Segmented
-              label="Difficulty"
+              label={t('Difficulty')}
               value={draft.difficulty}
               onChange={(difficulty) => change({ difficulty })}
-              options={(Object.keys(DIFFICULTIES) as Difficulty[]).map((d) => ({ value: d, label: DIFFICULTIES[d] }))}
+              options={(Object.keys(DIFFICULTIES) as Difficulty[]).map((d) => ({ value: d, label: t(DIFFICULTIES[d]) }))}
             />
           </div>
         </Card>
 
-        <Card title="Machines" hint="Which Creami models does this work with?">
+        <Card title={t('Machines')} hint={t('Which Creami models does this work with?')}>
           <div className="grid grid-cols-2 gap-2">
             {MODEL_ORDER.map((model) => {
               const active = draft.models.includes(model)
@@ -375,37 +381,41 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
                   }`}
                 >
                   <span className="block font-bold">{MODELS[model].short}</span>
-                  <span className="block text-xs text-ink-soft">{MODELS[model].detail.split(' · ')[0]}</span>
+                  <span className="block text-xs text-ink-soft">{t(MODELS[model].detail.split(' · ')[0])}</span>
                 </button>
               )
             })}
           </div>
           <div>
-            <span className="mb-1.5 block text-sm font-bold text-ink-soft">Amounts are for a…</span>
+            <span className="mb-1.5 block text-sm font-bold text-ink-soft">{t('Amounts are for a…')}</span>
             <Segmented
-              label="Pint size"
+              label={t('Pint size')}
               value={draft.basePint}
               onChange={(basePint) => change({ basePint })}
-              options={([16, 24] as const).map((size) => ({ value: size, label: `${PINT_SIZES[size].label} pint`, hint: PINT_SIZES[size].detail.split(' · ')[0] }))}
+              options={([16, 24] as const).map((size) => ({
+                value: size,
+                label: t('{size} pint', { size: PINT_SIZES[size].label }),
+                hint: PINT_SIZES[size].detail.split(' · ')[0],
+              }))}
             />
           </div>
         </Card>
 
-        <Card title="Timing">
+        <Card title={t('Timing')}>
           <div className="grid grid-cols-3 gap-2">
-            <Label text="Prep (min)">
+            <Label text={t('Prep (min)')}>
               <input className="field" inputMode="numeric" value={draft.prepMin} onChange={(e) => change({ prepMin: e.target.value })} />
             </Label>
-            <Label text="Freeze (h)">
+            <Label text={t('Freeze (h)')}>
               <input className="field" inputMode="numeric" value={draft.freezeHours} onChange={(e) => change({ freezeHours: e.target.value })} />
             </Label>
-            <Label text="Servings">
+            <Label text={t('Servings')}>
               <input className="field" value={draft.servings} onChange={(e) => change({ servings: e.target.value })} placeholder="4–6" />
             </Label>
           </div>
         </Card>
 
-        <Card title="Ingredients" hint="Amounts like 150, 1,5 or 1/2 all work.">
+        <Card title={t('Ingredients')} hint={t('Amounts like 150, 1,5 or 1/2 all work.')}>
           <datalist id={`${ids}-units`}>
             {UNITS.map((unit) => (
               <option key={unit} value={unit} />
@@ -419,11 +429,11 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
                     className="field py-2 font-display text-base"
                     value={group.title}
                     onChange={(e) => updateGroup(group.key, (g) => ({ ...g, title: e.target.value }))}
-                    placeholder={groupIndex === 0 ? 'Base' : 'Mix-ins'}
-                    aria-label="Group name"
+                    placeholder={t(groupIndex === 0 ? 'Base' : 'Mix-ins')}
+                    aria-label={t('Group name')}
                   />
                   {groupIndex > 0 && (
-                    <SmallIconButton label="Remove group" onClick={() => change({ groups: draft.groups.filter((g) => g.key !== group.key) })}>
+                    <SmallIconButton label={t('Remove group')} onClick={() => change({ groups: draft.groups.filter((g) => g.key !== group.key) })}>
                       <Trash2 className="size-4" aria-hidden />
                     </SmallIconButton>
                   )}
@@ -437,7 +447,7 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
                     value={item.qty}
                     onChange={(e) => updateItem(group.key, item.key, { qty: e.target.value })}
                     placeholder="150"
-                    aria-label={`Amount for ingredient ${itemIndex + 1}`}
+                    aria-label={t('Amount for ingredient {n}', { n: itemIndex + 1 })}
                   />
                   <input
                     className="field w-[4.25rem] shrink-0 px-1.5 text-center"
@@ -446,17 +456,17 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
                     value={item.unit}
                     onChange={(e) => updateItem(group.key, item.key, { unit: e.target.value })}
                     placeholder="g"
-                    aria-label={`Unit for ingredient ${itemIndex + 1}`}
+                    aria-label={t('Unit for ingredient {n}', { n: itemIndex + 1 })}
                   />
                   <input
                     className="field min-w-0 flex-1 px-2.5"
                     value={item.name}
                     onChange={(e) => updateItem(group.key, item.key, { name: e.target.value })}
-                    placeholder="whole milk"
-                    aria-label={`Ingredient ${itemIndex + 1}`}
+                    placeholder={t('whole milk')}
+                    aria-label={t('Ingredient {n}', { n: itemIndex + 1 })}
                   />
                   <SmallIconButton
-                    label={`Remove ingredient ${itemIndex + 1}`}
+                    label={t('Remove ingredient {n}', { n: itemIndex + 1 })}
                     onClick={() => updateGroup(group.key, (g) => ({ ...g, items: g.items.filter((i) => i.key !== item.key) }))}
                     disabled={group.items.length === 1}
                   >
@@ -469,7 +479,7 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
                 onClick={() => updateGroup(group.key, (g) => ({ ...g, items: [...g.items, emptyItem()] }))}
                 className="flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-extrabold text-raspberry"
               >
-                <Plus className="size-4" strokeWidth={3} aria-hidden /> Add ingredient
+                <Plus className="size-4" strokeWidth={3} aria-hidden /> {t('Add ingredient')}
               </button>
             </div>
           ))}
@@ -478,24 +488,24 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
             onClick={() => change({ groups: [...draft.groups, { key: nextKey(), title: '', items: [emptyItem()] }] })}
             className="w-full rounded-2xl border-2 border-dashed border-cream-deep py-2.5 text-sm font-bold text-ink-soft"
           >
-            + Add a group (e.g. Mix-ins or Topping)
+            {t('+ Add a group (e.g. Mix-ins or Topping)')}
           </button>
         </Card>
 
-        <Card title="Method">
+        <Card title={t('Method')}>
           {draft.steps.map((step, index) => (
             <div key={step.key} className="rounded-2xl bg-cream p-3 ring-1 ring-cream-deep">
               <div className="mb-2 flex items-center gap-1">
                 <span className="grid size-7 place-items-center rounded-full bg-strawberry font-display text-sm font-bold">{index + 1}</span>
                 <span className="flex-1" />
-                <SmallIconButton label={`Move step ${index + 1} up`} onClick={() => moveStep(index, -1)} disabled={index === 0}>
+                <SmallIconButton label={t('Move step {n} up', { n: index + 1 })} onClick={() => moveStep(index, -1)} disabled={index === 0}>
                   <ArrowUp className="size-4" aria-hidden />
                 </SmallIconButton>
-                <SmallIconButton label={`Move step ${index + 1} down`} onClick={() => moveStep(index, 1)} disabled={index === draft.steps.length - 1}>
+                <SmallIconButton label={t('Move step {n} down', { n: index + 1 })} onClick={() => moveStep(index, 1)} disabled={index === draft.steps.length - 1}>
                   <ArrowDown className="size-4" aria-hidden />
                 </SmallIconButton>
                 <SmallIconButton
-                  label={`Remove step ${index + 1}`}
+                  label={t('Remove step {n}', { n: index + 1 })}
                   onClick={() => change({ steps: draft.steps.filter((s) => s.key !== step.key) })}
                   disabled={draft.steps.length === 1}
                 >
@@ -506,16 +516,16 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
                 className="field min-h-20 resize-y bg-white"
                 value={step.text}
                 onChange={(e) => change({ steps: draft.steps.map((s) => (s.key === step.key ? { ...s, text: e.target.value } : s)) })}
-                placeholder={index === 0 ? 'Blend all base ingredients until smooth, pour into the pint and freeze for 24 hours.' : 'Process on the Ice Cream program.'}
-                aria-label={`Step ${index + 1}`}
+                placeholder={t(index === 0 ? 'Blend all base ingredients until smooth, pour into the pint and freeze for 24 hours.' : 'Process on the Ice Cream program.')}
+                aria-label={t('Step {n}', { n: index + 1 })}
               />
               <input
                 className="field mt-2 bg-white py-2"
                 list={`${ids}-programs`}
                 value={step.program}
                 onChange={(e) => change({ steps: draft.steps.map((s) => (s.key === step.key ? { ...s, program: e.target.value } : s)) })}
-                placeholder="Program for this step (optional)"
-                aria-label={`Program for step ${index + 1}`}
+                placeholder={t('Program for this step (optional)')}
+                aria-label={t('Program for step {n}', { n: index + 1 })}
               />
             </div>
           ))}
@@ -524,21 +534,21 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
             onClick={() => change({ steps: [...draft.steps, emptyStep()] })}
             className="flex items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-extrabold text-raspberry"
           >
-            <Plus className="size-4" strokeWidth={3} aria-hidden /> Add step
+            <Plus className="size-4" strokeWidth={3} aria-hidden /> {t('Add step')}
           </button>
         </Card>
 
-        <Card title="Tips & tags">
-          <Label text="Tips" optional>
+        <Card title={t('Tips & tags')}>
+          <Label text={t('Tips')} optional>
             <textarea
               className="field min-h-20 resize-y"
               value={draft.tips}
               onChange={(e) => change({ tips: e.target.value })}
-              placeholder={'One tip per line\nRe-spin once if it looks crumbly'}
+              placeholder={t('One tip per line\nRe-spin once if it looks crumbly')}
             />
           </Label>
           <div>
-            <span className="mb-1.5 block text-sm font-bold text-ink-soft">Tags</span>
+            <span className="mb-1.5 block text-sm font-bold text-ink-soft">{t('Tags')}</span>
             <div className="flex flex-wrap gap-2">
               {SUGGESTED_TAGS.map((tag) => {
                 const active = draft.tags.includes(tag)
@@ -551,7 +561,7 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
                     onClick={() => change({ tags: active ? draft.tags.filter((t) => t !== tag) : [...draft.tags, tag] })}
                     className={`rounded-full px-3 py-1.5 text-sm font-bold transition-colors ${active ? 'bg-ink text-cream' : 'bg-cream text-ink-soft ring-1 ring-cream-deep'}`}
                   >
-                    #{tag}
+                    #{t(tag)}
                   </button>
                 )
               })}
@@ -570,7 +580,7 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
         <div className="mx-auto max-w-md px-5 pb-4 pt-6">
           <button type="submit" disabled={saving || processingImage} className="btn-primary w-full text-lg">
             {saving ? <LoaderCircle className="size-5 animate-spin" aria-hidden /> : null}
-            {existing ? 'Save changes' : 'Save recipe'}
+            {t(existing ? 'Save changes' : 'Save recipe')}
           </button>
         </div>
       </div>
@@ -581,6 +591,7 @@ function RecipeForm({ existing }: { existing?: Recipe }) {
 export function RecipeFormPage() {
   const { id } = useParams()
   const { ready } = useLibrary()
+  const { t } = useI18n()
   const recipe = useRecipe(id)
 
   if (!id) return <RecipeForm />
@@ -590,14 +601,14 @@ export function RecipeFormPage() {
       <div className="px-5 pt-16">
         <EmptyState
           icon={ChefHat}
-          title="Can’t edit this recipe"
+          title={t('Can’t edit this recipe')}
           action={
             <Link to="/" className="btn-primary">
-              Back to Discover
+              {t('Back to Discover')}
             </Link>
           }
         >
-          Only recipes you added yourself can be edited.
+          {t('Only recipes you added yourself can be edited.')}
         </EmptyState>
       </div>
     )

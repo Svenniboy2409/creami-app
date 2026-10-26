@@ -38,6 +38,19 @@
 
   --animate-pop-in: pop-in 260ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
   --animate-fade-up: fade-up 320ms ease-out both;
+  /* Opacity only: a transform would make the page the containing block of the
+     fixed bars inside it for as long as the animation runs. */
+  --animate-page-in: page-in 260ms ease-out;
+  /* No fill-mode on the sheet: once it has slid in, its inline transform takes
+     over so it can follow a finger dragging it down. */
+  --animate-sheet-up: sheet-up 420ms cubic-bezier(0.2, 0.9, 0.3, 1.05);
+  --animate-backdrop-in: backdrop-in 260ms ease-out;
+  --animate-toast-in: toast-in 300ms cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+  --animate-toast-out: toast-out 260ms ease-in both;
+  --animate-heart-pop: heart-pop 480ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+  --animate-sprinkle: sprinkle 560ms cubic-bezier(0.15, 0.8, 0.3, 1) both;
+  --animate-chip-pop: chip-pop 320ms cubic-bezier(0.2, 0.9, 0.3, 1.5);
+  --animate-badge-pop: badge-pop 360ms cubic-bezier(0.2, 0.9, 0.3, 1.6) both;
 
   @keyframes pop-in {
     from {
@@ -58,6 +71,112 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes page-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes backdrop-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes toast-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px) scale(0.96);
+    }
+  }
+
+  /* A soft scoop landing: squash, overshoot, settle. */
+  @keyframes heart-pop {
+    0% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(0.7);
+    }
+    55% {
+      transform: scale(1.35);
+    }
+    75% {
+      transform: scale(0.92);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* One sprinkle flying out of the heart; its direction comes from --dx/--dy. */
+  @keyframes sprinkle {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1);
+    }
+  }
+
+  @keyframes chip-pop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(0.9);
+    }
+    75% {
+      transform: scale(1.07);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes badge-pop {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    70% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
     }
   }
 }
@@ -84,6 +203,21 @@
   button,
   [role='button'] {
     cursor: pointer;
+  }
+
+  /* A quick second tap on something you can press is a press, not a zoom. */
+  button,
+  a,
+  label,
+  input,
+  textarea,
+  select {
+    touch-action: manipulation;
+  }
+
+  /* The page holds still behind an open sheet. */
+  html.sheet-open {
+    overflow: hidden;
   }
 
   :focus-visible {

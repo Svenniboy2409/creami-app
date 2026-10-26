@@ -67,6 +67,21 @@ export interface Recipe {
   tips?: string[]
   nutrition?: Nutrition
   credits?: { author?: string; url?: string; translatedFrom?: string }
+  /** The recipe's text in another interface language; anything left out stays as written. */
+  translations?: { nl?: Partial<RecipeText> }
   createdAt?: string
   updatedAt?: string
+}
+
+/** The parts of a recipe that are words rather than settings, and so can be translated. */
+export type RecipeText = Pick<Recipe, 'name' | 'tagline' | 'description' | 'servings' | 'ingredients' | 'steps' | 'tips'>
+
+export interface Folder {
+  id: string
+  name: string
+  /** Data URL of a cover photo; without one the cover is a collage of the recipes inside. */
+  image?: string
+  /** Recipes in the order they are shown. Any recipe can go in, curated or your own. */
+  recipeIds: string[]
+  createdAt: string
 }

@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { HashRouter, Navigate, Outlet, Route, Routes, useLocation, useNavigationType } from 'react-router'
 import { BottomNav } from './components/BottomNav'
+import { ToastProvider } from './components/Toast'
+import { I18nProvider } from './hooks/I18nProvider'
 import { LibraryProvider } from './hooks/LibraryProvider'
 import { DiscoverPage } from './pages/DiscoverPage'
 import { LibraryPage } from './pages/LibraryPage'
@@ -35,7 +37,10 @@ function Layout() {
     <>
       <ScrollMemory />
       <main className={`mx-auto min-h-dvh max-w-md ${isForm ? 'pb-32' : 'pb-36'}`}>
-        <Outlet />
+        {/* Keyed on the path so every page fades in as you arrive on it. */}
+        <div key={pathname} className="animate-page-in">
+          <Outlet />
+        </div>
       </main>
       {!isForm && <BottomNav />}
     </>
@@ -44,19 +49,23 @@ function Layout() {
 
 export function App() {
   return (
-    <LibraryProvider>
-      <HashRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<DiscoverPage />} />
-            <Route path="library" element={<LibraryPage />} />
-            <Route path="new" element={<RecipeFormPage />} />
-            <Route path="recipe/:id" element={<RecipeDetailPage />} />
-            <Route path="recipe/:id/edit" element={<RecipeFormPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </HashRouter>
-    </LibraryProvider>
+    <I18nProvider>
+      <LibraryProvider>
+        <ToastProvider>
+          <HashRouter>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route index element={<DiscoverPage />} />
+                <Route path="library" element={<LibraryPage />} />
+                <Route path="new" element={<RecipeFormPage />} />
+                <Route path="recipe/:id" element={<RecipeDetailPage />} />
+                <Route path="recipe/:id/edit" element={<RecipeFormPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
+            </Routes>
+          </HashRouter>
+        </ToastProvider>
+      </LibraryProvider>
+    </I18nProvider>
   )
 }

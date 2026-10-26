@@ -62,4 +62,57 @@ export const whiteChocolateIceCream: Recipe = {
   ],
   tips: ['For an even more indulgent ice cream, add 1 tbsp milk powder or 1 tbsp glucose syrup to the mixture.'],
   credits: { translatedFrom: 'French' },
+  translations: {
+    nl: {
+      name: 'Witte-chocolade-ijs',
+      tagline: 'Romig, zoet en heerlijk verwennend!',
+      description:
+        'Een fluweelzacht ijs van witte chocolade, gemaakt voor de Ninja CREAMi Deluxe. Zonder ei, glutenvrij, huisgemaakt en extra verwennend.',
+      ingredients: [
+        {
+          title: 'IJsbasis',
+          items: [
+            { qty: 300, unit: 'ml', name: 'volle melk' },
+            { qty: 200, unit: 'ml', name: 'slagroom', note: '30% vet' },
+            { qty: 100, unit: 'g', name: 'witte chocolade van goede kwaliteit' },
+            { qty: 60, unit: 'g', name: 'suiker' },
+            { qty: 1, unit: 'tsp', name: 'vanille-extract' },
+            { name: 'Een snufje zout' },
+          ],
+        },
+        {
+          title: 'Om te versieren (kies er één)',
+          items: [{ name: 'schaafsel van witte chocolade' }, { name: 'krullen van witte chocolade' }, { name: 'een paar blokjes witte chocolade' }],
+        },
+      ],
+      steps: [
+        {
+          title: 'Verwarmen',
+          text: 'Verwarm de melk en de room in een steelpan op middelhoog vuur, zonder het te laten koken.',
+        },
+        {
+          title: 'Chocolade smelten',
+          text: 'Haal de pan van het vuur en voeg de in stukjes gebroken witte chocolade toe. Roer tot alles volledig gesmolten is.',
+        },
+        {
+          title: 'Zoeten & op smaak brengen',
+          text: 'Voeg de suiker, het vanille-extract en het snufje zout toe. Goed mengen.',
+        },
+        {
+          title: 'Afkoelen & invriezen',
+          text: 'Laat het mengsel afkoelen tot het lauw is en giet het dan in de Ninja Deluxe-beker. Doe het deksel erop en vries 12 uur in op een vlakke ondergrond.',
+        },
+        {
+          title: 'Draaien',
+          text: 'Plaats de beker in de Ninja Deluxe en start het programma ICE CREAM. Draai aan het eind van het programma zo nodig een RE-SPIN voor een nog romigere structuur.',
+          program: 'Ice Cream',
+        },
+        {
+          title: 'Versieren & genieten',
+          text: 'Versier vlak voor het serveren met schaafsel of krullen van witte chocolade, of een paar blokjes witte chocolade. Smakelijk!',
+        },
+      ],
+      tips: ['Voor een nog voller ijs voeg je 1 el melkpoeder of 1 el glucosestroop toe aan het mengsel.'],
+    },
+  },
 }

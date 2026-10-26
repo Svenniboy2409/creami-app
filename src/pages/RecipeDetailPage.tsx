@@ -21,16 +21,18 @@ import { RecipeImage } from '../components/RecipeImage'
 import { Sheet, SheetAction } from '../components/Sheet'
 import { TONES } from '../components/tone'
 import { CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
+import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
+import { useToast } from '../hooks/toastContext'
 import { useRecipe } from '../hooks/useRecipes'
 import { formatAmount, scaleGroups } from '../lib/scale'
 import type { PintSize, Recipe } from '../types/recipe'
 
-function formatMinutes(min: number): string {
-  if (min < 60) return `${min} min`
+function formatMinutes(min: number, t: (key: string, vars?: Record<string, number>) => string): string {
+  if (min < 60) return t('{n} min', { n: min })
   const h = Math.floor(min / 60)
   const m = min % 60
-  return m ? `${h} h ${m} min` : `${h} h`
+  return m ? t('{h} h {m} min', { h, m }) : t('{n} h', { n: h })
 }
 
 function Fact({ icon: Icon, label, value, toneSoft }: { icon: LucideIcon; label: string; value: string; toneSoft: string }) {
@@ -58,6 +60,7 @@ function Section({ title, aside, children }: { title: string; aside?: ReactNode;
 }
 
 function Ingredients({ recipe, pint }: { recipe: Recipe; pint: PintSize }) {
+  const { t } = useI18n()
   const [checked, setChecked] = useState<Set<string>>(new Set())
   const groups = scaleGroups(recipe.ingredients, recipe.basePint, pint)
   const toggle = (key: string) =>
@@ -87,7 +90,7 @@ function Ingredients({ recipe, pint }: { recipe: Recipe; pint: PintSize }) {
                     className="flex w-full items-start gap-3 px-4 py-3 text-left"
                   >
                     <span
-                      className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border-2 transition-colors ${
+                      className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border-2 transition-colors ${done ? 'animate-chip-pop' : ''} ${
                         done ? 'border-pistachio-deep bg-pistachio-deep text-white' : 'border-ink-faint/60'
                       }`}
                     >
@@ -95,7 +98,7 @@ function Ingredients({ recipe, pint }: { recipe: Recipe; pint: PintSize }) {
                     </span>
                     <span className={`flex-1 transition-opacity ${done ? 'line-through opacity-45' : ''}`}>
                       {(item.qty !== undefined || item.unit) && (
-                        <span className="mr-1.5 font-extrabold text-raspberry">{formatAmount(item.qty, item.unit)}</span>
+                        <span className="mr-1.5 font-extrabold text-raspberry">{formatAmount(item.qty, item.unit && t(item.unit))}</span>
                       )}
                       <span className="font-semibold">{item.name}</span>
                       {item.note && <span className="block text-sm text-ink-soft">{item.note}</span>}
@@ -113,31 +116,34 @@ function Ingredients({ recipe, pint }: { recipe: Recipe; pint: PintSize }) {
 
 export function RecipeDetailPage() {
   const { id } = useParams()
-  const recipe = useRecipe(id)
+  const original = useRecipe(id)
   const { ready, deleteRecipe } = useLibrary()
+  const { t, localize } = useI18n()
+  const showToast = useToast()
   const navigate = useNavigate()
   const [pint, setPint] = useState<PintSize | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
 
-  if (!recipe) {
+  if (!original) {
     if (!ready) return null
     return (
       <div className="px-5 pt-16">
         <EmptyState
           icon={ChefHat}
-          title="Recipe not found"
+          title={t('Recipe not found')}
           action={
             <Link to="/" className="btn-primary">
-              Back to Discover
+              {t('Back to Discover')}
             </Link>
           }
         >
-          This recipe may have been deleted.
+          {t('This recipe may have been deleted.')}
         </EmptyState>
       </div>
     )
   }
 
+  const recipe = localize(original)
   const category = CATEGORIES[recipe.category] ?? CATEGORIES.other
   const tone = TONES[category.tone]
   const activePint = pint ?? recipe.basePint
@@ -157,16 +163,16 @@ export function RecipeDetailPage() {
         </div>
         <div className="pt-safe absolute inset-x-0 top-0">
           <div className="flex items-center justify-between p-4">
-            <button type="button" onClick={goBack} aria-label="Back" className="icon-btn">
+            <button type="button" onClick={goBack} aria-label={t('Back')} className="icon-btn">
               <ArrowLeft className="size-5" aria-hidden />
             </button>
             <div className="flex gap-2">
               {isUserRecipe && (
-                <Link to={`/recipe/${recipe.id}/edit`} aria-label="Edit recipe" className="icon-btn">
+                <Link to={`/recipe/${recipe.id}/edit`} aria-label={t('Edit recipe')} className="icon-btn">
                   <Pencil className="size-[18px]" aria-hidden />
                 </Link>
               )}
-              <FavoriteButton id={recipe.id} name={recipe.name} className="size-11" />
+              <FavoriteButton id={recipe.id} name={recipe.name} className="size-11" toast />
             </div>
           </div>
         </div>
@@ -174,10 +180,10 @@ export function RecipeDetailPage() {
 
       <div className="px-5 pt-6">
         <div className="flex flex-wrap gap-1.5">
-          <span className={`rounded-full px-3 py-1 text-xs font-extrabold ${tone.soft} ${tone.text}`}>{category.label}</span>
+          <span className={`rounded-full px-3 py-1 text-xs font-extrabold ${tone.soft} ${tone.text}`}>{t(category.label)}</span>
           {recipe.tags.map((tag) => (
             <span key={tag} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-ink-soft shadow-sm">
-              #{tag}
+              #{t(tag)}
             </span>
           ))}
         </div>
@@ -186,19 +192,19 @@ export function RecipeDetailPage() {
         {recipe.description && <p className="mt-3 whitespace-pre-line leading-relaxed text-ink/85">{recipe.description}</p>}
 
         <div className="mt-6 grid grid-cols-4 gap-2">
-          <Fact icon={Clock} label="Prep" value={formatMinutes(recipe.times.prepMin)} toneSoft={`${tone.soft} ${tone.text}`} />
-          <Fact icon={Snowflake} label="Freeze" value={`${recipe.times.freezeHours} h`} toneSoft={`${tone.soft} ${tone.text}`} />
-          <Fact icon={IceCreamBowl} label="Program" value={recipe.program} toneSoft={`${tone.soft} ${tone.text}`} />
+          <Fact icon={Clock} label={t('Prep')} value={formatMinutes(recipe.times.prepMin, t)} toneSoft={`${tone.soft} ${tone.text}`} />
+          <Fact icon={Snowflake} label={t('Freeze')} value={t('{n} h', { n: recipe.times.freezeHours })} toneSoft={`${tone.soft} ${tone.text}`} />
+          <Fact icon={IceCreamBowl} label={t('Program')} value={recipe.program} toneSoft={`${tone.soft} ${tone.text}`} />
           <Fact
             icon={Gauge}
-            label="Level"
-            value={recipe.difficulty ? DIFFICULTIES[recipe.difficulty] : '—'}
+            label={t('Level')}
+            value={recipe.difficulty ? t(DIFFICULTIES[recipe.difficulty]) : '—'}
             toneSoft={`${tone.soft} ${tone.text}`}
           />
         </div>
 
         <div className="mt-6">
-          <h2 className="mb-2 font-sans text-sm font-extrabold uppercase tracking-[0.12em] text-ink-faint">Works with</h2>
+          <h2 className="mb-2 font-sans text-sm font-extrabold uppercase tracking-[0.12em] text-ink-faint">{t('Works with')}</h2>
           <ul className="flex flex-wrap gap-2">
             {MODEL_ORDER.map((model) => {
               const ok = recipe.models.includes(model)
@@ -211,7 +217,7 @@ export function RecipeDetailPage() {
                 >
                   {ok && <Check className="size-3.5" strokeWidth={3} aria-hidden />}
                   {MODELS[model].short}
-                  <span className="sr-only">{ok ? '(compatible)' : '(not tested)'}</span>
+                  <span className="sr-only">{t(ok ? '(compatible)' : '(not tested)')}</span>
                 </li>
               )
             })}
@@ -219,28 +225,28 @@ export function RecipeDetailPage() {
         </div>
 
         <Section
-          title="Ingredients"
+          title={t('Ingredients')}
           aside={
             recipe.servings && activePint === recipe.basePint ? (
-              <span className="text-sm font-bold text-ink-soft">{recipe.servings} servings</span>
+              <span className="text-sm font-bold text-ink-soft">{t('{servings} servings', { servings: recipe.servings })}</span>
             ) : null
           }
         >
           {hasAmounts && (
             <div className="mb-4">
               <Segmented
-                label="Pint size"
+                label={t('Pint size')}
                 value={activePint}
                 onChange={setPint}
                 options={([16, 24] as const).map((size) => ({
                   value: size,
-                  label: `${PINT_SIZES[size].label} pint`,
+                  label: t('{size} pint', { size: PINT_SIZES[size].label }),
                   hint: PINT_SIZES[size].detail.split(' · ')[0],
                 }))}
               />
               {activePint !== recipe.basePint && (
                 <p className="mt-2 text-center text-xs font-semibold text-ink-soft">
-                  Amounts converted from the original {PINT_SIZES[recipe.basePint].label} recipe — stay below the max fill line.
+                  {t('Amounts converted from the original {size} recipe — stay below the max fill line.', { size: PINT_SIZES[recipe.basePint].label })}
                 </p>
               )}
             </div>
@@ -248,7 +254,7 @@ export function RecipeDetailPage() {
           <Ingredients recipe={recipe} pint={activePint} />
         </Section>
 
-        <Section title="Method">
+        <Section title={t('Method')}>
           <ol className="space-y-3">
             {recipe.steps.map((step, index) => (
               <li key={index} className="card flex gap-3.5 p-4">
@@ -261,7 +267,7 @@ export function RecipeDetailPage() {
                   {step.program && (
                     <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-ink px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-cream">
                       <IceCreamBowl className="size-3.5" aria-hidden />
-                      {step.program === 'Re-spin' || step.program === 'Mix-in' ? step.program : `Run: ${step.program}`}
+                      {step.program === 'Re-spin' || step.program === 'Mix-in' ? step.program : t('Run: {program}', { program: step.program })}
                     </span>
                   )}
                 </div>
@@ -271,7 +277,7 @@ export function RecipeDetailPage() {
         </Section>
 
         {recipe.tips && recipe.tips.length > 0 && (
-          <Section title="Tips">
+          <Section title={t('Tips')}>
             <ul className="space-y-2 rounded-tile bg-vanilla-soft p-4 ring-1 ring-vanilla">
               {recipe.tips.map((tip, index) => (
                 <li key={index} className="flex gap-3">
@@ -284,7 +290,7 @@ export function RecipeDetailPage() {
         )}
 
         {recipe.nutrition && (
-          <Section title="Nutrition" aside={<span className="text-sm font-bold text-ink-soft">per {recipe.nutrition.per}</span>}>
+          <Section title={t('Nutrition')} aside={<span className="text-sm font-bold text-ink-soft">{t(recipe.nutrition.per === 'pint' ? 'per pint' : 'per serving')}</span>}>
             <dl className="grid grid-cols-3 gap-2">
               {(
                 [
@@ -298,7 +304,7 @@ export function RecipeDetailPage() {
                 .filter(([, value]) => value !== undefined)
                 .map(([label, value, unit]) => (
                   <div key={label} className="rounded-2xl bg-white p-3 text-center shadow-sm">
-                    <dt className="text-[11px] font-bold uppercase tracking-wide text-ink-faint">{label}</dt>
+                    <dt className="text-[11px] font-bold uppercase tracking-wide text-ink-faint">{t(label)}</dt>
                     <dd className="mt-0.5 font-extrabold">
                       {value} <span className="text-xs font-bold text-ink-soft">{unit}</span>
                     </dd>
@@ -312,11 +318,11 @@ export function RecipeDetailPage() {
           <p className="mt-9 flex items-start gap-2 text-sm text-ink-soft">
             <Languages className="mt-0.5 size-4 shrink-0" aria-hidden />
             <span>
-              {recipe.credits.translatedFrom && <>Translated from {recipe.credits.translatedFrom}. </>}
-              {recipe.credits.author && <>Original by {recipe.credits.author}. </>}
+              {recipe.credits.translatedFrom && <>{t('Translated from {language}.', { language: t(recipe.credits.translatedFrom) })} </>}
+              {recipe.credits.author && <>{t('Original by {author}.', { author: recipe.credits.author })} </>}
               {recipe.credits.url && (
                 <a href={recipe.credits.url} target="_blank" rel="noreferrer" className="font-bold text-raspberry underline underline-offset-2">
-                  View source
+                  {t('View source')}
                 </a>
               )}
             </span>
@@ -326,30 +332,31 @@ export function RecipeDetailPage() {
         {isUserRecipe && (
           <div className="mt-10 flex gap-2">
             <Link to={`/recipe/${recipe.id}/edit`} className="btn-secondary flex-1">
-              <Pencil className="size-4" aria-hidden /> Edit
+              <Pencil className="size-4" aria-hidden /> {t('Edit')}
             </Link>
             <button type="button" onClick={() => setMenuOpen(true)} className="btn-secondary flex-1 text-raspberry">
-              <Trash2 className="size-4" aria-hidden /> Delete
+              <Trash2 className="size-4" aria-hidden /> {t('Delete')}
             </button>
           </div>
         )}
       </div>
 
-      <Sheet open={menuOpen} onClose={() => setMenuOpen(false)} title="Delete this recipe?">
-        <p className="mb-4 text-[15px] text-ink-soft">“{recipe.name}” will be removed from this device. This can’t be undone.</p>
+      <Sheet open={menuOpen} onClose={() => setMenuOpen(false)} title={t('Delete this recipe?')}>
+        <p className="mb-4 text-[15px] text-ink-soft">{t('“{name}” will be removed from this device. This can’t be undone.', { name: recipe.name })}</p>
         <div className="space-y-2">
           <SheetAction
             icon={Trash2}
-            label="Delete recipe"
+            label={t('Delete recipe')}
             danger
             onClick={async () => {
               setMenuOpen(false)
               navigate('/library', { replace: true })
               await deleteRecipe(recipe.id)
+              showToast(t('Recipe deleted'))
             }}
           />
           <button type="button" onClick={() => setMenuOpen(false)} className="w-full py-3 font-bold text-ink-soft">
-            Cancel
+            {t('Cancel')}
           </button>
         </div>
       </Sheet>
