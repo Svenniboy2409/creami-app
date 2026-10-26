@@ -77,6 +77,8 @@ Interface text goes through `t('English text')` from `useI18n()`; add the Dutch 
    }
    ```
 
+   No photo? Leave out `image` and set `flavor` (one of the keys in `src/data/flavors.ts`, e.g. `'mint-chip'`) to get a pint illustration in that flavour's colours. Add a new flavour there with its background, scoop and mix-in colours.
+
 3. Optionally add a Dutch version under `translations: { nl: { name, tagline, description, ingredients, steps, tips } }`. Keep the same amounts and units in the translated ingredients.
 4. Add it to the `CURATED_RECIPES` array in `src/data/recipes/index.ts`.
 

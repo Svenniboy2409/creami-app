@@ -14,6 +14,21 @@ export type Category =
 
 export type Difficulty = 'easy' | 'medium' | 'advanced'
 
+/** Flavours with their own illustration, for recipes that have no photo. */
+export type Flavor =
+  | 'chocolate'
+  | 'vanilla'
+  | 'strawberry'
+  | 'mint-chip'
+  | 'cookie-dough'
+  | 'cookies-cream'
+  | 'coffee'
+  | 'banana'
+  | 'peanut-butter'
+  | 'raspberry-cheesecake'
+  | 'mango'
+  | 'chocolate-hazelnut'
+
 /** Pint size in US fluid ounces: 16 oz for Original/Breeze/Swirl, 24 oz for Deluxe. */
 export type PintSize = 16 | 24
 
@@ -53,6 +68,8 @@ export interface Recipe {
   description?: string
   /** Image URL (curated recipes) or data URL (user recipes). */
   image?: string
+  /** Without a photo, the illustration is drawn in this flavour's colours instead of the category's. */
+  flavor?: Flavor
   category: Category
   tags: string[]
   models: CreamiModel[]
