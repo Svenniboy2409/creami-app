@@ -33,6 +33,10 @@ export type Flavor =
   | 'raspberry-cheesecake'
   | 'mango'
   | 'chocolate-hazelnut'
+  | 'salted-caramel'
+  | 'cheesecake'
+  | 'pistachio'
+  | 'biscoff'
 
 /** Pint size in US fluid ounces: 16 oz for Original/Breeze/Swirl, 24 oz for Deluxe. */
 export type PintSize = 16 | 24

@@ -37,4 +37,8 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   'raspberry-cheesecake': { from: '#fde6ec', to: '#ef9fb4', scoop: '#fbe3ea', bits: [chunks('#c2416b'), crumbs('#d9a56b')] },
   mango: { from: '#fff1d6', to: '#ffc78a', scoop: '#ffd36b' },
   'chocolate-hazelnut': { from: '#f1e3da', to: '#bf9178', scoop: '#8f5b42', bits: [chunks('#c58b55')] },
+  'salted-caramel': { from: '#fbeedd', to: '#e6b57f', scoop: '#e9c69c', bits: [chunks('#b4692c'), specks('#fffaf2')] },
+  cheesecake: { from: '#fdf3ea', to: '#efc7b1', scoop: '#fcf3e3', bits: [chunks('#c8323f'), crumbs('#d4a15e')] },
+  pistachio: { from: '#eef5e1', to: '#bcd69a', scoop: '#c8dc9c', bits: [chunks('#6f8f2f'), chunks('#8a5a3a')] },
+  biscoff: { from: '#f8ead8', to: '#d9a873', scoop: '#e7c495', bits: [crumbs('#a8642c'), chunks('#b8733a')] },
 }
