@@ -41,4 +41,8 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   cheesecake: { from: '#fdf3ea', to: '#efc7b1', scoop: '#fcf3e3', bits: [chunks('#c8323f'), crumbs('#d4a15e')] },
   pistachio: { from: '#eef5e1', to: '#bcd69a', scoop: '#c8dc9c', bits: [chunks('#6f8f2f'), chunks('#8a5a3a')] },
   biscoff: { from: '#f8ead8', to: '#d9a873', scoop: '#e7c495', bits: [crumbs('#a8642c'), chunks('#b8733a')] },
+  'key-lime': { from: '#f1f8df', to: '#c6e08f', scoop: '#eef2c4', bits: [crumbs('#d1a35e'), specks('#6fa832')] },
+  'banana-split': { from: '#fff4dc', to: '#f4c98a', scoop: '#fbf0d6', bits: [chips(DARK_CHOCOLATE), chunks('#d93a4a'), chunks('#f2cd4b')] },
+  cinnamon: { from: '#f8ece0', to: '#d6a47c', scoop: '#e9cdb0', bits: [specks('#8a4f2a'), crumbs('#c9955a')] },
+  brownie: { from: '#efe1d6', to: '#b8876b', scoop: '#6e4030', bits: [chunks('#3b2119'), chips('#2a1712')] },
 }
