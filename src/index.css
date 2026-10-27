@@ -329,6 +329,42 @@
   @apply grid size-11 shrink-0 place-items-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition-transform active:scale-90;
 }
 
+/* The frosted surface behind a sticky row once it holds on below the status bar,
+   reaching up behind the clock. Two layers: the blur below, the cream on top.
+   The cream comes first and leaves last, so the blurred page never shows
+   through more than it does at rest. With both in one layer, the blur set in
+   while the cream was still thin and smeared the dark chip behind the search
+   bar into a grey flash. */
+@utility stuck-surface {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--safe-top)) 0 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+  }
+  &::before {
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    transition: opacity 160ms ease-in;
+  }
+  &::after {
+    background: color-mix(in srgb, var(--color-cream) 85%, transparent);
+    box-shadow: 0 12px 24px -16px rgb(59 42 42 / 0.35);
+    transition: opacity 240ms ease-out 120ms;
+  }
+  &[data-stuck]::before {
+    opacity: 1;
+    transition: opacity 260ms ease-out 80ms;
+  }
+  &[data-stuck]::after {
+    opacity: 1;
+    transition: opacity 160ms ease-out;
+  }
+}
+
 @utility card {
   @apply rounded-tile bg-white shadow-soft;
 }

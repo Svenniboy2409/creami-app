@@ -139,12 +139,11 @@ export function DiscoverPage() {
       <div ref={markerRef} className="h-px" aria-hidden />
       <div
         ref={rowRef}
-        // Holds on just below the status bar. Once it does, its background reaches up
-        // behind the clock as well, one surface from the top edge down, so the cards
-        // no longer show through above the search bar. The page title stays in front.
-        className={`sticky top-[var(--safe-top)] z-20 -mx-5 px-5 py-2 before:pointer-events-none before:absolute before:inset-x-0 before:-top-[var(--safe-top)] before:bottom-0 before:-z-10 before:transition-[background-color,box-shadow,backdrop-filter] before:duration-300 ${
-          stuck ? 'before:bg-cream/85 before:shadow-[0_12px_24px_-16px_rgb(59_42_42/0.35)] before:backdrop-blur-xl' : 'before:bg-cream/0'
-        }`}
+        // Holds on just below the status bar. Once it does, a frosted surface fades in
+        // from the top edge down behind it, so the cards no longer show through above
+        // the search bar. The page title stays in front.
+        data-stuck={stuck || undefined}
+        className="stuck-surface sticky top-[var(--safe-top)] z-20 -mx-5 px-5 py-2"
       >
         <SearchBar
           value={query}
