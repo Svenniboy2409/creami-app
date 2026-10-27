@@ -4,6 +4,8 @@ import type { Recipe } from '../../types/recipe'
 // After George Eats, in our own words, weighed straight into the pint as the
 // original does. The original gives 150–200 g condensed milk; the middle of
 // that range goes in the list so it scales with the pint, the range in a tip.
+// Scaled to a 24 oz pint it lands at about 260 g, inside the 250–300 g the
+// original recommends for a bigger tub.
 export const condensedMilkVanillaIceCream: Recipe = {
   id: 'condensed-milk-vanilla-ice-cream',
   origin: 'curated',
@@ -54,12 +56,17 @@ export const condensedMilkVanillaIceCream: Recipe = {
     },
     {
       title: 'Serve',
-      text: 'Enjoy it as it is, with mix-ins or alongside a dessert. Put the lid on whatever is left, freeze it again and process it once more when you want another scoop.',
+      text: 'Enjoy it as it is, with mix-ins or alongside a dessert. Put the lid on whatever is left, freeze it again and process it once more when you want another scoop. A half-full pint spins just fine.',
     },
   ],
   tips: [
-    'Use 150 to 200 g condensed milk, depending on how sweet you like it.',
+    'In a 16\u00a0oz pint, 150\u00a0g condensed milk makes a less sweet ice cream and 200\u00a0g a sweeter one.',
+    'Sugar lowers the freezing point, so too much of it keeps the ice cream from setting. Not getting firm? Use 25 to 50\u00a0g less condensed milk; the milk and cream bring natural sugars of their own too.',
+    'Only sweetened condensed milk works here: it is the only sweetener, so it can’t be left out or swapped for evaporated milk. Rather use sugar? Make the Vanilla Bean Ice Cream instead.',
+    'Light cream and semi-skimmed milk work too.',
     'For a lactose-free or low-FODMAP version, use lactose-free cream, condensed milk and milk.',
+    'A tiny pinch of salt brings out the flavour, if you like.',
+    'Making it in a 24\u00a0oz pint? Keep the condensed milk between 250 and 300\u00a0g in total. The 16\u00a0oz amounts work in the bigger pint as well, as the machine copes with smaller volumes.',
   ],
   credits: { author: 'George Eats', url: 'https://georgeats.com/recipes/ninja-creami-vanilla-ice-cream-recipe/' },
   translations: {
@@ -101,12 +108,17 @@ export const condensedMilkVanillaIceCream: Recipe = {
         },
         {
           title: 'Serveren',
-          text: 'Eet het zo, met mix-ins of bij een dessert. Doe het deksel op wat over is, vries het weer in en draai het nog een keer als je zin hebt in een volgend bolletje.',
+          text: 'Eet het zo, met mix-ins of bij een dessert. Doe het deksel op wat over is, vries het weer in en draai het nog een keer als je zin hebt in een volgend bolletje. Een halfvolle pint draait prima.',
         },
       ],
       tips: [
-        'Gebruik 150 tot 200 g gecondenseerde melk, afhankelijk van hoe zoet je het wilt.',
+        'In een 16\u00a0oz-pint geeft 150\u00a0g gecondenseerde melk minder zoet ijs en 200\u00a0g zoeter ijs.',
+        'Suiker verlaagt het vriespunt, dus met te veel suiker wordt het ijs niet vast. Wordt het niet stevig genoeg? Gebruik 25 tot 50\u00a0g minder gecondenseerde melk; ook melk en room bevatten van nature suikers.',
+        'Alleen gezoete gecondenseerde melk werkt hier: het is de enige zoetstof, dus je kunt het niet weglaten of vervangen door ongezoete koffiemelk. Liever met suiker? Maak dan het Vanille-ijs.',
+        'Met lichte room en halfvolle melk lukt het ook.',
         'Voor een lactosevrije of FODMAP-arme versie gebruik je lactosevrije room, gecondenseerde melk en melk.',
+        'Een heel klein snufje zout brengt de smaak naar voren, als je wilt.',
+        'Maak je het in een 24\u00a0oz-pint? Houd de gecondenseerde melk tussen 250 en 300\u00a0g in totaal. De hoeveelheden voor 16\u00a0oz werken ook in de grotere pint, want de machine kan kleinere hoeveelheden aan.',
       ],
     },
   },
