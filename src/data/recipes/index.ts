@@ -5,6 +5,7 @@ import { chocolateHazelnutIceCream } from './chocolate-hazelnut-ice-cream'
 import { chocolateIceCream } from './chocolate-ice-cream'
 import { coconutMilkBase } from './coconut-milk-base'
 import { coffeeIceCream } from './coffee-ice-cream'
+import { condensedMilkVanillaIceCream } from './condensed-milk-vanilla-ice-cream'
 import { cookieDoughIceCream } from './cookie-dough-ice-cream'
 import { cookiesAndCreamIceCream } from './cookies-and-cream-ice-cream'
 import { cottageCheeseBase } from './cottage-cheese-base'
@@ -37,6 +38,8 @@ export const CURATED_RECIPES: Recipe[] = [
   raspberryCheesecakeIceCream,
   mangoIceCream,
   chocolateHazelnutIceCream,
+  // From around the web
+  condensedMilkVanillaIceCream,
   // The five bases, to flavour your own way
   vanillaBase,
   chocolateBase,
