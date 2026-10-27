@@ -62,7 +62,6 @@ export const raspberryCheesecakeIceCream: Recipe = {
       program: 'Mix-in',
     },
   ],
-  tips: ['Always freeze the base for a full 24 hours.', 'Crumbly after the first spin? Use RE-SPIN.', 'Add mix-ins after the first spin for the best texture.'],
   translations: {
     nl: {
       name: 'Frambozen-cheesecake-ijs',
@@ -110,7 +109,6 @@ export const raspberryCheesecakeIceCream: Recipe = {
           program: 'Mix-in',
         },
       ],
-      tips: ['Vries de basis altijd een volle 24 uur in.', 'Kruimelig na de eerste keer draaien? Gebruik RE-SPIN.', 'Voeg mix-ins pas toe na de eerste keer draaien, dan blijft de structuur het mooist.'],
     },
   },
 }

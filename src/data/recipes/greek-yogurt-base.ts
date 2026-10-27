@@ -54,7 +54,7 @@ export const greekYogurtBase: Recipe = {
       program: 'Mix-in',
     },
   ],
-  tips: ['Always freeze the base for a full 24 hours.', 'Fill no higher than the MAX FILL line; a little left over makes a lovely milkshake.', 'Protein bases often need a re-spin or two, each with a splash of milk.'],
+  tips: ['Protein bases often need a re-spin or two, each with a splash of milk.'],
   ideas: [{ name: 'Mixed Berry' }, { name: 'Peach Cobbler' }, { name: 'Lemon Blueberry' }],
   translations: {
     nl: {
@@ -95,7 +95,7 @@ export const greekYogurtBase: Recipe = {
           program: 'Mix-in',
         },
       ],
-      tips: ['Vries de basis altijd een volle 24 uur in.', 'Vul niet hoger dan de MAX FILL-lijn; een restje is heerlijk als milkshake.', 'Eiwitrijke bases hebben vaak een of twee keer re-spin nodig, telkens met een scheutje melk.'],
+      tips: ['Eiwitrijke bases hebben vaak een of twee keer re-spin nodig, telkens met een scheutje melk.'],
       ideas: [{ name: 'Bosvruchten' }, { name: 'Perzik-crumble' }, { name: 'Citroen-blauwe bes' }],
     },
   },

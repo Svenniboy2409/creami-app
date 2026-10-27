@@ -75,3 +75,16 @@ export const SUGGESTED_TAGS = [
   'nutty',
   'kid-friendly',
 ]
+
+/**
+ * What holds for every pint, whatever the recipe. The recipe page folds these
+ * away under the recipe's own tips, so a recipe's `tips` keep only what is
+ * particular to it.
+ */
+export const BASIC_TIPS = [
+  'Fill no higher than the MAX FILL line; a little left over makes a lovely milkshake.',
+  'Always freeze the base for a full 24 hours, on a level surface.',
+  'Crumbly after the first spin? Add a splash of milk and use RE-SPIN.',
+  'Add mix-ins after the first spin: make a well down the middle, add them and run MIX-IN.',
+  'Leftovers? Smooth the top, put the lid on and freeze; process again before serving.',
+]

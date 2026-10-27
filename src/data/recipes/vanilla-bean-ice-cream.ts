@@ -50,7 +50,6 @@ export const vanillaBeanIceCream: Recipe = {
       program: 'Re-spin',
     },
   ],
-  tips: ['Always freeze the base for a full 24 hours.', 'Crumbly after the first spin? Use RE-SPIN.'],
   translations: {
     nl: {
       name: 'Vanille-ijs',
@@ -86,7 +85,6 @@ export const vanillaBeanIceCream: Recipe = {
           program: 'Re-spin',
         },
       ],
-      tips: ['Vries de basis altijd een volle 24 uur in.', 'Kruimelig na de eerste keer draaien? Gebruik RE-SPIN.'],
     },
   },
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CATEGORIES, PROGRAMS, SUGGESTED_TAGS } from '../creami'
+import { BASIC_TIPS, CATEGORIES, PROGRAMS, SUGGESTED_TAGS } from '../creami'
 import { FLAVORS } from '../flavors'
 import { CURATED_RECIPES } from '.'
 
@@ -25,6 +25,9 @@ describe('curated recipes', () => {
     expect(nl?.name).toBeTruthy()
     expect(nl?.steps?.length).toBe(recipe.steps.length)
     expect(nl?.steps?.map((s) => s.program)).toEqual(recipe.steps.map((s) => s.program))
+    expect(nl?.tips?.length).toBe(recipe.tips?.length)
+    // The basics show under every recipe already, folded away; tips are what is particular to this one.
+    for (const tip of recipe.tips ?? []) expect(BASIC_TIPS).not.toContain(tip)
     // Ideas that link somewhere link to a recipe the app has, in both languages.
     const ids = new Set(CURATED_RECIPES.map((r) => r.id))
     for (const idea of recipe.ideas ?? []) if (idea.recipeId) expect(ids.has(idea.recipeId)).toBe(true)

@@ -3,6 +3,7 @@ import {
   BookOpen,
   Check,
   ChefHat,
+  ChevronDown,
   ChevronRight,
   Clock,
   FolderCheck,
@@ -16,7 +17,7 @@ import {
   Trash2,
   type LucideIcon,
 } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Segmented } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
@@ -25,7 +26,7 @@ import { FolderPickerSheet } from '../components/FolderPickerSheet'
 import { RecipeImage } from '../components/RecipeImage'
 import { Sheet, SheetAction } from '../components/Sheet'
 import { TONES, type ToneClasses } from '../components/tone'
-import { CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
+import { BASIC_TIPS, CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useRecipeEditor } from '../hooks/recipeEditorContext'
@@ -67,6 +68,74 @@ function Section({ title, aside, children }: { title: string; aside?: ReactNode;
 }
 
 const NOTHING_TICKED: string[] = []
+
+function TipList({ tips, label, animate = false }: { tips: string[]; label?: string; animate?: boolean }) {
+  return (
+    // A border rather than a ring: the basics sit in a clipping box while they fold open.
+    <div className="rounded-tile border border-vanilla bg-vanilla-soft p-4">
+      {label && <p className="mb-2.5 text-xs font-extrabold uppercase tracking-[0.12em] text-vanilla-deep">{label}</p>}
+      <ul className="space-y-2">
+        {tips.map((tip, index) => (
+          <li
+            key={index}
+            className={`flex gap-3 ${animate ? 'animate-fade-up' : ''}`}
+            style={animate ? { animationDelay: `${80 + Math.min(index, 8) * 50}ms` } : undefined}
+          >
+            <Lightbulb className="mt-0.5 size-5 shrink-0 text-vanilla-deep" aria-hidden />
+            <span className="leading-relaxed">{tip}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+/**
+ * The recipe's own tips stay in view. The basics that go for every pint fold
+ * open below them, in a block of their own, when the heading is tapped.
+ */
+function Tips({ recipe }: { recipe: Recipe }) {
+  const { t } = useI18n()
+  const basicsId = useId()
+  // Open or closed per recipe, kept while the app is open like the rest of the page.
+  const [open, setOpen] = useRemembered(`recipe:${recipe.id}:basics`, false)
+  const own = recipe.tips ?? []
+
+  return (
+    <section className="mt-9">
+      <h2 className="mb-3 text-2xl font-semibold">
+        <button
+          type="button"
+          onClick={() => setOpen((current) => !current)}
+          aria-expanded={open}
+          aria-controls={basicsId}
+          className="group flex w-full items-center justify-between gap-3 text-left"
+        >
+          {t('Tips')}
+          <span className="flex items-center gap-2 font-sans text-sm font-extrabold text-ink-soft">
+            {t('Basic tips')}
+            <span className="grid size-8 place-items-center rounded-full bg-white shadow-sm transition-transform group-active:scale-90">
+              <ChevronDown className={`size-4 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} strokeWidth={2.6} aria-hidden />
+            </span>
+          </span>
+        </button>
+      </h2>
+      {own.length > 0 && <TipList tips={own} />}
+      {/* Grows from no height to its own, so everything below slides along. */}
+      <div
+        id={basicsId}
+        inert={!open}
+        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className={own.length > 0 ? 'pt-3' : ''}>
+            <TipList tips={BASIC_TIPS.map((tip) => t(tip))} label={t('For every recipe')} animate={open} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 function Ingredients({ recipe, pint, tone }: { recipe: Recipe; pint: PintSize; tone: ToneClasses }) {
   const { t } = useI18n()
@@ -304,18 +373,7 @@ export function RecipeDetailPage() {
           </ol>
         </Section>
 
-        {recipe.tips && recipe.tips.length > 0 && (
-          <Section title={t('Tips')}>
-            <ul className="space-y-2 rounded-tile bg-vanilla-soft p-4 ring-1 ring-vanilla">
-              {recipe.tips.map((tip, index) => (
-                <li key={index} className="flex gap-3">
-                  <Lightbulb className="mt-0.5 size-5 shrink-0 text-vanilla-deep" aria-hidden />
-                  <span className="leading-relaxed">{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </Section>
-        )}
+        <Tips recipe={recipe} />
 
         {recipe.ideas && recipe.ideas.length > 0 && (
           <Section title={t('Try these flavours')}>

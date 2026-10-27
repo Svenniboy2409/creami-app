@@ -55,7 +55,6 @@ export const vanillaBase: Recipe = {
       program: 'Mix-in',
     },
   ],
-  tips: ['Always freeze the base for a full 24 hours.', 'Fill no higher than the MAX FILL line; a little left over makes a lovely milkshake.'],
   ideas: [{ name: 'Vanilla Bean', recipeId: 'vanilla-bean-ice-cream' }, { name: 'Cookie Dough', recipeId: 'cookie-dough-ice-cream' }, { name: 'Birthday Cake' }],
   translations: {
     nl: {
@@ -97,7 +96,6 @@ export const vanillaBase: Recipe = {
           program: 'Mix-in',
         },
       ],
-      tips: ['Vries de basis altijd een volle 24 uur in.', 'Vul niet hoger dan de MAX FILL-lijn; een restje is heerlijk als milkshake.'],
       ideas: [{ name: 'Vanille', recipeId: 'vanilla-bean-ice-cream' }, { name: 'Koekjesdeeg', recipeId: 'cookie-dough-ice-cream' }, { name: 'Verjaardagstaart' }],
     },
   },

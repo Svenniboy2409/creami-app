@@ -55,7 +55,6 @@ export const chocolateBase: Recipe = {
       program: 'Mix-in',
     },
   ],
-  tips: ['Always freeze the base for a full 24 hours.', 'Fill no higher than the MAX FILL line; a little left over makes a lovely milkshake.'],
   ideas: [{ name: 'Chocolate Fudge' }, { name: 'Brownie Batter' }, { name: 'Mint Chocolate Chip', recipeId: 'mint-chocolate-chip-ice-cream' }],
   translations: {
     nl: {
@@ -97,7 +96,6 @@ export const chocolateBase: Recipe = {
           program: 'Mix-in',
         },
       ],
-      tips: ['Vries de basis altijd een volle 24 uur in.', 'Vul niet hoger dan de MAX FILL-lijn; een restje is heerlijk als milkshake.'],
       ideas: [{ name: 'Chocoladefudge' }, { name: 'Browniebeslag' }, { name: 'Munt met chocoladestukjes', recipeId: 'mint-chocolate-chip-ice-cream' }],
     },
   },
