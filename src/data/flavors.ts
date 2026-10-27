@@ -21,6 +21,7 @@ const DARK_CHOCOLATE = '#4a2c22'
 
 /** Colours for the pint illustration of each flavour, so a list of recipes without photos isn't all one colour. */
 export const FLAVORS: Record<Flavor, FlavorLook> = {
+  'white-chocolate': { from: '#fdf8ee', to: '#efe0c4', scoop: '#fbf3e2', bits: [crumbs('#f4e6c8')] },
   chocolate: { from: '#f3e7df', to: '#c9a08a', scoop: '#7a4a35', bits: [chunks('#5a3324')] },
   vanilla: { from: '#fdf6e3', to: '#f3dc9c', scoop: '#fbf1cf', bits: [specks('#4a3428')] },
   strawberry: { from: '#fde4ec', to: '#f4a3bb', scoop: '#f7b3c6', bits: [chunks('#d6476a')] },

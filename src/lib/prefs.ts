@@ -20,3 +20,22 @@ export function storeFolderView(view: FolderView): void {
     // The choice just won't survive a reload.
   }
 }
+
+const ILLUSTRATIONS_KEY = 'creami:illustrations'
+
+/** Whether the app's own recipes show their flavour illustration instead of a photo. Off unless chosen. */
+export function getIllustrations(): boolean {
+  try {
+    return localStorage.getItem(ILLUSTRATIONS_KEY) === 'on'
+  } catch {
+    return false
+  }
+}
+
+export function storeIllustrations(on: boolean): void {
+  try {
+    localStorage.setItem(ILLUSTRATIONS_KEY, on ? 'on' : 'off')
+  } catch {
+    // The choice just won't survive a reload.
+  }
+}

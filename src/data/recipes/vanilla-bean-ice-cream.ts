@@ -1,12 +1,15 @@
+import image from '../../assets/recipes/vanilla-bean-ice-cream.jpg'
 import type { Recipe } from '../../types/recipe'
 
-// From the Ninja Creami flavour list, in millilitres and grams. No photo yet:
-// the illustration is drawn in the flavour's own colours.
+// From the Ninja Creami flavour list, in millilitres and grams, with its photo
+// cut from that list. The flavour colours the illustration that replaces the
+// photo when "Illustrations instead of photos" is on in Settings.
 export const vanillaBeanIceCream: Recipe = {
   id: 'vanilla-bean-ice-cream',
   origin: 'curated',
   name: 'Vanilla Bean Ice Cream',
   tagline: 'The classic, flecked with real vanilla',
+  image,
   flavor: 'vanilla',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'kid-friendly'],

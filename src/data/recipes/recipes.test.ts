@@ -12,8 +12,9 @@ describe('curated recipes', () => {
   })
 
   it.each(CURATED_RECIPES.map((r) => [r.id, r] as const))('%s is complete and consistent', (_, recipe) => {
-    // Something to look at: a photo, or a flavour to draw.
-    expect(Boolean(recipe.image) || (recipe.flavor !== undefined && recipe.flavor in FLAVORS)).toBe(true)
+    // A photo, and a flavour to draw instead when illustrations are switched on in Settings.
+    expect(recipe.image).toBeTruthy()
+    expect(recipe.flavor !== undefined && recipe.flavor in FLAVORS).toBe(true)
     expect(recipe.category in CATEGORIES).toBe(true)
     expect(PROGRAMS).toContain(recipe.program)
     for (const step of recipe.steps) if (step.program) expect(PROGRAMS).toContain(step.program)

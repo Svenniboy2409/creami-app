@@ -1,12 +1,15 @@
+import image from '../../assets/recipes/mango-ice-cream.jpg'
 import type { Recipe } from '../../types/recipe'
 
-// From the Ninja Creami flavour list, in millilitres and grams. No photo yet:
-// the illustration is drawn in the flavour's own colours.
+// From the Ninja Creami flavour list, in millilitres and grams, with its photo
+// cut from that list. The flavour colours the illustration that replaces the
+// photo when "Illustrations instead of photos" is on in Settings.
 export const mangoIceCream: Recipe = {
   id: 'mango-ice-cream',
   origin: 'curated',
   name: 'Mango Ice Cream',
   tagline: 'Sunny, tropical and silky smooth',
+  image,
   flavor: 'mango',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'fruity'],

@@ -1,12 +1,15 @@
+import image from '../../assets/recipes/peanut-butter-cup-ice-cream.jpg'
 import type { Recipe } from '../../types/recipe'
 
-// From the Ninja Creami flavour list, in millilitres and grams. No photo yet:
-// the illustration is drawn in the flavour's own colours.
+// From the Ninja Creami flavour list, in millilitres and grams, with its photo
+// cut from that list. The flavour colours the illustration that replaces the
+// photo when "Illustrations instead of photos" is on in Settings.
 export const peanutButterCupIceCream: Recipe = {
   id: 'peanut-butter-cup-ice-cream',
   origin: 'curated',
   name: 'Peanut Butter Cup',
   tagline: 'Peanut butter ice cream with chocolate peanut butter cups',
+  image,
   flavor: 'peanut-butter',
   category: 'ice-cream',
   tags: ['egg-free', 'nutty', 'chocolate'],

@@ -5,7 +5,7 @@ A mobile web app with frozen treats for every Ninja CREAMi: the Original, Breeze
 - **Discover**: hand-picked recipes with photos, ingredients, a step-by-step method and the right Creami program for each step. Search forgives typos ("vanila" finds Vanilla) and the search bar stays at the top while you scroll. Filter by category, machine, program and tags in the filter sheet.
 - **+**: add your own recipes in a pop-up, with a photo taken on your phone. Not finished yet? **Save as draft**, and the + button (which shows how many drafts are waiting) offers to carry on with it next time.
 - **Library**: your own recipes, the favorites you saved with the heart, and **folders** you fill with any recipe. Tap the rearrange button to drag recipes and folders into your own order.
-- **Settings** (the gear in the Library): English or Dutch, folders as tiles or a list, and backups.
+- **Settings** (the gear in the Library): English or Dutch, folders as tiles or a list, illustrations instead of photos for the app's own recipes, and backups.
 
 Every recipe can be converted between a 16 oz pint (Original, Breeze, Swirl) and a 24 oz Deluxe pint.
 
@@ -77,7 +77,7 @@ Interface text goes through `t('English text')` from `useI18n()`; add the Dutch 
    }
    ```
 
-   No photo? Leave out `image` and set `flavor` (one of the keys in `src/data/flavors.ts`, e.g. `'mint-chip'`) to get a pint illustration in that flavour's colours. Add a new flavour there with its background, scoop and mix-in colours.
+   Also set `flavor` (one of the keys in `src/data/flavors.ts`, e.g. `'mint-chip'`): the recipe is then drawn as a pint illustration in that flavour's colours when **Settings → Illustrations instead of photos** is on, or when it has no photo at all. Add a new flavour there with its background, scoop and mix-in colours.
 
 3. Optionally add a Dutch version under `translations: { nl: { name, tagline, description, ingredients, steps, tips } }`. Keep the same amounts and units in the translated ingredients.
 4. Add it to the `CURATED_RECIPES` array in `src/data/recipes/index.ts`.

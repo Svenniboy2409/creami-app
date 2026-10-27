@@ -6,6 +6,7 @@ import { useToast } from '../hooks/toastContext'
 import { LANGUAGES } from '../lib/i18n'
 import { Segmented } from './Chips'
 import { Sheet, SheetAction, SheetHeaderButton } from './Sheet'
+import { Switch } from './Switch'
 
 function Group({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
   return (
@@ -21,7 +22,7 @@ function Group({ title, hint, children }: { title: string; hint?: string; childr
 export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { lang, setLang, t } = useI18n()
   const showToast = useToast()
-  const { folderView, setFolderView, exportBackup, importBackup } = useLibrary()
+  const { folderView, setFolderView, illustrations, setIllustrations, exportBackup, importBackup } = useLibrary()
   const fileInput = useRef<HTMLInputElement>(null)
 
   const onImport = async (file: File | undefined) => {
@@ -75,6 +76,15 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
               { value: 'grid', label: t('Tiles') },
               { value: 'list', label: t('List') },
             ]}
+          />
+        </Group>
+
+        <Group title={t('Pictures')}>
+          <Switch
+            checked={illustrations}
+            onChange={setIllustrations}
+            label={t('Illustrations instead of photos')}
+            hint={t('Shows the app’s recipes as colourful drawings. Photos you added yourself always stay.')}
           />
         </Group>
 

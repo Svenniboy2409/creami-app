@@ -16,6 +16,7 @@ export type Difficulty = 'easy' | 'medium' | 'advanced'
 
 /** Flavours with their own illustration, for recipes that have no photo. */
 export type Flavor =
+  | 'white-chocolate'
   | 'chocolate'
   | 'vanilla'
   | 'strawberry'

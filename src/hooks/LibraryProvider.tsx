@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { getFolderView, storeFolderView, type FolderView } from '../lib/prefs'
+import { getFolderView, getIllustrations, storeFolderView, storeIllustrations, type FolderView } from '../lib/prefs'
 import type { SavedDraft } from '../lib/recipeDraft'
 import {
   applyOrder,
@@ -56,6 +56,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [, updateRecipeOrder, loadRecipeOrder] = useStoredList<string>(persistRecipeOrder)
   const [drafts, updateDrafts, loadDrafts] = useStoredList<SavedDraft>(persistDrafts)
   const [folderView, setFolderViewState] = useState<FolderView>(getFolderView)
+  const [illustrations, setIllustrationsState] = useState(getIllustrations)
 
   const apply = useCallback(
     ([recipes, favs, folderList, order, draftList]: Awaited<ReturnType<typeof loadLibrary>>) => {
@@ -180,6 +181,11 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     [changeFolder],
   )
 
+  const setIllustrations = useCallback((on: boolean) => {
+    storeIllustrations(on)
+    setIllustrationsState(on)
+  }, [])
+
   const saveDraft = useCallback(
     async (draft: SavedDraft) => {
       await updateDrafts((current) => [draft, ...current.filter((d) => d.id !== draft.id)])
@@ -225,6 +231,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       drafts,
       folderView,
       setFolderView,
+      illustrations,
+      setIllustrations,
       saveRecipe,
       deleteRecipe,
       toggleFavorite,
@@ -251,6 +259,8 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       drafts,
       folderView,
       setFolderView,
+      illustrations,
+      setIllustrations,
       saveRecipe,
       deleteRecipe,
       toggleFavorite,

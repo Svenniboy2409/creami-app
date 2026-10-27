@@ -15,6 +15,9 @@ export interface LibraryState {
   drafts: SavedDraft[]
   folderView: FolderView
   setFolderView: (view: FolderView) => void
+  /** The app's own recipes drawn as flavour illustrations instead of photos. */
+  illustrations: boolean
+  setIllustrations: (on: boolean) => void
   saveRecipe: (recipe: Recipe) => Promise<void>
   deleteRecipe: (id: string) => Promise<void>
   toggleFavorite: (id: string) => Promise<void>

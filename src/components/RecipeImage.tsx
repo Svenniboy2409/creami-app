@@ -1,5 +1,6 @@
 import { CATEGORIES } from '../data/creami'
 import { FLAVORS, type FlavorLook } from '../data/flavors'
+import { useLibrary } from '../hooks/libraryContext'
 import type { Recipe } from '../types/recipe'
 import { TONES } from './tone'
 
@@ -33,15 +34,19 @@ function Bits({ bits }: { bits: NonNullable<FlavorLook['bits']> }) {
 /**
  * Recipe photo, or a pastel pint illustration when there is none: in the
  * flavour's own colours when the recipe names one, else in its category colour.
+ * With "Illustrations instead of photos" on, the app's own recipes show their
+ * illustration even though they have a photo; your own photos always show.
  */
 export function RecipeImage({
   recipe,
   className = '',
 }: {
-  recipe: Pick<Recipe, 'image' | 'name' | 'category'> & Partial<Pick<Recipe, 'flavor'>>
+  recipe: Pick<Recipe, 'image' | 'name' | 'category'> & Partial<Pick<Recipe, 'flavor' | 'origin'>>
   className?: string
 }) {
-  if (recipe.image) {
+  const { illustrations } = useLibrary()
+  const drawn = illustrations && recipe.origin === 'curated' && recipe.flavor !== undefined
+  if (recipe.image && !drawn) {
     return <img src={recipe.image} alt={recipe.name} loading="lazy" decoding="async" className={`size-full object-cover ${className}`} />
   }
 

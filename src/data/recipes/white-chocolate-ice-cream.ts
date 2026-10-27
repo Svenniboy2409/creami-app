@@ -8,6 +8,7 @@ export const whiteChocolateIceCream: Recipe = {
   tagline: 'Creamy, sweet and indulgent!',
   description: 'A velvety white chocolate ice cream made for the Ninja CREAMi Deluxe. Egg-free, gluten-free, homemade and extra indulgent.',
   image,
+  flavor: 'white-chocolate',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'chocolate'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],

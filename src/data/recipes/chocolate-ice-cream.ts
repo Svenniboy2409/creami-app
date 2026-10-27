@@ -1,12 +1,15 @@
+import image from '../../assets/recipes/chocolate-ice-cream.jpg'
 import type { Recipe } from '../../types/recipe'
 
-// From the Ninja Creami flavour list, in millilitres and grams. No photo yet:
-// the illustration is drawn in the flavour's own colours.
+// From the Ninja Creami flavour list, in millilitres and grams, with its photo
+// cut from that list. The flavour colours the illustration that replaces the
+// photo when "Illustrations instead of photos" is on in Settings.
 export const chocolateIceCream: Recipe = {
   id: 'chocolate-ice-cream',
   origin: 'curated',
   name: 'Chocolate Ice Cream',
   tagline: 'Rich, deep and properly chocolatey',
+  image,
   flavor: 'chocolate',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'chocolate'],

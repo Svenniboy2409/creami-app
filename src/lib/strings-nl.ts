@@ -185,6 +185,10 @@ export const NL: Record<string, string> = {
   Language: 'Taal',
   'Interface and recipes. Your own recipes stay as you wrote them.': 'Interface en recepten. Je eigen recepten blijven zoals je ze schreef.',
   'How your folders look in the Library.': 'Hoe je mappen eruitzien in de Bibliotheek.',
+  Pictures: 'Afbeeldingen',
+  'Illustrations instead of photos': 'Illustraties in plaats van foto’s',
+  'Shows the app’s recipes as colourful drawings. Photos you added yourself always stay.':
+    'Toont de recepten van de app als kleurrijke tekeningen. Foto’s die je zelf hebt toegevoegd blijven altijd staan.',
   Tiles: 'Tegels',
   List: 'Lijst',
   Backup: 'Back-up',

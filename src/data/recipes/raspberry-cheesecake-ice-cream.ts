@@ -1,12 +1,15 @@
+import image from '../../assets/recipes/raspberry-cheesecake-ice-cream.jpg'
 import type { Recipe } from '../../types/recipe'
 
-// From the Ninja Creami flavour list, in millilitres and grams. No photo yet:
-// the illustration is drawn in the flavour's own colours.
+// From the Ninja Creami flavour list, in millilitres and grams, with its photo
+// cut from that list. The flavour colours the illustration that replaces the
+// photo when "Illustrations instead of photos" is on in Settings.
 export const raspberryCheesecakeIceCream: Recipe = {
   id: 'raspberry-cheesecake-ice-cream',
   origin: 'curated',
   name: 'Raspberry Cheesecake',
   tagline: 'Tangy raspberry with a crumbly biscuit base',
+  image,
   flavor: 'raspberry-cheesecake',
   category: 'ice-cream',
   tags: ['egg-free', 'fruity'],
