@@ -95,8 +95,6 @@ export const NL: Record<string, string> = {
   Carbs: 'Koolhydraten',
   Sugar: 'Suiker',
   Fat: 'Vet',
-  'Original by {author}.': 'Origineel van {author}.',
-  'View source': 'Bekijk de bron',
   'Delete this recipe?': 'Dit recept verwijderen?',
   '“{name}” will be removed from this device. This can’t be undone.':
     '“{name}” wordt van dit apparaat verwijderd. Dit kan niet ongedaan worden gemaakt.',

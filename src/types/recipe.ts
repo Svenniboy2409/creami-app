@@ -96,6 +96,7 @@ export interface Recipe {
   /** "Try these flavours": what else this recipe (usually a base) can become. */
   ideas?: RecipeIdea[]
   nutrition?: Nutrition
+  /** Where a curated recipe came from. Kept for reference only; the app doesn't show it. */
   credits?: { author?: string; url?: string; translatedFrom?: string }
   /** The recipe's text in another interface language; anything left out stays as written. */
   translations?: { nl?: Partial<RecipeText> }

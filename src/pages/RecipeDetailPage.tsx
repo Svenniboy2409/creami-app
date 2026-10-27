@@ -1,6 +1,5 @@
 import {
   ArrowLeft,
-  BookOpen,
   Check,
   ChefHat,
   ChevronDown,
@@ -17,7 +16,7 @@ import {
   Trash2,
   type LucideIcon,
 } from 'lucide-react'
-import { useId, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Segmented } from '../components/Chips'
 import { EmptyState } from '../components/EmptyState'
@@ -90,6 +89,10 @@ function TipList({ tips, label, animate = false }: { tips: string[]; label?: str
   )
 }
 
+const FOLD_MS = 420
+// Soft at both ends, so the page gliding along starts and stops gently, yet under way right after the tap.
+const easeInOut = (x: number) => (1 - Math.cos(Math.PI * x)) / 2
+
 /**
  * The recipe's own tips stay in view. The basics that go for every pint fold
  * open below them, in a block of their own, when the heading is tapped.
@@ -99,14 +102,58 @@ function Tips({ recipe }: { recipe: Recipe }) {
   const basicsId = useId()
   // Open or closed per recipe, kept while the app is open like the rest of the page.
   const [open, setOpen] = useRemembered(`recipe:${recipe.id}:basics`, false)
+  const fold = useRef<HTMLDivElement>(null)
+  const frame = useRef(0)
   const own = recipe.tips ?? []
+
+  // Moving on to another recipe mid-fold must neither keep scrolling that page
+  // nor leave this one's half-way height behind on it.
+  useEffect(() => {
+    const el = fold.current
+    return () => {
+      cancelAnimationFrame(frame.current)
+      if (el) el.style.height = el.style.opacity = ''
+    }
+  }, [recipe.id])
+
+  // Height and scroll move together, frame by frame: folding shut near the end
+  // of the page shortens it under the reader, and the browser would otherwise
+  // snap the page up in one go. A tap halfway through turns around from there.
+  const toggle = () => {
+    const opening = !open
+    const el = fold.current
+    if (!el || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setOpen(opening)
+      return
+    }
+    cancelAnimationFrame(frame.current)
+    const from = el.getBoundingClientRect().height
+    const to = opening ? el.scrollHeight : 0
+    // Pinned where it is before the new state lands, so nothing changes size until the first frame.
+    el.style.height = `${from}px`
+    setOpen(opening)
+    const fromY = window.scrollY
+    const toY = Math.min(fromY, Math.max(0, document.documentElement.scrollHeight - window.innerHeight - (from - to)))
+    const start = performance.now()
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - start) / FOLD_MS)
+      const eased = easeInOut(progress)
+      el.style.height = `${from + (to - from) * eased}px`
+      // Closing fades out a little ahead of the fold; opening leaves it to the tips themselves.
+      el.style.opacity = opening ? '' : String(Math.max(0, 1 - eased * 1.4))
+      if (toY !== fromY) window.scrollTo({ top: fromY + (toY - fromY) * eased, behavior: 'instant' })
+      if (progress < 1) frame.current = requestAnimationFrame(step)
+      else el.style.height = el.style.opacity = ''
+    }
+    frame.current = requestAnimationFrame(step)
+  }
 
   return (
     <section className="mt-9">
       <h2 className="mb-3 text-2xl font-semibold">
         <button
           type="button"
-          onClick={() => setOpen((current) => !current)}
+          onClick={toggle}
           aria-expanded={open}
           aria-controls={basicsId}
           className="group flex w-full items-center justify-between gap-3 text-left"
@@ -115,22 +162,16 @@ function Tips({ recipe }: { recipe: Recipe }) {
           <span className="flex items-center gap-2 font-sans text-sm font-extrabold text-ink-soft">
             {t('Basic tips')}
             <span className="grid size-8 place-items-center rounded-full bg-white shadow-sm transition-transform group-active:scale-90">
-              <ChevronDown className={`size-4 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} strokeWidth={2.6} aria-hidden />
+              <ChevronDown className={`size-4 transition-transform duration-[420ms] ${open ? 'rotate-180' : ''}`} strokeWidth={2.6} aria-hidden />
             </span>
           </span>
         </button>
       </h2>
       {own.length > 0 && <TipList tips={own} />}
-      {/* Grows from no height to its own, so everything below slides along. */}
-      <div
-        id={basicsId}
-        inert={!open}
-        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
-      >
-        <div className="min-h-0 overflow-hidden">
-          <div className={own.length > 0 ? 'pt-3' : ''}>
-            <TipList tips={BASIC_TIPS.map((tip) => t(tip))} label={t('For every recipe')} animate={open} />
-          </div>
+      {/* At rest it is either its full height or none; toggle() animates the way between. */}
+      <div ref={fold} id={basicsId} inert={!open} className={`overflow-hidden ${open ? '' : 'h-0'}`}>
+        <div className={own.length > 0 ? 'pt-3' : ''}>
+          <TipList tips={BASIC_TIPS.map((tip) => t(tip))} label={t('For every recipe')} animate={open} />
         </div>
       </div>
     </section>
@@ -421,21 +462,6 @@ export function RecipeDetailPage() {
                 ))}
             </dl>
           </Section>
-        )}
-
-        {/* Who made it and where it came from; which language it was translated from isn't worth the space. */}
-        {(recipe.credits?.author || recipe.credits?.url) && (
-          <p className="mt-9 flex items-start gap-2 text-sm text-ink-soft">
-            <BookOpen className="mt-0.5 size-4 shrink-0" aria-hidden />
-            <span>
-              {recipe.credits.author && <>{t('Original by {author}.', { author: recipe.credits.author })} </>}
-              {recipe.credits.url && (
-                <a href={recipe.credits.url} target="_blank" rel="noreferrer" className="font-bold text-raspberry underline underline-offset-2">
-                  {t('View source')}
-                </a>
-              )}
-            </span>
-          </p>
         )}
 
         {isUserRecipe && (
