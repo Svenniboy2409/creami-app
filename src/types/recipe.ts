@@ -2,6 +2,7 @@ export type CreamiModel = 'original' | 'breeze' | 'deluxe' | 'swirl'
 
 export type Category =
   | 'ice-cream'
+  | 'base'
   | 'gelato'
   | 'sorbet'
   | 'frozen-yogurt'
@@ -17,6 +18,9 @@ export type Difficulty = 'easy' | 'medium' | 'advanced'
 /** Flavours with their own illustration, for recipes that have no photo. */
 export type Flavor =
   | 'white-chocolate'
+  | 'greek-yogurt'
+  | 'cottage-cheese'
+  | 'coconut'
   | 'chocolate'
   | 'vanilla'
   | 'strawberry'
@@ -52,6 +56,12 @@ export interface Step {
   program?: string
 }
 
+/** A flavour to make from a recipe, e.g. from a base; links to that recipe when the app has it. */
+export interface RecipeIdea {
+  name: string
+  recipeId?: string
+}
+
 export interface Nutrition {
   per: 'pint' | 'serving'
   kcal?: number
@@ -83,6 +93,8 @@ export interface Recipe {
   ingredients: IngredientGroup[]
   steps: Step[]
   tips?: string[]
+  /** "Try these flavours": what else this recipe (usually a base) can become. */
+  ideas?: RecipeIdea[]
   nutrition?: Nutrition
   credits?: { author?: string; url?: string; translatedFrom?: string }
   /** The recipe's text in another interface language; anything left out stays as written. */
@@ -92,7 +104,7 @@ export interface Recipe {
 }
 
 /** The parts of a recipe that are words rather than settings, and so can be translated. */
-export type RecipeText = Pick<Recipe, 'name' | 'tagline' | 'description' | 'servings' | 'ingredients' | 'steps' | 'tips'>
+export type RecipeText = Pick<Recipe, 'name' | 'tagline' | 'description' | 'servings' | 'ingredients' | 'steps' | 'tips' | 'ideas'>
 
 export interface Folder {
   id: string

@@ -3,6 +3,7 @@ import {
   BookOpen,
   Check,
   ChefHat,
+  ChevronRight,
   Clock,
   FolderCheck,
   FolderMinus,
@@ -310,6 +311,29 @@ export function RecipeDetailPage() {
                 <li key={index} className="flex gap-3">
                   <Lightbulb className="mt-0.5 size-5 shrink-0 text-vanilla-deep" aria-hidden />
                   <span className="leading-relaxed">{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
+
+        {recipe.ideas && recipe.ideas.length > 0 && (
+          <Section title={t('Try these flavours')}>
+            <ul className="flex flex-wrap gap-2">
+              {recipe.ideas.map((idea) => (
+                <li key={idea.name}>
+                  {/* An idea the app has a recipe for opens it; the others are there to inspire. */}
+                  {idea.recipeId ? (
+                    <Link
+                      to={`/recipe/${idea.recipeId}`}
+                      className="flex items-center gap-1 rounded-full bg-white py-2 pl-4 pr-3 text-sm font-extrabold text-raspberry shadow-sm ring-2 ring-strawberry/60 transition-transform active:scale-95"
+                    >
+                      {idea.name}
+                      <ChevronRight className="size-4" strokeWidth={2.6} aria-hidden />
+                    </Link>
+                  ) : (
+                    <span className="block rounded-full bg-white px-4 py-2 text-sm font-bold text-ink-soft shadow-sm">{idea.name}</span>
+                  )}
                 </li>
               ))}
             </ul>

@@ -42,6 +42,8 @@ export const PROGRAMS = [
 
 export const CATEGORIES: Record<Category, { label: string; tone: Tone }> = {
   'ice-cream': { label: 'Ice cream', tone: 'strawberry' },
+  // A plain base to start from and flavour your own way.
+  base: { label: 'Base', tone: 'vanilla' },
   gelato: { label: 'Gelato', tone: 'pistachio' },
   sorbet: { label: 'Sorbet', tone: 'mango' },
   'frozen-yogurt': { label: 'Frozen yogurt', tone: 'blueberry' },

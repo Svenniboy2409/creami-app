@@ -77,6 +77,7 @@ export const NL: Record<string, string> = {
   'Run: {program}': 'Start: {program}',
   Tips: 'Tips',
   Nutrition: 'Voedingswaarde',
+  'Try these flavours': 'Probeer ook deze smaken',
   'per pint': 'per pint',
   'per serving': 'per portie',
   Calories: 'Calorieën',

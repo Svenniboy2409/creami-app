@@ -25,5 +25,9 @@ describe('curated recipes', () => {
     expect(nl?.name).toBeTruthy()
     expect(nl?.steps?.length).toBe(recipe.steps.length)
     expect(nl?.steps?.map((s) => s.program)).toEqual(recipe.steps.map((s) => s.program))
+    // Ideas that link somewhere link to a recipe the app has, in both languages.
+    const ids = new Set(CURATED_RECIPES.map((r) => r.id))
+    for (const idea of recipe.ideas ?? []) if (idea.recipeId) expect(ids.has(idea.recipeId)).toBe(true)
+    expect(nl?.ideas?.map((i) => i.recipeId)).toEqual(recipe.ideas?.map((i) => i.recipeId))
   })
 })

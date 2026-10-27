@@ -1,15 +1,20 @@
 import type { Recipe } from '../../types/recipe'
 import { bananaCreamPieIceCream } from './banana-cream-pie-ice-cream'
+import { chocolateBase } from './chocolate-base'
 import { chocolateHazelnutIceCream } from './chocolate-hazelnut-ice-cream'
 import { chocolateIceCream } from './chocolate-ice-cream'
+import { coconutMilkBase } from './coconut-milk-base'
 import { coffeeIceCream } from './coffee-ice-cream'
 import { cookieDoughIceCream } from './cookie-dough-ice-cream'
 import { cookiesAndCreamIceCream } from './cookies-and-cream-ice-cream'
+import { cottageCheeseBase } from './cottage-cheese-base'
+import { greekYogurtBase } from './greek-yogurt-base'
 import { mangoIceCream } from './mango-ice-cream'
 import { mintChocolateChipIceCream } from './mint-chocolate-chip-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
 import { raspberryCheesecakeIceCream } from './raspberry-cheesecake-ice-cream'
 import { strawberryIceCream } from './strawberry-ice-cream'
+import { vanillaBase } from './vanilla-base'
 import { vanillaBeanIceCream } from './vanilla-bean-ice-cream'
 import { whiteChocolateIceCream } from './white-chocolate-ice-cream'
 
@@ -32,4 +37,10 @@ export const CURATED_RECIPES: Recipe[] = [
   raspberryCheesecakeIceCream,
   mangoIceCream,
   chocolateHazelnutIceCream,
+  // The five bases, to flavour your own way
+  vanillaBase,
+  chocolateBase,
+  greekYogurtBase,
+  cottageCheeseBase,
+  coconutMilkBase,
 ]
