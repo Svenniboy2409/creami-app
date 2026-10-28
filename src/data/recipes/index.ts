@@ -9,6 +9,7 @@ import { blueberryBlissIceCream } from './blueberry-bliss-ice-cream'
 import { brownieBlastIceCream } from './brownie-blast-ice-cream'
 import { brownieBlissIceCream } from './brownie-bliss-ice-cream'
 import { butterPecanIceCream } from './butter-pecan-ice-cream'
+import { cacaoDreamIceCream } from './cacao-dream-ice-cream'
 import { cheesecakeDreamIceCream } from './cheesecake-dream-ice-cream'
 import { cherryDelightIceCream } from './cherry-delight-ice-cream'
 import { chipMintCoolIceCream } from './chip-mint-cool-ice-cream'
@@ -16,6 +17,8 @@ import { chocolateBase } from './chocolate-base'
 import { chocolateHazelnutIceCream } from './chocolate-hazelnut-ice-cream'
 import { chocolateIceCream } from './chocolate-ice-cream'
 import { cinnamonDreamIceCream } from './cinnamon-dream-ice-cream'
+import { citronmaneIceCream } from './citronmane-ice-cream'
+import { coconutCreamFrozenYogurt } from './coconut-cream-frozen-yogurt'
 import { coconutMilkBase } from './coconut-milk-base'
 import { coffeeIceCream } from './coffee-ice-cream'
 import { condensedMilkVanillaIceCream } from './condensed-milk-vanilla-ice-cream'
@@ -32,9 +35,11 @@ import { mangoIceCream } from './mango-ice-cream'
 import { mangoSorbet } from './mango-sorbet'
 import { marshmallowDreamIceCream } from './marshmallow-dream-ice-cream'
 import { matchaDreamIceCream } from './matcha-dream-ice-cream'
+import { matchaMagicIceCream } from './matcha-magic-ice-cream'
 import { mintChocolateChipIceCream } from './mint-chocolate-chip-ice-cream'
 import { mixedBerriesIceCream } from './mixed-berries-ice-cream'
 import { pannaCottaDreamIceCream } from './panna-cotta-dream-ice-cream'
+import { passionFruitIceCream } from './passion-fruit-ice-cream'
 import { peachPerfectionIceCream } from './peach-perfection-ice-cream'
 import { peachesAndCreamIceCream } from './peaches-and-cream-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
@@ -101,6 +106,11 @@ export const CURATED_RECIPES: Recipe[] = [
   peachPerfectionIceCream,
   birthdayCakeIceCream,
   cottonCandyIceCream,
+  passionFruitIceCream,
+  citronmaneIceCream,
+  cacaoDreamIceCream,
+  matchaMagicIceCream,
+  coconutCreamFrozenYogurt,
   // From around the web
   condensedMilkVanillaIceCream,
   // The five bases, to flavour your own way
