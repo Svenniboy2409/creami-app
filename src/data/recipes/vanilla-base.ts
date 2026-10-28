@@ -21,6 +21,7 @@ export const vanillaBase: Recipe = {
   times: { prepMin: 5, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 240, unit: 'ml', name: 'whole milk' },
         { qty: 240, unit: 'ml', name: 'heavy cream' },
@@ -62,6 +63,7 @@ export const vanillaBase: Recipe = {
       tagline: 'Romig & klassiek',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 240, unit: 'ml', name: 'volle melk' },
             { qty: 240, unit: 'ml', name: 'slagroom' },

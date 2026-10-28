@@ -5,6 +5,7 @@ import { machinesFor } from '../../lib/machines'
 import { CURATED_RECIPES } from '.'
 
 const UNITS = ['g', 'ml', 'tbsp', 'tsp', 'cup', 'scoop', 'pinch', 'pcs']
+const GROUP_TITLES: Record<string, string> = { Base: 'Basis', 'Mix-ins': 'Mix-ins', Topping: 'Topping' }
 
 describe('curated recipes', () => {
   it('have unique ids', () => {
@@ -35,6 +36,9 @@ describe('curated recipes', () => {
     expect(nl?.name).toBeTruthy()
     expect(nl?.steps?.length).toBe(recipe.steps.length)
     expect(nl?.steps?.map((s) => s.program)).toEqual(recipe.steps.map((s) => s.program))
+    // Every group headed, by one of the same three names everywhere.
+    expect(recipe.ingredients.map((group) => group.title).every((title) => title !== undefined && title in GROUP_TITLES)).toBe(true)
+    expect(nl?.ingredients?.map((group) => group.title)).toEqual(recipe.ingredients.map((group) => GROUP_TITLES[group.title as string]))
     expect(nl?.tips?.length).toBe(recipe.tips?.length)
     // The basics show under every recipe already, folded away; tips are what is particular to this one.
     for (const tip of recipe.tips ?? []) expect(BASIC_TIPS).not.toContain(tip)

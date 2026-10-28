@@ -39,6 +39,11 @@ export const coconutCreamFrozenYogurt: Recipe = {
       items: [
         { qty: 2, unit: 'tbsp', name: 'shredded coconut', note: 'optional, for texture' },
         { qty: 2, unit: 'tbsp', name: 'coconut chunks', note: 'optional' },
+      ],
+    },
+    {
+      title: 'Topping',
+      items: [
         { qty: 2, unit: 'tbsp', name: 'toasted coconut chips', note: 'optional, to serve' },
       ],
     },
@@ -94,6 +99,11 @@ export const coconutCreamFrozenYogurt: Recipe = {
           items: [
             { qty: 2, unit: 'tbsp', name: 'kokosrasp', note: 'optioneel, voor bite' },
             { qty: 2, unit: 'tbsp', name: 'stukjes kokos', note: 'optioneel' },
+          ],
+        },
+        {
+          title: 'Topping',
+          items: [
             { qty: 2, unit: 'tbsp', name: 'geroosterde kokoschips', note: 'optioneel, om te serveren' },
           ],
         },

@@ -19,19 +19,19 @@ export const whiteChocolateIceCream: Recipe = {
   times: { prepMin: 10, freezeHours: 12 },
   ingredients: [
     {
-      title: 'Ice cream base',
+      title: 'Base',
       items: [
         { qty: 300, unit: 'ml', name: 'whole milk' },
         { qty: 200, unit: 'ml', name: 'heavy cream', note: '30% fat' },
         { qty: 100, unit: 'g', name: 'good-quality white chocolate' },
         { qty: 60, unit: 'g', name: 'sugar' },
         { qty: 1, unit: 'tsp', name: 'vanilla extract' },
-        { name: 'A pinch of salt' },
+        { qty: 1, unit: 'pinch', name: 'salt' },
       ],
     },
     {
-      title: 'To decorate (pick one)',
-      items: [{ name: 'white chocolate shavings' }, { name: 'white chocolate curls' }, { name: 'a few squares of white chocolate' }],
+      title: 'Topping',
+      items: [{ name: 'white chocolate', note: 'shavings, curls or a few squares; pick one' }],
     },
   ],
   steps: [
@@ -71,19 +71,19 @@ export const whiteChocolateIceCream: Recipe = {
         'Een fluweelzacht ijs van witte chocolade, gemaakt voor de Ninja CREAMi Deluxe. Zonder ei, glutenvrij, huisgemaakt en extra verwennend.',
       ingredients: [
         {
-          title: 'IJsbasis',
+          title: 'Basis',
           items: [
             { qty: 300, unit: 'ml', name: 'volle melk' },
             { qty: 200, unit: 'ml', name: 'slagroom', note: '30% vet' },
             { qty: 100, unit: 'g', name: 'witte chocolade van goede kwaliteit' },
             { qty: 60, unit: 'g', name: 'suiker' },
             { qty: 1, unit: 'tsp', name: 'vanille-extract' },
-            { name: 'Een snufje zout' },
+            { qty: 1, unit: 'pinch', name: 'zout' },
           ],
         },
         {
-          title: 'Om te versieren (kies er één)',
-          items: [{ name: 'schaafsel van witte chocolade' }, { name: 'krullen van witte chocolade' }, { name: 'een paar blokjes witte chocolade' }],
+          title: 'Topping',
+          items: [{ name: 'witte chocolade', note: 'schaafsel, krullen of een paar blokjes; kies er één' }],
         },
       ],
       steps: [

@@ -21,6 +21,7 @@ export const coconutMilkBase: Recipe = {
   times: { prepMin: 5, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 400, unit: 'ml', name: 'full-fat coconut milk', note: '1 can' },
         { qty: 60, unit: 'ml', name: 'milk', note: 'any kind; a plant milk keeps it dairy-free' },
@@ -62,6 +63,7 @@ export const coconutMilkBase: Recipe = {
       tagline: 'Zuivelvrij & heerlijk',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 400, unit: 'ml', name: 'volle kokosmelk', note: '1 blik' },
             { qty: 60, unit: 'ml', name: 'melk', note: 'elke soort; met plantaardige melk blijft het zuivelvrij' },

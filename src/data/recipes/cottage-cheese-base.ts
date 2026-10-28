@@ -21,6 +21,7 @@ export const cottageCheeseBase: Recipe = {
   times: { prepMin: 5, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 225, unit: 'g', name: 'cottage cheese', note: '2% or 4% fat' },
         { qty: 120, unit: 'ml', name: 'milk' },
@@ -63,6 +64,7 @@ export const cottageCheeseBase: Recipe = {
       tagline: 'Eiwitrijk en superromig',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 225, unit: 'g', name: 'cottage cheese', note: '2% of 4% vet' },
             { qty: 120, unit: 'ml', name: 'melk' },

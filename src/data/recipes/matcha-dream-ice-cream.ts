@@ -21,6 +21,7 @@ export const matchaDreamIceCream: Recipe = {
   times: { prepMin: 10, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 360, unit: 'ml', name: 'milk', note: 'any kind' },
         { qty: 120, unit: 'ml', name: 'heavy cream' },
@@ -64,6 +65,7 @@ export const matchaDreamIceCream: Recipe = {
       tagline: 'Zacht groenetee-ijs, verfijnd en licht zoet',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 360, unit: 'ml', name: 'melk', note: 'elke soort' },
             { qty: 120, unit: 'ml', name: 'slagroom' },

@@ -37,7 +37,7 @@ import { useRecipe } from '../hooks/useRecipes'
 import { useRemembered } from '../lib/pageMemory'
 import { machinesFor, missingPrograms, programGaps } from '../lib/machines'
 import { formatAmount, scaleGroups, scaleServings } from '../lib/scale'
-import type { PintSize, Recipe } from '../types/recipe'
+import type { Ingredient, PintSize, Recipe } from '../types/recipe'
 
 function formatMinutes(min: number, t: (key: string, vars?: Record<string, number>) => string): string {
   if (min < 60) return t('{n} min', { n: min })
@@ -193,14 +193,16 @@ function PintCount({ count, onChange, side }: { count: number; onChange: (count:
   const { t, tn } = useI18n()
   const step = 'grid size-9 place-items-center rounded-full bg-cream text-ink transition-[transform,opacity] active:scale-90 disabled:opacity-35 disabled:active:scale-100'
   return (
-    <div className="relative mt-2 h-11">
+    // A container, so the pill can be moved by the row's width (cqw) less its own.
+    <div className="@container relative mt-2 h-11">
       <div
         role="group"
         aria-label={t('Number of pints')}
-        // Left and translate move together, so the pill glides from one edge to the other.
-        className={`absolute top-0 flex items-center gap-1 rounded-full bg-white p-1 shadow-sm transition-[left,translate] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          side === 'right' ? 'left-full -translate-x-full' : 'left-0 translate-x-0'
-        }`}
+        // One transform carries it across. Moving it with two properties at once
+        // (left and translate) let Safari start one a frame before the other, so
+        // the pill flashed at the far side before sliding.
+        className="absolute left-0 top-0 flex items-center gap-1 rounded-full bg-white p-1 shadow-sm transition-transform duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ transform: side === 'right' ? 'translateX(calc(100cqw - 100%))' : 'translateX(0)' }}
       >
         <button type="button" onClick={() => onChange(count - 1)} disabled={count <= 1} aria-label={t('One pint less')} className={step}>
           <Minus className="size-4" strokeWidth={2.6} aria-hidden />
@@ -218,12 +220,17 @@ function PintCount({ count, onChange, side }: { count: number; onChange: (count:
   )
 }
 
-function Ingredients({ recipe, pint, pints, tone }: { recipe: Recipe; pint: PintSize; pints: number; tone: ToneClasses }) {
+type Scale = { pint: PintSize; pints: number }
+
+/** `from`: the size and count just changed from, so the rows whose amount changed pop, all at once. */
+function Ingredients({ recipe, pint, pints, tone, from }: { recipe: Recipe; pint: PintSize; pints: number; tone: ToneClasses; from?: Scale }) {
   const { t } = useI18n()
   // Ticked-off ingredients stay ticked while the app is open, even after looking at another recipe.
   const [ticked, setTicked] = useRemembered<string[]>(`recipe:${recipe.id}:checked`, NOTHING_TICKED)
   const checked = new Set(ticked)
   const groups = scaleGroups(recipe.ingredients, recipe.basePint, pint, pints)
+  const before = from && scaleGroups(recipe.ingredients, recipe.basePint, from.pint, from.pints)
+  const amountOf = (item: Ingredient) => (item.qty !== undefined || item.unit ? formatAmount(item.qty, item.unit && t(item.unit)) : '')
   const toggle = (key: string) => setTicked((current) => (current.includes(key) ? current.filter((k) => k !== key) : [...current, key]))
 
   return (
@@ -231,11 +238,14 @@ function Ingredients({ recipe, pint, pints, tone }: { recipe: Recipe; pint: Pint
       {groups.map((group, g) => (
         // A hairline all round, so the white card's rounded top shows against the cream page as well as its bottom.
         <div key={g} className="card overflow-hidden ring-1 ring-cream-deep">
-          {group.title && <h3 className={`px-4 py-2.5 text-base font-semibold ${tone.soft} ${tone.text}`}>{group.title}</h3>}
+          {/* Every group is headed; your own recipe's unnamed groups get the names the form suggests. */}
+          <h3 className={`px-4 py-2.5 text-base font-semibold ${tone.soft} ${tone.text}`}>{group.title || t(g === 0 ? 'Base' : 'Mix-ins')}</h3>
           <ul className="divide-y divide-cream-deep">
             {group.items.map((item, i) => {
               const key = `${g}-${i}`
               const done = checked.has(key)
+              const amount = amountOf(item)
+              const changed = before !== undefined && amountOf(before[g].items[i]) !== amount
               return (
                 <li key={key}>
                   <button
@@ -252,10 +262,9 @@ function Ingredients({ recipe, pint, pints, tone }: { recipe: Recipe; pint: Pint
                     >
                       {done && <Check className="size-3" strokeWidth={3.5} aria-hidden />}
                     </span>
-                    <span className={`flex-1 transition-opacity ${done ? 'line-through opacity-45' : ''}`}>
-                      {(item.qty !== undefined || item.unit) && (
-                        <span className="mr-1.5 font-extrabold text-raspberry">{formatAmount(item.qty, item.unit && t(item.unit))}</span>
-                      )}
+                    {/* Keyed on the amount: a new amount is a new line, and it pops in. */}
+                    <span key={amount} className={`flex-1 origin-left transition-opacity ${changed ? 'animate-row-pop' : ''} ${done ? 'line-through opacity-45' : ''}`}>
+                      {amount && <span className="mr-1.5 font-extrabold text-raspberry">{amount}</span>}
                       <span className="font-semibold">{item.name}</span>
                       {item.note && <span className="block text-sm text-ink-soft">{item.note}</span>}
                     </span>
@@ -280,6 +289,8 @@ export function RecipeDetailPage() {
   const navigate = useNavigate()
   const [pint, setPint] = useRemembered<PintSize | null>(`recipe:${id}:pint`, null)
   const [pints, setPints] = useRemembered(`recipe:${id}:pints`, 1)
+  // The size and count before the last change here, so the ingredients that change pop then, and not when the page opens.
+  const [rescaled, setRescaled] = useState<Scale & { id?: string }>()
   const [menuOpen, setMenuOpen] = useState(false)
   const [folderOpen, setFolderOpen] = useState(false)
   // Set when the recipe was opened from inside a folder.
@@ -435,17 +446,27 @@ export function RecipeDetailPage() {
               <Segmented
                 label={t('Pint size')}
                 value={activePint}
-                onChange={setPint}
+                onChange={(size) => {
+                  setRescaled({ id, pint: activePint, pints })
+                  setPint(size)
+                }}
                 options={([16, 24] as const).map((size) => ({
                   value: size,
                   label: t('{size} pint', { size: PINT_SIZES[size].label }),
                   hint: PINT_SIZES[size].detail.split(' · ')[0],
                 }))}
               />
-              <PintCount count={pints} onChange={setPints} side={activePint === 16 ? 'left' : 'right'} />
+              <PintCount
+                count={pints}
+                onChange={(count) => {
+                  setRescaled({ id, pint: activePint, pints })
+                  setPints(count)
+                }}
+                side={activePint === 16 ? 'left' : 'right'}
+              />
             </div>
           )}
-          <Ingredients recipe={recipe} pint={activePint} pints={pints} tone={tone} />
+          <Ingredients recipe={recipe} pint={activePint} pints={pints} tone={tone} from={rescaled?.id === id ? rescaled : undefined} />
         </Section>
 
         <Section title={t('Method')}>

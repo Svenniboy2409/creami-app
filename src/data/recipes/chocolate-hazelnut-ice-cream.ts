@@ -21,6 +21,7 @@ export const chocolateHazelnutIceCream: Recipe = {
   times: { prepMin: 5, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 180, unit: 'ml', name: 'whole milk' },
         { qty: 120, unit: 'ml', name: 'heavy cream' },
@@ -56,6 +57,7 @@ export const chocolateHazelnutIceCream: Recipe = {
       tagline: 'Je favoriete pasta, maar dan als ijsje',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 180, unit: 'ml', name: 'volle melk' },
             { qty: 120, unit: 'ml', name: 'slagroom' },

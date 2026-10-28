@@ -22,6 +22,7 @@ export const mangoSorbet: Recipe = {
   times: { prepMin: 10, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 360, unit: 'ml', name: 'water' },
         { qty: 330, unit: 'g', name: 'frozen mango chunks' },
@@ -65,6 +66,7 @@ export const mangoSorbet: Recipe = {
       tagline: 'Zacht, tropisch en verfrissend',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 360, unit: 'ml', name: 'water' },
             { qty: 330, unit: 'g', name: 'diepvriesmango in stukjes' },

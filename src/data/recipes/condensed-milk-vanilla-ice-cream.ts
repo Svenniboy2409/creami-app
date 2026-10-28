@@ -23,6 +23,7 @@ export const condensedMilkVanillaIceCream: Recipe = {
   times: { prepMin: 5, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 200, unit: 'g', name: 'heavy cream', note: 'or whipping cream' },
         { qty: 175, unit: 'g', name: 'sweetened condensed milk', note: 'not evaporated milk' },
@@ -72,6 +73,7 @@ export const condensedMilkVanillaIceCream: Recipe = {
       tagline: 'Eivrij en met maar vier ingrediënten',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 200, unit: 'g', name: 'slagroom' },
             { qty: 175, unit: 'g', name: 'gezoete gecondenseerde melk', note: 'geen ongezoete koffiemelk' },

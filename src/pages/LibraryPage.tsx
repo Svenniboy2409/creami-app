@@ -29,7 +29,8 @@ export function LibraryPage() {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const tabParam = params.get('tab')
-  const tab: Tab = tabParam === 'favorites' || tabParam === 'folders' ? tabParam : 'mine'
+  // Favorites unless another tab is asked for.
+  const tab: Tab = tabParam === 'mine' || tabParam === 'folders' ? tabParam : 'favorites'
   // Each tab keeps its own search for as long as the app is open.
   const [query, setQuery] = useRemembered(`library:query:${tab}`, '')
   const [sorting, setSorting] = useState(false)
@@ -47,7 +48,7 @@ export function LibraryPage() {
 
   const switchTab = (next: Tab) => {
     setSorting(false)
-    setParams(next === 'mine' ? {} : { tab: next }, { replace: true })
+    setParams(next === 'favorites' ? {} : { tab: next }, { replace: true })
   }
 
   const folderList = (still: boolean) => (folder: (typeof folders)[number]) =>

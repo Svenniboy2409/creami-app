@@ -38,6 +38,11 @@ export const pannaCottaDreamIceCream: Recipe = {
       title: 'Mix-ins',
       items: [
         { qty: 2, unit: 'tbsp', name: 'caramel sauce', note: 'plus extra to serve' },
+      ],
+    },
+    {
+      title: 'Topping',
+      items: [
         { name: 'caramel bits', note: 'optional, to serve' },
       ],
     },
@@ -92,6 +97,11 @@ export const pannaCottaDreamIceCream: Recipe = {
           title: 'Mix-ins',
           items: [
             { qty: 2, unit: 'tbsp', name: 'karamelsaus', note: 'plus extra om te serveren' },
+          ],
+        },
+        {
+          title: 'Topping',
+          items: [
             { name: 'karamelstukjes', note: 'optioneel, om te serveren' },
           ],
         },

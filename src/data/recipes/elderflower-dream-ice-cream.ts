@@ -21,6 +21,7 @@ export const elderflowerDreamIceCream: Recipe = {
   times: { prepMin: 10, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 360, unit: 'ml', name: 'milk', note: 'or any milk you like' },
         { qty: 75, unit: 'g', name: 'sweetened condensed milk', note: 'or a sweetener of your choice' },
@@ -67,6 +68,7 @@ export const elderflowerDreamIceCream: Recipe = {
       tagline: 'Verfijnd, bloemig en heerlijk verfrissend',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 360, unit: 'ml', name: 'melk', note: 'of elke melk die je lekker vindt' },
             { qty: 75, unit: 'g', name: 'gezoete gecondenseerde melk', note: 'of een zoetmiddel naar keuze' },

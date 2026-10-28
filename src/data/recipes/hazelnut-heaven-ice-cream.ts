@@ -37,6 +37,11 @@ export const hazelnutHeavenIceCream: Recipe = {
       title: 'Mix-ins',
       items: [
         { qty: 3, unit: 'tbsp', name: 'hazelnuts', note: 'chopped' },
+      ],
+    },
+    {
+      title: 'Topping',
+      items: [
         { qty: 35, unit: 'g', name: 'toasted hazelnuts', note: 'optional, to serve' },
       ],
     },
@@ -91,6 +96,11 @@ export const hazelnutHeavenIceCream: Recipe = {
           title: 'Mix-ins',
           items: [
             { qty: 3, unit: 'tbsp', name: 'hazelnoten', note: 'gehakt' },
+          ],
+        },
+        {
+          title: 'Topping',
+          items: [
             { qty: 35, unit: 'g', name: 'geroosterde hazelnoten', note: 'optioneel, om te serveren' },
           ],
         },

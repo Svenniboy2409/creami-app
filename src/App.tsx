@@ -14,7 +14,7 @@ import { RecipeDetailPage } from './pages/RecipeDetailPage'
 /** Which remembered scroll position a location uses: one per page, and one per Library tab. */
 function scrollKey(pathname: string, search: string): string {
   if (pathname !== '/library') return pathname
-  return `${pathname}?${new URLSearchParams(search).get('tab') ?? 'mine'}`
+  return `${pathname}?${new URLSearchParams(search).get('tab') ?? 'favorites'}`
 }
 
 /**

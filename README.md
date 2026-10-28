@@ -83,6 +83,8 @@ Interface text goes through `t('English text')` from `useI18n()`; add the Dutch 
 
    List in `models` only the machines that have every program the recipe runs: `MODEL_PROGRAMS` in `src/data/creami.ts` says which machine has which (Frozen Yogurt, for one, is only on the Deluxe and the Swirl). The machine filter and "Works with" go by the same list, for your own recipes too, and a test checks the curated ones.
 
+   Head every ingredient group with one of `Base`, `Mix-ins` (what goes in with MIX-IN after the first spin) and `Topping` (only for on top when serving), in Dutch `Basis`, `Mix-ins` and `Topping`; a test checks it.
+
    Keep `tips` to what is particular to the recipe. The basics that go for every pint (MAX FILL, 24 hours in the freezer, RE-SPIN, mix-ins, leftovers) are `BASIC_TIPS` in `src/data/creami.ts`; they fold open below every recipe's own tips when you tap the Tips heading.
 
 3. Optionally add a Dutch version under `translations: { nl: { name, tagline, description, ingredients, steps, tips, ideas } }`. Keep the same amounts and units in the translated ingredients.

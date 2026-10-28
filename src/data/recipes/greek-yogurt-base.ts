@@ -23,6 +23,7 @@ export const greekYogurtBase: Recipe = {
   times: { prepMin: 5, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 370, unit: 'g', name: 'plain Greek yogurt' },
         { qty: 120, unit: 'ml', name: 'milk' },
@@ -64,6 +65,7 @@ export const greekYogurtBase: Recipe = {
       tagline: 'Boordevol eiwit',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 370, unit: 'g', name: 'Griekse yoghurt (naturel)' },
             { qty: 120, unit: 'ml', name: 'melk' },

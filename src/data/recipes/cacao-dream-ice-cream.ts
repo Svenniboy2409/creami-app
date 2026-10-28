@@ -39,6 +39,11 @@ export const cacaoDreamIceCream: Recipe = {
       items: [
         { qty: 2, unit: 'tbsp', name: 'dark chocolate chips', note: 'optional' },
         { qty: 1, unit: 'tbsp', name: 'cacao nibs', note: 'optional, for texture' },
+      ],
+    },
+    {
+      title: 'Topping',
+      items: [
         { qty: 1, unit: 'tbsp', name: 'chocolate shavings', note: 'optional, to serve' },
       ],
     },
@@ -94,6 +99,11 @@ export const cacaoDreamIceCream: Recipe = {
           items: [
             { qty: 2, unit: 'tbsp', name: 'pure chocoladedruppels', note: 'optioneel' },
             { qty: 1, unit: 'tbsp', name: 'cacaonibs', note: 'optioneel, voor bite' },
+          ],
+        },
+        {
+          title: 'Topping',
+          items: [
             { qty: 1, unit: 'tbsp', name: 'chocoladeschaafsel', note: 'optioneel, om te serveren' },
           ],
         },

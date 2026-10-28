@@ -21,6 +21,7 @@ export const vanillaBeanIceCream: Recipe = {
   times: { prepMin: 5, freezeHours: 24 },
   ingredients: [
     {
+      title: 'Base',
       items: [
         { qty: 240, unit: 'ml', name: 'whole milk' },
         { qty: 120, unit: 'ml', name: 'heavy cream' },
@@ -56,6 +57,7 @@ export const vanillaBeanIceCream: Recipe = {
       tagline: 'De klassieker, met echte vanillespikkels',
       ingredients: [
         {
+          title: 'Basis',
           items: [
             { qty: 240, unit: 'ml', name: 'volle melk' },
             { qty: 120, unit: 'ml', name: 'slagroom' },
