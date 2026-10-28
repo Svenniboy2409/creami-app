@@ -18,6 +18,14 @@ describe('scaleGroups', () => {
     expect(scaleGroups(salt, 16, 24)[0].items[0].qty).toBe(1)
   })
 
+  it('multiplies by the number of pints, a pinch once per pint', () => {
+    const salted = [{ items: [{ qty: 100, unit: 'g', name: 'sugar' }, { qty: 1, unit: 'pinch', name: 'salt' }] }]
+    const three = scaleGroups(salted, 24, 16, 3)[0].items
+    expect(three[0].qty).toBeCloseTo(200, 5)
+    expect(three[1].qty).toBe(3)
+    expect(scaleGroups(salted, 16, 16, 2)[0].items[0].qty).toBe(200)
+  })
+
   it('leaves items without a quantity untouched', () => {
     expect(scaleGroups(groups, 16, 24)[0].items[1]).toEqual({ name: 'pinch of salt' })
   })

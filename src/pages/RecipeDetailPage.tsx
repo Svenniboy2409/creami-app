@@ -11,7 +11,9 @@ import {
   Gauge,
   IceCreamBowl,
   Lightbulb,
+  Minus,
   Pencil,
+  Plus,
   Snowflake,
   Trash2,
   type LucideIcon,
@@ -180,12 +182,48 @@ function Tips({ recipe }: { recipe: Recipe }) {
   )
 }
 
-function Ingredients({ recipe, pint, tone }: { recipe: Recipe; pint: PintSize; tone: ToneClasses }) {
+const MAX_PINTS = 10
+
+/**
+ * How many pints to fill, 1 to 10. It sits under the pint size that is chosen:
+ * on the left for 16 oz, on the right for 24 oz, and slides across when the
+ * size changes.
+ */
+function PintCount({ count, onChange, side }: { count: number; onChange: (count: number) => void; side: 'left' | 'right' }) {
+  const { t, tn } = useI18n()
+  const step = 'grid size-9 place-items-center rounded-full bg-cream text-ink transition-[transform,opacity] active:scale-90 disabled:opacity-35 disabled:active:scale-100'
+  return (
+    <div className="relative mt-2 h-11">
+      <div
+        role="group"
+        aria-label={t('Number of pints')}
+        // Left and translate move together, so the pill glides from one edge to the other.
+        className={`absolute top-0 flex items-center gap-1 rounded-full bg-white p-1 shadow-sm transition-[left,translate] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          side === 'right' ? 'left-full -translate-x-full' : 'left-0 translate-x-0'
+        }`}
+      >
+        <button type="button" onClick={() => onChange(count - 1)} disabled={count <= 1} aria-label={t('One pint less')} className={step}>
+          <Minus className="size-4" strokeWidth={2.6} aria-hidden />
+        </button>
+        <span className="min-w-[4.75rem] text-center text-sm font-bold" aria-live="polite">
+          <span key={count} className="inline-block animate-chip-pop tabular-nums">
+            {tn(count, '{n} pint', '{n} pints')}
+          </span>
+        </span>
+        <button type="button" onClick={() => onChange(count + 1)} disabled={count >= MAX_PINTS} aria-label={t('One pint more')} className={step}>
+          <Plus className="size-4" strokeWidth={2.6} aria-hidden />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function Ingredients({ recipe, pint, pints, tone }: { recipe: Recipe; pint: PintSize; pints: number; tone: ToneClasses }) {
   const { t } = useI18n()
   // Ticked-off ingredients stay ticked while the app is open, even after looking at another recipe.
   const [ticked, setTicked] = useRemembered<string[]>(`recipe:${recipe.id}:checked`, NOTHING_TICKED)
   const checked = new Set(ticked)
-  const groups = scaleGroups(recipe.ingredients, recipe.basePint, pint)
+  const groups = scaleGroups(recipe.ingredients, recipe.basePint, pint, pints)
   const toggle = (key: string) => setTicked((current) => (current.includes(key) ? current.filter((k) => k !== key) : [...current, key]))
 
   return (
@@ -241,6 +279,7 @@ export function RecipeDetailPage() {
   const { openEdit } = useRecipeEditor()
   const navigate = useNavigate()
   const [pint, setPint] = useRemembered<PintSize | null>(`recipe:${id}:pint`, null)
+  const [pints, setPints] = useRemembered(`recipe:${id}:pints`, 1)
   const [menuOpen, setMenuOpen] = useState(false)
   const [folderOpen, setFolderOpen] = useState(false)
   // Set when the recipe was opened from inside a folder.
@@ -272,7 +311,7 @@ export function RecipeDetailPage() {
   const activePint = pint ?? recipe.basePint
   const hasAmounts = recipe.ingredients.some((group) => group.items.some((item) => item.qty !== undefined))
   const isUserRecipe = recipe.origin === 'user'
-  const servings = scaleServings(recipe.servings, activePint / recipe.basePint)
+  const servings = scaleServings(recipe.servings, (activePint / recipe.basePint) * pints)
   const inFolders = folders.filter((folder) => folder.recipeIds.includes(recipe.id)).length
   const machines = machinesFor(recipe)
   const machineList = new Intl.ListFormat(lang, { type: 'conjunction' })
@@ -403,9 +442,10 @@ export function RecipeDetailPage() {
                   hint: PINT_SIZES[size].detail.split(' · ')[0],
                 }))}
               />
+              <PintCount count={pints} onChange={setPints} side={activePint === 16 ? 'left' : 'right'} />
             </div>
           )}
-          <Ingredients recipe={recipe} pint={activePint} tone={tone} />
+          <Ingredients recipe={recipe} pint={activePint} pints={pints} tone={tone} />
         </Section>
 
         <Section title={t('Method')}>

@@ -17,17 +17,20 @@ export function scaleFactor(from: PintSize, to: PintSize): number {
   return to / from
 }
 
-// A pinch is a pinch in any pint: two thirds of one isn't something anyone can measure.
+// A pinch is a pinch in any pint size: two thirds of one isn't something anyone
+// can measure. It still counts once per pint when making more than one.
 const UNSCALED_UNITS = new Set(['pinch'])
 
-export function scaleGroups(groups: IngredientGroup[], from: PintSize, to: PintSize): IngredientGroup[] {
-  const factor = scaleFactor(from, to)
-  if (factor === 1) return groups
+/** Amounts for `pints` pints of size `to`, from a recipe written for one pint of size `from`. */
+export function scaleGroups(groups: IngredientGroup[], from: PintSize, to: PintSize, pints = 1): IngredientGroup[] {
+  const factor = scaleFactor(from, to) * pints
+  if (factor === 1 && pints === 1) return groups
   return groups.map((group) => ({
     ...group,
-    items: group.items.map((item) =>
-      item.qty === undefined || (item.unit && UNSCALED_UNITS.has(item.unit)) ? item : { ...item, qty: item.qty * factor },
-    ),
+    items: group.items.map((item) => {
+      if (item.qty === undefined) return item
+      return { ...item, qty: item.unit && UNSCALED_UNITS.has(item.unit) ? item.qty * pints : item.qty * factor }
+    }),
   }))
 }
 
