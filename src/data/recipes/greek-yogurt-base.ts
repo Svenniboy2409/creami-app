@@ -57,7 +57,7 @@ export const greekYogurtBase: Recipe = {
     },
   ],
   tips: ['Protein bases often need a re-spin or two, each with a splash of milk.'],
-  ideas: [{ name: 'Mixed Berry' }, { name: 'Peach Cobbler' }, { name: 'Lemon Blueberry' }],
+  ideas: [{ name: 'Mixed Berry', recipeId: 'mixed-berries-ice-cream' }, { name: 'Peach Cobbler' }, { name: 'Lemon Blueberry' }],
   translations: {
     nl: {
       name: 'Griekse-yoghurtbasis',
@@ -98,7 +98,7 @@ export const greekYogurtBase: Recipe = {
         },
       ],
       tips: ['Eiwitrijke bases hebben vaak een of twee keer re-spin nodig, telkens met een scheutje melk.'],
-      ideas: [{ name: 'Bosvruchten' }, { name: 'Perzik-crumble' }, { name: 'Citroen-blauwe bes' }],
+      ideas: [{ name: 'Bosvruchten', recipeId: 'mixed-berries-ice-cream' }, { name: 'Perzik-crumble' }, { name: 'Citroen-blauwe bes' }],
     },
   },
 }

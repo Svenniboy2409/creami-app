@@ -32,7 +32,7 @@ export function RecipeCard({
         </span>
       </div>
       <div className="px-2 pb-2 pt-2.5">
-        <h3 className="line-clamp-2 min-h-[2.75em] text-[15px] font-semibold leading-snug">{recipe.name}</h3>
+        <h3 className="line-clamp-2 min-h-[2.75em] text-[15px] font-semibold leading-snug hyphens-auto [overflow-wrap:anywhere]">{recipe.name}</h3>
         <p className="mt-1.5 flex items-center gap-1 text-xs font-semibold text-ink-soft">
           <IceCreamBowl className="size-3.5 shrink-0" aria-hidden />
           <span className="truncate">{recipe.program}</span>

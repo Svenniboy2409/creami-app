@@ -49,4 +49,8 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   blueberry: { from: '#eeeaf8', to: '#b3a5dc', scoop: '#b9a3d6', bits: [chunks('#3d3b7a'), chunks('#5b3f86')] },
   tiramisu: { from: '#f6ece2', to: '#cfa784', scoop: '#f0e1c8', bits: [chunks('#4a2c22'), specks('#7a4a35')] },
   blackberry: { from: '#f6e8f1', to: '#d4a2c4', scoop: '#e7bfd8', bits: [chunks('#3a1a3a'), chunks('#5b2457')] },
+  cherry: { from: '#fde7ec', to: '#f2a0b3', scoop: '#f3b7c3', bits: [chunks('#a3122f')] },
+  'birthday-cake': { from: '#fdf6e8', to: '#f6d9a8', scoop: '#fbf0d8', bits: [chips('#ef5a8a'), chips('#3fb6e6'), chips('#f7c331'), chips('#7ac943')] },
+  hazelnut: { from: '#f7ecdf', to: '#d3a87c', scoop: '#e0bf97', bits: [chunks('#a8703f'), crumbs('#f0d9b5')] },
+  'mixed-berry': { from: '#f4e6f3', to: '#cf9bc8', scoop: '#d9a1cb', bits: [chunks('#3d2f6e'), chunks('#c8344f')] },
 }

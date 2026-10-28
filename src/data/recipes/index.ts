@@ -1,11 +1,13 @@
 import type { Recipe } from '../../types/recipe'
 import { bananaCreamPieIceCream } from './banana-cream-pie-ice-cream'
 import { bananaSplitIceCream } from './banana-split-ice-cream'
+import { birthdayCakeDreamIceCream } from './birthday-cake-dream-ice-cream'
 import { biscoffIceCream } from './biscoff-ice-cream'
 import { blackberryBlissIceCream } from './blackberry-bliss-ice-cream'
 import { blueberryBlissIceCream } from './blueberry-bliss-ice-cream'
 import { brownieBlastIceCream } from './brownie-blast-ice-cream'
 import { cheesecakeDreamIceCream } from './cheesecake-dream-ice-cream'
+import { cherryDelightIceCream } from './cherry-delight-ice-cream'
 import { chipMintCoolIceCream } from './chip-mint-cool-ice-cream'
 import { chocolateBase } from './chocolate-base'
 import { chocolateHazelnutIceCream } from './chocolate-hazelnut-ice-cream'
@@ -18,10 +20,12 @@ import { cookieDoughIceCream } from './cookie-dough-ice-cream'
 import { cookiesAndCreamIceCream } from './cookies-and-cream-ice-cream'
 import { cottageCheeseBase } from './cottage-cheese-base'
 import { greekYogurtBase } from './greek-yogurt-base'
+import { hazelnutHeavenIceCream } from './hazelnut-heaven-ice-cream'
 import { keyLimePieIceCream } from './key-lime-pie-ice-cream'
 import { mangoIceCream } from './mango-ice-cream'
 import { mangoSorbet } from './mango-sorbet'
 import { mintChocolateChipIceCream } from './mint-chocolate-chip-ice-cream'
+import { mixedBerriesIceCream } from './mixed-berries-ice-cream'
 import { peachesAndCreamIceCream } from './peaches-and-cream-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
 import { pistachioIceCream } from './pistachio-ice-cream'
@@ -69,6 +73,10 @@ export const CURATED_RECIPES: Recipe[] = [
   tiramisuDreamIceCream,
   chipMintCoolIceCream,
   blackberryBlissIceCream,
+  cherryDelightIceCream,
+  birthdayCakeDreamIceCream,
+  hazelnutHeavenIceCream,
+  mixedBerriesIceCream,
   // From around the web
   condensedMilkVanillaIceCream,
   // The five bases, to flavour your own way
