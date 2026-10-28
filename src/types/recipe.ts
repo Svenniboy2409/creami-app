@@ -128,7 +128,7 @@ export interface Recipe {
   ingredients: IngredientGroup[]
   steps: Step[]
   tips?: string[]
-  /** "Try these flavours": what else this recipe (usually a base) can become. */
+  /** "Also try these flavours": what else this recipe (usually a base) can become. Similar recipes join them from data/similar.ts. */
   ideas?: RecipeIdea[]
   nutrition?: Nutrition
   /** Where a curated recipe came from. Kept for reference only; the app doesn't show it. */

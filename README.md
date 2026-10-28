@@ -79,7 +79,7 @@ Interface text goes through `t('English text')` from `useI18n()`; add the Dutch 
 
    Also set `flavor` (one of the keys in `src/data/flavors.ts`, e.g. `'mint-chip'`): the recipe is then drawn as a pint illustration in that flavour's colours when **Settings → Illustrations instead of photos** is on, or when it has no photo at all. Add a new flavour there with its background, scoop and mix-in colours.
 
-   A base or other recipe that is meant to be flavoured can list `ideas: [{ name: 'Cookie Dough', recipeId: 'cookie-dough-ice-cream' }]`; they show under "Try these flavours", and the ones with a `recipeId` open that recipe.
+   A base or other recipe that is meant to be flavoured can list `ideas: [{ name: 'Cookie Dough', recipeId: 'cookie-dough-ice-cream' }]`; they show under "Also try these flavours", and the ones with a `recipeId` open that recipe. Recipes that go together (the same flavour, or nearly the same name) are grouped in `src/data/similar.ts`; each one links to the others there too, both ways.
 
    List in `models` only the machines that have every program the recipe runs: `MODEL_PROGRAMS` in `src/data/creami.ts` says which machine has which (Frozen Yogurt, for one, is only on the Deluxe and the Swirl). The machine filter and "Works with" go by the same list, for your own recipes too, and a test checks the curated ones.
 

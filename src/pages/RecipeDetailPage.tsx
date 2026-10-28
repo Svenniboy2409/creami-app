@@ -30,6 +30,7 @@ import { TONES, type ToneClasses } from '../components/tone'
 import { WholeWords } from '../components/WholeWords'
 import { BASIC_TIPS, CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
 import { CURATED_RECIPES } from '../data/recipes'
+import { similarTo } from '../data/similar'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useRecipeEditor } from '../hooks/recipeEditorContext'
@@ -349,6 +350,14 @@ export function RecipeDetailPage() {
   const inFolders = folders.filter((folder) => folder.recipeIds.includes(recipe.id)).length
   const machines = machinesFor(recipe)
   const machineList = new Intl.ListFormat(lang, { type: 'conjunction' })
+  // A base's own ideas first, then the recipes that go with this one (not twice), under their own names.
+  const ideas = recipe.ideas ?? []
+  const flavourLinks = [
+    ...ideas,
+    ...similarTo(recipe.id)
+      .filter((similar) => !ideas.some((idea) => idea.recipeId === similar.id))
+      .map((similar) => ({ name: localize(similar).name, recipeId: similar.id })),
+  ]
 
   const goBack = () => {
     if (window.history.state?.idx > 0) navigate(-1)
@@ -518,11 +527,11 @@ export function RecipeDetailPage() {
 
         <Tips recipe={recipe} />
 
-        {recipe.ideas && recipe.ideas.length > 0 && (
-          <Section title={t('Try these flavours')}>
+        {flavourLinks.length > 0 && (
+          <Section title={t('Also try these flavours')}>
             <ul className="flex flex-wrap gap-2">
-              {recipe.ideas.map((idea) => (
-                <li key={idea.name}>
+              {flavourLinks.map((idea) => (
+                <li key={idea.recipeId ?? idea.name}>
                   {/* An idea the app has a recipe for opens it; the others are there to inspire. */}
                   {idea.recipeId ? (
                     <Link

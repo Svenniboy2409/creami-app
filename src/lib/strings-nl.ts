@@ -96,7 +96,7 @@ export const NL: Record<string, string> = {
   'Leftovers? Smooth the top, put the lid on and freeze; process again before serving.':
     'Iets over? Strijk de bovenkant glad, doe het deksel erop en vries in; draai het opnieuw voor je het serveert.',
   Nutrition: 'Voedingswaarde',
-  'Try these flavours': 'Probeer ook deze smaken',
+  'Also try these flavours': 'Probeer ook deze smaken',
   'per pint': 'per pint',
   'per serving': 'per portie',
   Calories: 'Calorieën',
