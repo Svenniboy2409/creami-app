@@ -13,6 +13,7 @@ export const cottageCheeseBase: Recipe = {
   flavor: 'cottage-cheese',
   category: 'base',
   tags: ['high-protein', 'egg-free', 'gluten-free'],
+  tastes: ['creamy', 'healthy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Lite Ice Cream',
   basePint: 16,

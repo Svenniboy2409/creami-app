@@ -29,15 +29,17 @@ import { Sheet, SheetAction } from '../components/Sheet'
 import { TONES, type ToneClasses } from '../components/tone'
 import { WholeWords } from '../components/WholeWords'
 import { BASIC_TIPS, CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
+import { CURATED_RECIPES } from '../data/recipes'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useToast } from '../hooks/toastContext'
 import { useRecipe } from '../hooks/useRecipes'
-import { useRemembered } from '../lib/pageMemory'
+import { remember, useRemembered } from '../lib/pageMemory'
+import { presentValues } from '../lib/search'
 import { machinesFor, missingPrograms, programGaps } from '../lib/machines'
 import { formatAmount, scaleGroups, scaleServings } from '../lib/scale'
-import type { Ingredient, PintSize, Recipe } from '../types/recipe'
+import type { Category, Ingredient, PintSize, Recipe } from '../types/recipe'
 
 function formatMinutes(min: number, t: (key: string, vars?: Record<string, number>) => string): string {
   if (min < 60) return t('{n} min', { n: min })
@@ -183,6 +185,27 @@ function Tips({ recipe }: { recipe: Recipe }) {
 }
 
 const MAX_PINTS = 10
+
+// What Discover can filter on, so a chip only links where it finds something.
+const DISCOVER = presentValues(CURATED_RECIPES)
+
+/**
+ * A category or tag chip that opens Discover filtered on it, to find similar
+ * recipes. Discover starts at the top of its list then, not where it was left.
+ */
+function FilterChip({ filter, value, className, children }: { filter: 'category' | 'tag'; value: string; className: string; children: ReactNode }) {
+  const known = filter === 'category' ? DISCOVER.categories.includes(value as Category) : DISCOVER.tags.includes(value)
+  if (!known) return <span className={className}>{children}</span>
+  return (
+    <Link
+      to={{ pathname: '/', search: `?${new URLSearchParams({ [filter]: value })}` }}
+      onClick={() => remember('scroll:/', 0)}
+      className={`${className} transition-transform active:scale-95`}
+    >
+      {children}
+    </Link>
+  )
+}
 
 /**
  * How many pints to fill, 1 to 10. It sits under the pint size that is chosen:
@@ -351,11 +374,13 @@ export function RecipeDetailPage() {
 
       <div className="px-5 pt-6">
         <div className="flex flex-wrap gap-1.5">
-          <span className={`rounded-full px-3 py-1 text-xs font-extrabold ${tone.soft} ${tone.text}`}>{t(category.label)}</span>
+          <FilterChip filter="category" value={recipe.category} className={`rounded-full px-3 py-1 text-xs font-extrabold ${tone.soft} ${tone.text}`}>
+            {t(category.label)}
+          </FilterChip>
           {recipe.tags.map((tag) => (
-            <span key={tag} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-ink-soft shadow-sm">
+            <FilterChip key={tag} filter="tag" value={tag} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-ink-soft shadow-sm">
               #{t(tag)}
-            </span>
+            </FilterChip>
           ))}
         </div>
         <h1 className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-tight [overflow-wrap:anywhere]">

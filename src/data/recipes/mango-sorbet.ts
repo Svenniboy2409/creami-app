@@ -14,6 +14,7 @@ export const mangoSorbet: Recipe = {
   flavor: 'mango',
   category: 'sorbet',
   tags: ['dairy-free', 'egg-free', 'gluten-free', 'fruity'],
+  tastes: ['fruity', 'refreshing', 'healthy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Sorbet',
   basePint: 24,

@@ -15,6 +15,7 @@ export const citronmaneIceCream: Recipe = {
   flavor: 'lemon',
   category: 'ice-cream',
   tags: ['fruity'],
+  tastes: ['fruity', 'refreshing', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

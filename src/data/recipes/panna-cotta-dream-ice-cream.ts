@@ -14,6 +14,7 @@ export const pannaCottaDreamIceCream: Recipe = {
   flavor: 'panna-cotta',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free'],
+  tastes: ['sweet', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,
@@ -41,7 +42,7 @@ export const pannaCottaDreamIceCream: Recipe = {
       ],
     },
     {
-      title: 'Topping',
+      title: 'Toppings',
       items: [
         { name: 'caramel bits', note: 'optional, to serve' },
       ],
@@ -100,7 +101,7 @@ export const pannaCottaDreamIceCream: Recipe = {
           ],
         },
         {
-          title: 'Topping',
+          title: 'Toppings',
           items: [
             { name: 'karamelstukjes', note: 'optioneel, om te serveren' },
           ],

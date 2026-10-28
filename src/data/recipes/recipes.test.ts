@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { BASIC_TIPS, CATEGORIES, PROGRAMS, SUGGESTED_TAGS } from '../creami'
+import { BASIC_TIPS, CATEGORIES, PROGRAMS, SUGGESTED_TAGS, TASTES } from '../creami'
 import { FLAVORS } from '../flavors'
 import { machinesFor } from '../../lib/machines'
 import { CURATED_RECIPES } from '.'
 
 const UNITS = ['g', 'ml', 'tbsp', 'tsp', 'cup', 'scoop', 'pinch', 'pcs']
-const GROUP_TITLES: Record<string, string> = { Base: 'Basis', 'Mix-ins': 'Mix-ins', Topping: 'Topping' }
+const GROUP_TITLES: Record<string, string> = { Base: 'Basis', 'Mix-ins': 'Mix-ins', Toppings: 'Toppings' }
 
 describe('curated recipes', () => {
   it('have unique ids', () => {
@@ -30,6 +30,10 @@ describe('curated recipes', () => {
     // Only machines that have every program it runs.
     expect(machinesFor(recipe)).toEqual(recipe.models)
     for (const tag of recipe.tags) expect(SUGGESTED_TAGS).toContain(tag)
+    // One to three tastes for the taste filter, each one known and listed once.
+    const tastes = recipe.tastes ?? []
+    expect(tastes.length >= 1 && tastes.length <= 3 && new Set(tastes).size === tastes.length).toBe(true)
+    for (const taste of tastes) expect(Object.keys(TASTES)).toContain(taste)
     for (const item of recipe.ingredients.flatMap((g) => g.items)) if (item.unit) expect(UNITS).toContain(item.unit)
     // Readable in Dutch too, step for step.
     const nl = recipe.translations?.nl

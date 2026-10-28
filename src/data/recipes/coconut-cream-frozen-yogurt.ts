@@ -15,6 +15,7 @@ export const coconutCreamFrozenYogurt: Recipe = {
   flavor: 'coconut',
   category: 'frozen-yogurt',
   tags: ['high-protein', 'egg-free', 'gluten-free'],
+  tastes: ['creamy', 'healthy'],
   models: ['deluxe', 'swirl'],
   program: 'Frozen Yogurt',
   basePint: 24,
@@ -42,7 +43,7 @@ export const coconutCreamFrozenYogurt: Recipe = {
       ],
     },
     {
-      title: 'Topping',
+      title: 'Toppings',
       items: [
         { qty: 2, unit: 'tbsp', name: 'toasted coconut chips', note: 'optional, to serve' },
       ],
@@ -102,7 +103,7 @@ export const coconutCreamFrozenYogurt: Recipe = {
           ],
         },
         {
-          title: 'Topping',
+          title: 'Toppings',
           items: [
             { qty: 2, unit: 'tbsp', name: 'geroosterde kokoschips', note: 'optioneel, om te serveren' },
           ],

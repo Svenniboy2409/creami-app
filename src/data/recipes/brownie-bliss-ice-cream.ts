@@ -15,6 +15,7 @@ export const brownieBlissIceCream: Recipe = {
   flavor: 'brownie',
   category: 'ice-cream',
   tags: ['chocolate'],
+  tastes: ['rich', 'chocolatey'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

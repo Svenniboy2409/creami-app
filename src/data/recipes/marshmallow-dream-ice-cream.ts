@@ -15,6 +15,7 @@ export const marshmallowDreamIceCream: Recipe = {
   flavor: 'marshmallow',
   category: 'ice-cream',
   tags: ['egg-free', 'kid-friendly'],
+  tastes: ['sweet', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

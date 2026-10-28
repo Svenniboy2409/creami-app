@@ -13,6 +13,7 @@ export const icedTeaDelightIceCream: Recipe = {
   flavor: 'iced-tea',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free'],
+  tastes: ['refreshing'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

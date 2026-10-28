@@ -15,6 +15,7 @@ export const chipMintCoolIceCream: Recipe = {
   flavor: 'mint-chip',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'chocolate'],
+  tastes: ['refreshing', 'chocolatey'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

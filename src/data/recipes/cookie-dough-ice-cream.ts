@@ -13,6 +13,7 @@ export const cookieDoughIceCream: Recipe = {
   flavor: 'cookie-dough',
   category: 'ice-cream',
   tags: ['kid-friendly'],
+  tastes: ['sweet', 'rich'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

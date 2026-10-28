@@ -13,6 +13,7 @@ export const pineappleSorbet: Recipe = {
   flavor: 'pineapple',
   category: 'sorbet',
   tags: ['dairy-free', 'vegan', 'egg-free', 'gluten-free', 'fruity'],
+  tastes: ['fruity', 'refreshing', 'healthy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Sorbet',
   basePint: 24,

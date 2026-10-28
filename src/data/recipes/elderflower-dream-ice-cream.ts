@@ -13,6 +13,7 @@ export const elderflowerDreamIceCream: Recipe = {
   flavor: 'elderflower',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free'],
+  tastes: ['refreshing'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

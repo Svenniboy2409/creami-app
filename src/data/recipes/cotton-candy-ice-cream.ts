@@ -14,6 +14,7 @@ export const cottonCandyIceCream: Recipe = {
   flavor: 'cotton-candy',
   category: 'ice-cream',
   tags: ['egg-free', 'kid-friendly'],
+  tastes: ['sweet'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

@@ -7,16 +7,16 @@ import { FilterSheet, type FilterGroup } from '../components/FilterSheet'
 import { PageHeader } from '../components/PageHeader'
 import { RecipeGrid } from '../components/RecipeCard'
 import { SearchBar } from '../components/SearchBar'
-import { CATEGORIES, MODEL_ORDER, MODELS } from '../data/creami'
+import { CATEGORIES, MODEL_ORDER, MODELS, TASTES } from '../data/creami'
 import { CURATED_RECIPES } from '../data/recipes'
 import { useCountUp } from '../hooks/useCountUp'
 import { useI18n } from '../hooks/i18nContext'
 import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useStuck } from '../hooks/useStuck'
 import { filterRecipes, presentValues } from '../lib/search'
-import type { Category, CreamiModel } from '../types/recipe'
+import type { Category, CreamiModel, Taste } from '../types/recipe'
 
-const FILTER_KEYS = ['category', 'model', 'program', 'tag'] as const
+const FILTER_KEYS = ['model', 'category', 'taste', 'program', 'tag'] as const
 type FilterKey = (typeof FILTER_KEYS)[number]
 
 export function DiscoverPage() {
@@ -54,8 +54,9 @@ export function DiscoverPage() {
         model: filters.model as CreamiModel | 'all',
         program: filters.program,
         tag: filters.tag,
+        taste: filters.taste as Taste | 'all',
       }),
-    [query, filters.category, filters.model, filters.program, filters.tag],
+    [query, filters.category, filters.model, filters.program, filters.tag, filters.taste],
   )
   const shownCount = useCountUp(results.length)
 
@@ -76,7 +77,15 @@ export function DiscoverPage() {
     if (window.scrollY > top) window.scrollTo({ top })
   }, [selectionKey, markerRef])
 
+  // In the filter sheet in this order: the machine you have first, then what kind and what taste.
   const groups: FilterGroup[] = [
+    {
+      key: 'model',
+      label: t('Machine'),
+      options: MODEL_ORDER.map((m) => ({ value: m, label: MODELS[m].short })),
+      value: filters.model,
+      onChange: (value) => update({ model: value }),
+    },
     {
       key: 'category',
       label: t('Category'),
@@ -85,11 +94,11 @@ export function DiscoverPage() {
       onChange: (value) => update({ category: value }),
     },
     {
-      key: 'model',
-      label: t('Machine'),
-      options: MODEL_ORDER.map((m) => ({ value: m, label: MODELS[m].short })),
-      value: filters.model,
-      onChange: (value) => update({ model: value }),
+      key: 'taste',
+      label: t('Taste'),
+      options: present.tastes.map((taste) => ({ value: taste, label: t(TASTES[taste]) })),
+      value: filters.taste,
+      onChange: (value) => update({ taste: value }),
     },
     {
       key: 'program',
@@ -106,10 +115,11 @@ export function DiscoverPage() {
       onChange: (value) => update({ tag: value }),
     },
   ]
-  // Category and machine are the everyday filters, so they stay on the page as well.
+  // Category and taste are the everyday filters, so they stay on the page as well;
+  // the machine is set once and lives in the filter sheet.
   const pageRows = [
-    { group: groups[0], allLabel: t('All categories') },
-    { group: groups[1], allLabel: t('All machines') },
+    { group: groups[1], allLabel: t('All categories') },
+    { group: groups[2], allLabel: t('All tastes') },
   ]
 
   if (CURATED_RECIPES.length === 0) {

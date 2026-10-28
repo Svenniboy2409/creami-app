@@ -14,6 +14,7 @@ export const pistachioIceCream: Recipe = {
   flavor: 'pistachio',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'nutty'],
+  tastes: ['creamy', 'nutty'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

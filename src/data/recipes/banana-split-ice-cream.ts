@@ -14,6 +14,7 @@ export const bananaSplitIceCream: Recipe = {
   flavor: 'banana-split',
   category: 'ice-cream',
   tags: ['egg-free', 'fruity', 'kid-friendly'],
+  tastes: ['sweet', 'fruity', 'chocolatey'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

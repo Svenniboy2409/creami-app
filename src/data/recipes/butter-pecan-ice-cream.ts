@@ -14,6 +14,7 @@ export const butterPecanIceCream: Recipe = {
   flavor: 'butter-pecan',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'nutty'],
+  tastes: ['rich', 'nutty'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

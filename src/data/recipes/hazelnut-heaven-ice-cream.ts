@@ -14,6 +14,7 @@ export const hazelnutHeavenIceCream: Recipe = {
   flavor: 'hazelnut',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'nutty'],
+  tastes: ['creamy', 'nutty'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,
@@ -40,7 +41,7 @@ export const hazelnutHeavenIceCream: Recipe = {
       ],
     },
     {
-      title: 'Topping',
+      title: 'Toppings',
       items: [
         { qty: 35, unit: 'g', name: 'toasted hazelnuts', note: 'optional, to serve' },
       ],
@@ -99,7 +100,7 @@ export const hazelnutHeavenIceCream: Recipe = {
           ],
         },
         {
-          title: 'Topping',
+          title: 'Toppings',
           items: [
             { qty: 35, unit: 'g', name: 'geroosterde hazelnoten', note: 'optioneel, om te serveren' },
           ],

@@ -17,12 +17,13 @@ const recipe = (id: string, name: string, extra: Partial<Recipe> = {}): Recipe =
   ...extra,
 })
 
-const vanilla = recipe('vanilla', 'Vanilla Bean Ice Cream', { tags: ['egg-free'] })
+const vanilla = recipe('vanilla', 'Vanilla Bean Ice Cream', { tags: ['egg-free'], tastes: ['sweet', 'creamy'] })
 const pistachio = recipe('pistachio', 'Pistachio Gelato', { category: 'gelato', program: 'Gelato', tags: ['nutty'] })
 const coconut = recipe('coconut', 'Coconut Sorbet', {
   category: 'sorbet',
   program: 'Sorbet',
   tags: ['vegan'],
+  tastes: ['fruity', 'refreshing'],
   models: ['original', 'deluxe'],
   ingredients: [{ items: [{ name: 'coconut milk' }, { name: 'lime juice' }] }],
 })
@@ -91,6 +92,12 @@ describe('filterRecipes', () => {
     expect(ids(filterRecipes(all, { program: 'Sorbet' }))).toEqual(['coconut'])
     expect(ids(filterRecipes(all, { tag: 'egg-free', query: 'vanilla' }))).toEqual(['vanilla'])
     expect(filterRecipes(all, { tag: 'egg-free', query: 'pistachio' })).toEqual([])
+    expect(ids(filterRecipes(all, { taste: 'refreshing' }))).toEqual(['coconut'])
+  })
+
+  it('finds a taste by name, in either language', () => {
+    expect(ids(searchRecipes(all, 'zoet'))).toEqual(['vanilla'])
+    expect(ids(searchRecipes(all, 'refreshing'))).toEqual(['coconut'])
   })
 })
 
@@ -98,6 +105,7 @@ describe('presentValues', () => {
   it('lists what occurs, in the usual order', () => {
     expect(presentValues(all)).toEqual({
       categories: ['ice-cream', 'gelato', 'sorbet'],
+      tastes: ['sweet', 'fruity', 'refreshing', 'creamy'],
       programs: ['Ice Cream', 'Gelato', 'Sorbet'],
       tags: ['egg-free', 'vegan', 'nutty'],
     })

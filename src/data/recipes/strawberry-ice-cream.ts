@@ -13,6 +13,7 @@ export const strawberryIceCream: Recipe = {
   flavor: 'strawberry',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'fruity', 'kid-friendly'],
+  tastes: ['sweet', 'fruity'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

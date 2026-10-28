@@ -14,6 +14,7 @@ export const birthdayCakeIceCream: Recipe = {
   flavor: 'birthday-cake',
   category: 'ice-cream',
   tags: ['kid-friendly'],
+  tastes: ['sweet', 'rich'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

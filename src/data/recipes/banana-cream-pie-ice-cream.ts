@@ -13,6 +13,7 @@ export const bananaCreamPieIceCream: Recipe = {
   flavor: 'banana',
   category: 'ice-cream',
   tags: ['fruity'],
+  tastes: ['sweet', 'fruity', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

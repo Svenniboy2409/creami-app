@@ -14,6 +14,7 @@ export const cinnamonDreamIceCream: Recipe = {
   flavor: 'cinnamon',
   category: 'ice-cream',
   tags: ['egg-free'],
+  tastes: ['sweet', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

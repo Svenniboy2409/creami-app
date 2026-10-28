@@ -13,6 +13,7 @@ export const cookiesAndCreamIceCream: Recipe = {
   flavor: 'cookies-cream',
   category: 'ice-cream',
   tags: ['egg-free', 'chocolate', 'kid-friendly'],
+  tastes: ['sweet', 'creamy', 'chocolatey'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

@@ -14,6 +14,7 @@ export const aperolSpritzSorbet: Recipe = {
   flavor: 'aperol-spritz',
   category: 'sorbet',
   tags: ['dairy-free', 'egg-free', 'gluten-free', 'fruity'],
+  tastes: ['fruity', 'refreshing'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Sorbet',
   basePint: 24,

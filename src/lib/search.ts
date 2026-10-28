@@ -6,8 +6,8 @@
 // instead, and falls back to a bounded edit distance so ordinary typos still
 // land on the right recipe. Ported from the Mixly cocktail app.
 
-import { CATEGORIES, PROGRAMS, SUGGESTED_TAGS } from '../data/creami'
-import type { Category, CreamiModel, Recipe } from '../types/recipe'
+import { CATEGORIES, PROGRAMS, SUGGESTED_TAGS, TASTE_ORDER, TASTES } from '../data/creami'
+import type { Category, CreamiModel, Recipe, Taste } from '../types/recipe'
 import { machinesFor } from './machines'
 import { NL } from './strings-nl'
 
@@ -17,6 +17,7 @@ export interface RecipeFilter {
   model?: CreamiModel | 'all'
   program?: string
   tag?: string
+  taste?: Taste | 'all'
 }
 
 /** Lowercase, no accents, and everything else down to single spaces: "Crème-Brûlée" → "creme brulee". */
@@ -121,7 +122,8 @@ function indexOf(recipe: Recipe): SearchIndex {
     categoryWords: wordsOf(categoryLabel, categoryLabel && NL[categoryLabel]),
     programWords: wordsOf(recipe.program, ...recipe.steps.map((step) => step.program)),
     ingredientWords: wordsOf(...versions.flatMap((v) => (v.ingredients ?? []).flatMap((group) => group.items.map((item) => item.name)))),
-    tagWords: wordsOf(...recipe.tags.flatMap((tag) => [tag, NL[tag]])),
+    // Tags and tastes alike: "zoet" finds the sweet ones.
+    tagWords: wordsOf(...recipe.tags.flatMap((tag) => [tag, NL[tag]]), ...(recipe.tastes ?? []).flatMap((taste) => [TASTES[taste], NL[TASTES[taste]]])),
     taglineWords: wordsOf(...versions.map((v) => v.tagline)),
   }
   indexCache.set(recipe, entry)
@@ -180,13 +182,14 @@ export function searchRecipes(recipes: Recipe[], query: string): Recipe[] {
   return kept.map((hit) => hit.recipe)
 }
 
-export function filterRecipes(recipes: Recipe[], { query = '', category = 'all', model = 'all', program = 'all', tag = 'all' }: RecipeFilter): Recipe[] {
+export function filterRecipes(recipes: Recipe[], { query = '', category = 'all', model = 'all', program = 'all', tag = 'all', taste = 'all' }: RecipeFilter): Recipe[] {
   const chosen = recipes.filter(
     (recipe) =>
       (category === 'all' || recipe.category === category) &&
       (model === 'all' || machinesFor(recipe).includes(model)) &&
       (program === 'all' || recipe.program === program) &&
-      (tag === 'all' || recipe.tags.includes(tag)),
+      (tag === 'all' || recipe.tags.includes(tag)) &&
+      (taste === 'all' || (recipe.tastes ?? []).includes(taste)),
   )
   return searchRecipes(chosen, query)
 }
@@ -200,11 +203,12 @@ const byKnownOrder = (known: readonly string[]) => (a: string, b: string) => {
   return ia - ib
 }
 
-/** The programs and tags that occur in these recipes, in their usual order, for filter chips. */
-export function presentValues(recipes: Recipe[]): { categories: Category[]; programs: string[]; tags: string[] } {
+/** The categories, tastes, programs and tags that occur in these recipes, in their usual order, for filter chips. */
+export function presentValues(recipes: Recipe[]): { categories: Category[]; tastes: Taste[]; programs: string[]; tags: string[] } {
   const categories = new Set(recipes.map((recipe) => recipe.category))
   return {
     categories: (Object.keys(CATEGORIES) as Category[]).filter((c) => categories.has(c)),
+    tastes: TASTE_ORDER.filter((taste) => recipes.some((recipe) => recipe.tastes?.includes(taste))),
     programs: [...new Set(recipes.map((recipe) => recipe.program))].sort(byKnownOrder(PROGRAMS)),
     tags: [...new Set(recipes.flatMap((recipe) => recipe.tags))].sort(byKnownOrder(SUGGESTED_TAGS)),
   }

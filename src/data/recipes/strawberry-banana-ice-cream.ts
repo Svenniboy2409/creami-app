@@ -14,6 +14,7 @@ export const strawberryBananaIceCream: Recipe = {
   flavor: 'strawberry-banana',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'fruity', 'kid-friendly'],
+  tastes: ['fruity', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

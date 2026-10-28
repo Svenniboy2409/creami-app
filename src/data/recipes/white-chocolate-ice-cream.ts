@@ -11,6 +11,7 @@ export const whiteChocolateIceCream: Recipe = {
   flavor: 'white-chocolate',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'chocolate'],
+  tastes: ['sweet', 'creamy', 'rich'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,
@@ -30,7 +31,7 @@ export const whiteChocolateIceCream: Recipe = {
       ],
     },
     {
-      title: 'Topping',
+      title: 'Toppings',
       items: [{ name: 'white chocolate', note: 'shavings, curls or a few squares; pick one' }],
     },
   ],
@@ -82,7 +83,7 @@ export const whiteChocolateIceCream: Recipe = {
           ],
         },
         {
-          title: 'Topping',
+          title: 'Toppings',
           items: [{ name: 'witte chocolade', note: 'schaafsel, krullen of een paar blokjes; kies er één' }],
         },
       ],

@@ -13,6 +13,7 @@ export const chocolateIceCream: Recipe = {
   flavor: 'chocolate',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'chocolate'],
+  tastes: ['rich', 'chocolatey'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

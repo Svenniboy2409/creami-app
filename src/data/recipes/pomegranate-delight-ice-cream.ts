@@ -14,6 +14,7 @@ export const pomegranateDelightIceCream: Recipe = {
   flavor: 'pomegranate',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'fruity'],
+  tastes: ['fruity', 'refreshing'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

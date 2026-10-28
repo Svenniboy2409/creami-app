@@ -13,6 +13,7 @@ export const chocolateBase: Recipe = {
   flavor: 'chocolate',
   category: 'base',
   tags: ['egg-free', 'gluten-free', 'chocolate'],
+  tastes: ['rich', 'chocolatey'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

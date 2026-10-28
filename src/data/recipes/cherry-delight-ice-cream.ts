@@ -14,6 +14,7 @@ export const cherryDelightIceCream: Recipe = {
   flavor: 'cherry',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'fruity'],
+  tastes: ['sweet', 'fruity'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

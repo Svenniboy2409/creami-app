@@ -14,6 +14,7 @@ export const biscoffIceCream: Recipe = {
   flavor: 'biscoff',
   category: 'ice-cream',
   tags: ['egg-free'],
+  tastes: ['sweet', 'rich'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

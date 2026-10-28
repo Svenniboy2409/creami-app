@@ -1,4 +1,4 @@
-import type { Category, CreamiModel, Difficulty, PintSize } from '../types/recipe'
+import type { Category, CreamiModel, Difficulty, PintSize, Taste } from '../types/recipe'
 
 export type Tone = 'strawberry' | 'pistachio' | 'mango' | 'blueberry' | 'vanilla'
 
@@ -100,6 +100,20 @@ export const DIFFICULTIES: Record<Difficulty, string> = {
   medium: 'Medium',
   advanced: 'Advanced',
 }
+
+/** The tastes, in the order the filter shows them. */
+export const TASTES: Record<Taste, string> = {
+  sweet: 'Sweet',
+  fruity: 'Fruity',
+  refreshing: 'Refreshing',
+  creamy: 'Creamy',
+  rich: 'Rich',
+  chocolatey: 'Chocolatey',
+  nutty: 'Nutty',
+  healthy: 'Healthy',
+}
+
+export const TASTE_ORDER = Object.keys(TASTES) as Taste[]
 
 export const SUGGESTED_TAGS = [
   'high-protein',

@@ -64,6 +64,9 @@ export type Flavor =
   | 'pineapple'
   | 'aperol-spritz'
 
+/** What a recipe tastes like, for the taste filter on Discover. */
+export type Taste = 'sweet' | 'fruity' | 'refreshing' | 'creamy' | 'rich' | 'chocolatey' | 'nutty' | 'healthy'
+
 /** Pint size in US fluid ounces: 16 oz for Original/Breeze/Swirl, 24 oz for Deluxe. */
 export type PintSize = 16 | 24
 
@@ -113,6 +116,8 @@ export interface Recipe {
   flavor?: Flavor
   category: Category
   tags: string[]
+  /** What it tastes like, one to three of them; the app's own recipes all have them. */
+  tastes?: Taste[]
   models: CreamiModel[]
   program: string
   basePint: PintSize

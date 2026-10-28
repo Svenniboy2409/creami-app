@@ -14,6 +14,7 @@ export const matchaMagicIceCream: Recipe = {
   flavor: 'matcha',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free'],
+  tastes: ['sweet', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

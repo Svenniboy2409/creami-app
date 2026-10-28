@@ -14,6 +14,7 @@ export const pearAndRumIceCream: Recipe = {
   flavor: 'pear',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'fruity'],
+  tastes: ['fruity', 'rich'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

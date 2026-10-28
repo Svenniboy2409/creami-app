@@ -15,6 +15,7 @@ export const cacaoDreamIceCream: Recipe = {
   flavor: 'chocolate',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'chocolate'],
+  tastes: ['rich', 'chocolatey'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,
@@ -42,7 +43,7 @@ export const cacaoDreamIceCream: Recipe = {
       ],
     },
     {
-      title: 'Topping',
+      title: 'Toppings',
       items: [
         { qty: 1, unit: 'tbsp', name: 'chocolate shavings', note: 'optional, to serve' },
       ],
@@ -102,7 +103,7 @@ export const cacaoDreamIceCream: Recipe = {
           ],
         },
         {
-          title: 'Topping',
+          title: 'Toppings',
           items: [
             { qty: 1, unit: 'tbsp', name: 'chocoladeschaafsel', note: 'optioneel, om te serveren' },
           ],

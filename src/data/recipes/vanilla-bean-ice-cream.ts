@@ -13,6 +13,7 @@ export const vanillaBeanIceCream: Recipe = {
   flavor: 'vanilla',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'kid-friendly'],
+  tastes: ['sweet', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

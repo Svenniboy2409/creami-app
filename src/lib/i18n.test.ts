@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BASIC_TIPS, CATEGORIES, DIFFICULTIES, MODELS, SUGGESTED_TAGS } from '../data/creami'
+import { BASIC_TIPS, CATEGORIES, DIFFICULTIES, MODELS, SUGGESTED_TAGS, TASTES } from '../data/creami'
 import { CURATED_RECIPES } from '../data/recipes'
 import type { Recipe } from '../types/recipe'
 import { localizeRecipe, translate } from './i18n'
@@ -90,6 +90,7 @@ describe('Dutch dictionary', () => {
       ...Object.values(DIFFICULTIES),
       ...Object.values(MODELS).map((m) => m.detail.split(' · ')[0]),
       ...SUGGESTED_TAGS,
+      ...Object.values(TASTES),
       ...BASIC_TIPS,
       ...['tbsp', 'tsp', 'cup', 'scoop', 'pinch', 'pcs'],
       ...['Calories', 'Protein', 'Carbs', 'Sugar', 'Fat', 'per pint', 'per serving'],

@@ -13,6 +13,7 @@ export const mangoIceCream: Recipe = {
   flavor: 'mango',
   category: 'ice-cream',
   tags: ['egg-free', 'gluten-free', 'fruity'],
+  tastes: ['fruity', 'refreshing'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

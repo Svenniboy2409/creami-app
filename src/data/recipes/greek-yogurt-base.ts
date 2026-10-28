@@ -15,6 +15,7 @@ export const greekYogurtBase: Recipe = {
   flavor: 'greek-yogurt',
   category: 'base',
   tags: ['high-protein', 'egg-free', 'gluten-free'],
+  tastes: ['healthy'],
   models: ['deluxe', 'swirl'],
   program: 'Frozen Yogurt',
   basePint: 16,

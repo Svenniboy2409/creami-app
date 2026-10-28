@@ -14,6 +14,7 @@ export const cheesecakeDreamIceCream: Recipe = {
   flavor: 'cheesecake',
   category: 'ice-cream',
   tags: ['egg-free'],
+  tastes: ['creamy', 'rich'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,

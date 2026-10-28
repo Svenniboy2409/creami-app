@@ -13,6 +13,7 @@ export const coconutMilkBase: Recipe = {
   flavor: 'coconut',
   category: 'base',
   tags: ['dairy-free', 'vegan', 'egg-free', 'gluten-free'],
+  tastes: ['creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 16,

@@ -14,6 +14,7 @@ export const keyLimePieIceCream: Recipe = {
   flavor: 'key-lime',
   category: 'ice-cream',
   tags: ['egg-free', 'fruity'],
+  tastes: ['fruity', 'refreshing', 'creamy'],
   models: ['original', 'breeze', 'deluxe', 'swirl'],
   program: 'Ice Cream',
   basePint: 24,
