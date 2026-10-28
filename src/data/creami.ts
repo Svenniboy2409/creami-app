@@ -17,8 +17,8 @@ export const PINT_SIZES: Record<PintSize, { label: string; detail: string }> = {
 }
 
 /**
- * Program names differ slightly per model and region, so this is a pick-list
- * rather than a strict per-model mapping. The form also accepts custom text.
+ * Every program a recipe can name, as a pick-list. Which machine has which is
+ * in MODEL_PROGRAMS; the form also accepts custom text.
  */
 export const PROGRAMS = [
   'Ice Cream',
@@ -39,6 +39,44 @@ export const PROGRAMS = [
   'Mix-in',
   'Re-spin',
 ]
+
+/**
+ * The programs on each machine, so a recipe is only offered for the machines
+ * that can run it. Where models in one line differ (the NC300 and the NC100
+ * lack Gelato and Smoothie Bowl), the line counts as having the program.
+ */
+export const MODEL_PROGRAMS: Record<CreamiModel, readonly string[]> = {
+  original: ['Ice Cream', 'Lite Ice Cream', 'Gelato', 'Sorbet', 'Milkshake', 'Smoothie Bowl', 'Mix-in', 'Re-spin'],
+  breeze: ['Ice Cream', 'Lite Ice Cream', 'Gelato', 'Sorbet', 'Milkshake', 'Smoothie Bowl', 'Mix-in', 'Re-spin'],
+  deluxe: [
+    'Ice Cream',
+    'Lite Ice Cream',
+    'Gelato',
+    'Sorbet',
+    'Frozen Yogurt',
+    'Milkshake',
+    'Italian Ice',
+    'Slushi',
+    'Frozen Drink',
+    'Creamiccino',
+    'Mix-in',
+    'Re-spin',
+  ],
+  swirl: [
+    'Ice Cream',
+    'Lite Ice Cream',
+    'Gelato',
+    'Sorbet',
+    'Frozen Yogurt',
+    'Milkshake',
+    'Soft Serve',
+    'Soft Serve Gelato',
+    'Fruiti',
+    'CreamiFit',
+    'Mix-in',
+    'Re-spin',
+  ],
+}
 
 export const CATEGORIES: Record<Category, { label: string; tone: Tone }> = {
   'ice-cream': { label: 'Ice cream', tone: 'strawberry' },

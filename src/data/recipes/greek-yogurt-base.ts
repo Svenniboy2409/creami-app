@@ -4,8 +4,8 @@ import type { Recipe } from '../../types/recipe'
 // One of the five Ninja Creami bases, in millilitres and grams, with its photo
 // cut from the bases list. A plain start to flavour your own way: its ideas
 // link to the app's recipes for them where there is one. It runs on FROZEN
-// YOGURT, the program made for a yogurt base; the Original and the Breeze have
-// no such button, so the step points them to LITE ICE CREAM.
+// YOGURT, the program made for a yogurt base, so it is for the Deluxe and the
+// Swirl: the Original and the Breeze have no such program.
 export const greekYogurtBase: Recipe = {
   id: 'greek-yogurt-base',
   origin: 'curated',
@@ -15,7 +15,7 @@ export const greekYogurtBase: Recipe = {
   flavor: 'greek-yogurt',
   category: 'base',
   tags: ['high-protein', 'egg-free', 'gluten-free'],
-  models: ['original', 'breeze', 'deluxe', 'swirl'],
+  models: ['deluxe', 'swirl'],
   program: 'Frozen Yogurt',
   basePint: 16,
   servings: '3–4',
@@ -42,7 +42,7 @@ export const greekYogurtBase: Recipe = {
     },
     {
       title: 'Process',
-      text: 'Take the lid off, place the pint in the outer bowl and run the FROZEN YOGURT program. No FROZEN YOGURT button on your machine (Original, Breeze)? Use LITE ICE CREAM instead.',
+      text: 'Take the lid off, place the pint in the outer bowl and run the FROZEN YOGURT program.',
       program: 'Frozen Yogurt',
     },
     {
@@ -83,7 +83,7 @@ export const greekYogurtBase: Recipe = {
         },
         {
           title: 'Draaien',
-          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma FROZEN YOGURT. Heeft je machine die knop niet (Original, Breeze)? Gebruik dan LITE ICE CREAM.',
+          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma FROZEN YOGURT.',
           program: 'Frozen Yogurt',
         },
         {

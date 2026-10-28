@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { BASIC_TIPS, CATEGORIES, PROGRAMS, SUGGESTED_TAGS } from '../creami'
 import { FLAVORS } from '../flavors'
+import { machinesFor } from '../../lib/machines'
 import { CURATED_RECIPES } from '.'
 
 const UNITS = ['g', 'ml', 'tbsp', 'tsp', 'cup', 'scoop', 'pinch', 'pcs']
@@ -25,6 +26,8 @@ describe('curated recipes', () => {
     expect(recipe.category in CATEGORIES).toBe(true)
     expect(PROGRAMS).toContain(recipe.program)
     for (const step of recipe.steps) if (step.program) expect(PROGRAMS).toContain(step.program)
+    // Only machines that have every program it runs.
+    expect(machinesFor(recipe)).toEqual(recipe.models)
     for (const tag of recipe.tags) expect(SUGGESTED_TAGS).toContain(tag)
     for (const item of recipe.ingredients.flatMap((g) => g.items)) if (item.unit) expect(UNITS).toContain(item.unit)
     // Readable in Dutch too, step for step.

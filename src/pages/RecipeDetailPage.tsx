@@ -33,6 +33,7 @@ import { useRecipeEditor } from '../hooks/recipeEditorContext'
 import { useToast } from '../hooks/toastContext'
 import { useRecipe } from '../hooks/useRecipes'
 import { useRemembered } from '../lib/pageMemory'
+import { machinesFor, missingPrograms, programGaps } from '../lib/machines'
 import { formatAmount, scaleGroups, scaleServings } from '../lib/scale'
 import type { PintSize, Recipe } from '../types/recipe'
 
@@ -235,7 +236,7 @@ export function RecipeDetailPage() {
   const { id } = useParams()
   const original = useRecipe(id)
   const { ready, deleteRecipe, folders, toggleInFolder } = useLibrary()
-  const { t, tn, localize } = useI18n()
+  const { t, tn, lang, localize } = useI18n()
   const showToast = useToast()
   const { openEdit } = useRecipeEditor()
   const navigate = useNavigate()
@@ -273,6 +274,8 @@ export function RecipeDetailPage() {
   const isUserRecipe = recipe.origin === 'user'
   const servings = scaleServings(recipe.servings, activePint / recipe.basePint)
   const inFolders = folders.filter((folder) => folder.recipeIds.includes(recipe.id)).length
+  const machines = machinesFor(recipe)
+  const machineList = new Intl.ListFormat(lang, { type: 'conjunction' })
 
   const goBack = () => {
     if (window.history.state?.idx > 0) navigate(-1)
@@ -327,7 +330,8 @@ export function RecipeDetailPage() {
           <h2 className="mb-2 font-sans text-sm font-extrabold uppercase tracking-[0.12em] text-ink-faint">{t('Works with')}</h2>
           <ul className="flex flex-wrap gap-2">
             {MODEL_ORDER.map((model) => {
-              const ok = recipe.models.includes(model)
+              const ok = machines.includes(model)
+              const label = ok ? t('(compatible)') : missingPrograms(recipe, model).length > 0 ? t('(not available)') : t('(not tested)')
               return (
                 <li
                   key={model}
@@ -337,11 +341,20 @@ export function RecipeDetailPage() {
                 >
                   {ok && <Check className="size-3.5" strokeWidth={3} aria-hidden />}
                   {MODELS[model].short}
-                  <span className="sr-only">{t(ok ? '(compatible)' : '(not tested)')}</span>
+                  <span className="sr-only">{label}</span>
                 </li>
               )
             })}
           </ul>
+          {/* Why a machine is crossed out when it simply lacks the program. */}
+          {programGaps(recipe).map(({ program, models }) => (
+            <p key={program} className="mt-2 px-1 text-sm leading-snug text-ink-soft">
+              {t(models.length === 1 ? 'The {machines} has no {program} program.' : 'The {machines} have no {program} program.', {
+                machines: machineList.format(models.map((model) => MODELS[model].short)),
+                program,
+              })}
+            </p>
+          ))}
         </div>
 
         {/* Folders are separate from favorites: a recipe can sit in a folder with or without the heart. */}

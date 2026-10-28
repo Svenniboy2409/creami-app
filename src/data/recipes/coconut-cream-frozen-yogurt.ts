@@ -3,8 +3,8 @@ import type { Recipe } from '../../types/recipe'
 
 // From the "Discover a world of Ninja Creami flavours" cards, with the amounts
 // shown there for a 24 oz pint, in millilitres and grams, and its photo cut
-// from that card. Made with Greek yogurt, so it runs on FROZEN YOGURT (LITE ICE
-// CREAM on machines without that button) where the card says ICE CREAM. The
+// from that card. Made with Greek yogurt, so it runs on FROZEN YOGURT where the
+// card says ICE CREAM, which makes it a recipe for the Deluxe and the Swirl. The
 // shredded coconut, chunks and chips go in after the first spin.
 export const coconutCreamFrozenYogurt: Recipe = {
   id: 'coconut-cream-frozen-yogurt',
@@ -15,7 +15,7 @@ export const coconutCreamFrozenYogurt: Recipe = {
   flavor: 'coconut',
   category: 'frozen-yogurt',
   tags: ['high-protein', 'egg-free', 'gluten-free'],
-  models: ['original', 'breeze', 'deluxe', 'swirl'],
+  models: ['deluxe', 'swirl'],
   program: 'Frozen Yogurt',
   basePint: 24,
   servings: '4–6',
@@ -54,7 +54,7 @@ export const coconutCreamFrozenYogurt: Recipe = {
     },
     {
       title: 'Process',
-      text: 'Take the lid off, place the pint in the outer bowl and run the FROZEN YOGURT program. No FROZEN YOGURT button on your machine (Original, Breeze)? Use LITE ICE CREAM instead.',
+      text: 'Take the lid off, place the pint in the outer bowl and run the FROZEN YOGURT program.',
       program: 'Frozen Yogurt',
     },
     {
@@ -109,7 +109,7 @@ export const coconutCreamFrozenYogurt: Recipe = {
         },
         {
           title: 'Draaien',
-          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma FROZEN YOGURT. Heeft je machine die knop niet (Original, Breeze)? Gebruik dan LITE ICE CREAM.',
+          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma FROZEN YOGURT.',
           program: 'Frozen Yogurt',
         },
         {

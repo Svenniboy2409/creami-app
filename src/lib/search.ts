@@ -8,6 +8,7 @@
 
 import { CATEGORIES, PROGRAMS, SUGGESTED_TAGS } from '../data/creami'
 import type { Category, CreamiModel, Recipe } from '../types/recipe'
+import { machinesFor } from './machines'
 import { NL } from './strings-nl'
 
 export interface RecipeFilter {
@@ -183,7 +184,7 @@ export function filterRecipes(recipes: Recipe[], { query = '', category = 'all',
   const chosen = recipes.filter(
     (recipe) =>
       (category === 'all' || recipe.category === category) &&
-      (model === 'all' || recipe.models.includes(model)) &&
+      (model === 'all' || machinesFor(recipe).includes(model)) &&
       (program === 'all' || recipe.program === program) &&
       (tag === 'all' || recipe.tags.includes(tag)),
   )

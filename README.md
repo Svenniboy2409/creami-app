@@ -81,6 +81,8 @@ Interface text goes through `t('English text')` from `useI18n()`; add the Dutch 
 
    A base or other recipe that is meant to be flavoured can list `ideas: [{ name: 'Cookie Dough', recipeId: 'cookie-dough-ice-cream' }]`; they show under "Try these flavours", and the ones with a `recipeId` open that recipe.
 
+   List in `models` only the machines that have every program the recipe runs: `MODEL_PROGRAMS` in `src/data/creami.ts` says which machine has which (Frozen Yogurt, for one, is only on the Deluxe and the Swirl). The machine filter and "Works with" go by the same list, for your own recipes too, and a test checks the curated ones.
+
    Keep `tips` to what is particular to the recipe. The basics that go for every pint (MAX FILL, 24 hours in the freezer, RE-SPIN, mix-ins, leftovers) are `BASIC_TIPS` in `src/data/creami.ts`; they fold open below every recipe's own tips when you tap the Tips heading.
 
 3. Optionally add a Dutch version under `translations: { nl: { name, tagline, description, ingredients, steps, tips, ideas } }`. Keep the same amounts and units in the translated ingredients.
