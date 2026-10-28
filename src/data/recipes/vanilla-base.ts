@@ -55,7 +55,7 @@ export const vanillaBase: Recipe = {
       program: 'Mix-in',
     },
   ],
-  ideas: [{ name: 'Vanilla Bean', recipeId: 'vanilla-bean-ice-cream' }, { name: 'Cookie Dough', recipeId: 'cookie-dough-ice-cream' }, { name: 'Birthday Cake', recipeId: 'birthday-cake-dream-ice-cream' }],
+  ideas: [{ name: 'Vanilla Bean', recipeId: 'vanilla-bean-ice-cream' }, { name: 'Cookie Dough', recipeId: 'cookie-dough-ice-cream' }, { name: 'Birthday Cake', recipeId: 'birthday-cake-ice-cream' }],
   translations: {
     nl: {
       name: 'Vanillebasis',
@@ -96,7 +96,7 @@ export const vanillaBase: Recipe = {
           program: 'Mix-in',
         },
       ],
-      ideas: [{ name: 'Vanille', recipeId: 'vanilla-bean-ice-cream' }, { name: 'Koekjesdeeg', recipeId: 'cookie-dough-ice-cream' }, { name: 'Verjaardagstaart', recipeId: 'birthday-cake-dream-ice-cream' }],
+      ideas: [{ name: 'Vanille', recipeId: 'vanilla-bean-ice-cream' }, { name: 'Koekjesdeeg', recipeId: 'cookie-dough-ice-cream' }, { name: 'Verjaardagstaart', recipeId: 'birthday-cake-ice-cream' }],
     },
   },
 }

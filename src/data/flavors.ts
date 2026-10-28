@@ -60,4 +60,5 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   'butter-pecan': { from: '#fbf1e2', to: '#e2bf8c', scoop: '#f4e2bf', bits: [chunks('#8a4f24')] },
   matcha: { from: '#eef3e0', to: '#b9cf8e', scoop: '#a9c47c', bits: [specks('#5f7f36')] },
   marshmallow: { from: '#fdf6f4', to: '#f4d3db', scoop: '#fdf4e6', bits: [chunks('#ffffff'), chunks('#f6bfd0')] },
+  'cotton-candy': { from: '#fdeaf3', to: '#bfe0f5', scoop: '#f7c2d9', bits: [chunks('#8fd0f2'), chips('#f48fb8')] },
 }

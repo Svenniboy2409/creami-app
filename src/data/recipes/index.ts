@@ -2,6 +2,7 @@ import type { Recipe } from '../../types/recipe'
 import { bananaCreamPieIceCream } from './banana-cream-pie-ice-cream'
 import { bananaSplitIceCream } from './banana-split-ice-cream'
 import { birthdayCakeDreamIceCream } from './birthday-cake-dream-ice-cream'
+import { birthdayCakeIceCream } from './birthday-cake-ice-cream'
 import { biscoffIceCream } from './biscoff-ice-cream'
 import { blackberryBlissIceCream } from './blackberry-bliss-ice-cream'
 import { blueberryBlissIceCream } from './blueberry-bliss-ice-cream'
@@ -21,6 +22,7 @@ import { condensedMilkVanillaIceCream } from './condensed-milk-vanilla-ice-cream
 import { cookieDoughIceCream } from './cookie-dough-ice-cream'
 import { cookiesAndCreamIceCream } from './cookies-and-cream-ice-cream'
 import { cottageCheeseBase } from './cottage-cheese-base'
+import { cottonCandyIceCream } from './cotton-candy-ice-cream'
 import { elderflowerDreamIceCream } from './elderflower-dream-ice-cream'
 import { greekYogurtBase } from './greek-yogurt-base'
 import { hazelnutHeavenIceCream } from './hazelnut-heaven-ice-cream'
@@ -33,6 +35,7 @@ import { matchaDreamIceCream } from './matcha-dream-ice-cream'
 import { mintChocolateChipIceCream } from './mint-chocolate-chip-ice-cream'
 import { mixedBerriesIceCream } from './mixed-berries-ice-cream'
 import { pannaCottaDreamIceCream } from './panna-cotta-dream-ice-cream'
+import { peachPerfectionIceCream } from './peach-perfection-ice-cream'
 import { peachesAndCreamIceCream } from './peaches-and-cream-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
 import { pistachioIceCream } from './pistachio-ice-cream'
@@ -95,6 +98,9 @@ export const CURATED_RECIPES: Recipe[] = [
   butterPecanIceCream,
   matchaDreamIceCream,
   marshmallowDreamIceCream,
+  peachPerfectionIceCream,
+  birthdayCakeIceCream,
+  cottonCandyIceCream,
   // From around the web
   condensedMilkVanillaIceCream,
   // The five bases, to flavour your own way
