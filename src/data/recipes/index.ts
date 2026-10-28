@@ -28,6 +28,7 @@ import { cookiesAndCreamIceCream } from './cookies-and-cream-ice-cream'
 import { cottageCheeseBase } from './cottage-cheese-base'
 import { cottonCandyIceCream } from './cotton-candy-ice-cream'
 import { creamyMintChocolateChipIceCream } from './creamy-mint-chocolate-chip-ice-cream'
+import { creamyStrawberryIceCream } from './creamy-strawberry-ice-cream'
 import { elderflowerDreamIceCream } from './elderflower-dream-ice-cream'
 import { greekYogurtBase } from './greek-yogurt-base'
 import { hazelnutHeavenIceCream } from './hazelnut-heaven-ice-cream'
@@ -102,6 +103,7 @@ export const CURATED_RECIPES: Recipe[] = [
   creamyMintChocolateChipIceCream,
   pannaCottaDreamIceCream,
   icedTeaDelightIceCream,
+  creamyStrawberryIceCream,
   strawberrySorbet,
   elderflowerDreamIceCream,
   pomegranateDelightIceCream,
