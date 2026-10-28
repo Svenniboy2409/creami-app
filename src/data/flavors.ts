@@ -53,4 +53,7 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   'birthday-cake': { from: '#fdf6e8', to: '#f6d9a8', scoop: '#fbf0d8', bits: [chips('#ef5a8a'), chips('#3fb6e6'), chips('#f7c331'), chips('#7ac943')] },
   hazelnut: { from: '#f7ecdf', to: '#d3a87c', scoop: '#e0bf97', bits: [chunks('#a8703f'), crumbs('#f0d9b5')] },
   'mixed-berry': { from: '#f4e6f3', to: '#cf9bc8', scoop: '#d9a1cb', bits: [chunks('#3d2f6e'), chunks('#c8344f')] },
+  'panna-cotta': { from: '#fdf7ec', to: '#ecd2a6', scoop: '#fcf5e6', bits: [chunks('#c98a3d'), chunks('#d23a48')] },
+  'iced-tea': { from: '#fbefe0', to: '#e3b37e', scoop: '#ecd2ad', bits: [specks('#5a3a24')] },
+  elderflower: { from: '#fbfaec', to: '#e4e2b0', scoop: '#fbf6df', bits: [crumbs('#fffdf2'), specks('#c9c27a')] },
 }
