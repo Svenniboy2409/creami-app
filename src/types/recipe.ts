@@ -52,6 +52,10 @@ export type Flavor =
   | 'panna-cotta'
   | 'iced-tea'
   | 'elderflower'
+  | 'pomegranate'
+  | 'butter-pecan'
+  | 'matcha'
+  | 'marshmallow'
 
 /** Pint size in US fluid ounces: 16 oz for Original/Breeze/Swirl, 24 oz for Deluxe. */
 export type PintSize = 16 | 24

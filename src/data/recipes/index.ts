@@ -6,6 +6,8 @@ import { biscoffIceCream } from './biscoff-ice-cream'
 import { blackberryBlissIceCream } from './blackberry-bliss-ice-cream'
 import { blueberryBlissIceCream } from './blueberry-bliss-ice-cream'
 import { brownieBlastIceCream } from './brownie-blast-ice-cream'
+import { brownieBlissIceCream } from './brownie-bliss-ice-cream'
+import { butterPecanIceCream } from './butter-pecan-ice-cream'
 import { cheesecakeDreamIceCream } from './cheesecake-dream-ice-cream'
 import { cherryDelightIceCream } from './cherry-delight-ice-cream'
 import { chipMintCoolIceCream } from './chip-mint-cool-ice-cream'
@@ -26,12 +28,15 @@ import { icedTeaDelightIceCream } from './iced-tea-delight-ice-cream'
 import { keyLimePieIceCream } from './key-lime-pie-ice-cream'
 import { mangoIceCream } from './mango-ice-cream'
 import { mangoSorbet } from './mango-sorbet'
+import { marshmallowDreamIceCream } from './marshmallow-dream-ice-cream'
+import { matchaDreamIceCream } from './matcha-dream-ice-cream'
 import { mintChocolateChipIceCream } from './mint-chocolate-chip-ice-cream'
 import { mixedBerriesIceCream } from './mixed-berries-ice-cream'
 import { pannaCottaDreamIceCream } from './panna-cotta-dream-ice-cream'
 import { peachesAndCreamIceCream } from './peaches-and-cream-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
 import { pistachioIceCream } from './pistachio-ice-cream'
+import { pomegranateDelightIceCream } from './pomegranate-delight-ice-cream'
 import { raspberryCheesecakeIceCream } from './raspberry-cheesecake-ice-cream'
 import { saltedCaramelIceCream } from './salted-caramel-ice-cream'
 import { strawberryIceCream } from './strawberry-ice-cream'
@@ -85,6 +90,11 @@ export const CURATED_RECIPES: Recipe[] = [
   icedTeaDelightIceCream,
   strawberrySorbet,
   elderflowerDreamIceCream,
+  pomegranateDelightIceCream,
+  brownieBlissIceCream,
+  butterPecanIceCream,
+  matchaDreamIceCream,
+  marshmallowDreamIceCream,
   // From around the web
   condensedMilkVanillaIceCream,
   // The five bases, to flavour your own way

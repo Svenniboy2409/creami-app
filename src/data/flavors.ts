@@ -56,4 +56,8 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   'panna-cotta': { from: '#fdf7ec', to: '#ecd2a6', scoop: '#fcf5e6', bits: [chunks('#c98a3d'), chunks('#d23a48')] },
   'iced-tea': { from: '#fbefe0', to: '#e3b37e', scoop: '#ecd2ad', bits: [specks('#5a3a24')] },
   elderflower: { from: '#fbfaec', to: '#e4e2b0', scoop: '#fbf6df', bits: [crumbs('#fffdf2'), specks('#c9c27a')] },
+  pomegranate: { from: '#fde8ee', to: '#f0a1b6', scoop: '#f5c2cf', bits: [chunks('#a5122e')] },
+  'butter-pecan': { from: '#fbf1e2', to: '#e2bf8c', scoop: '#f4e2bf', bits: [chunks('#8a4f24')] },
+  matcha: { from: '#eef3e0', to: '#b9cf8e', scoop: '#a9c47c', bits: [specks('#5f7f36')] },
+  marshmallow: { from: '#fdf6f4', to: '#f4d3db', scoop: '#fdf4e6', bits: [chunks('#ffffff'), chunks('#f6bfd0')] },
 }
