@@ -2,8 +2,11 @@ import type { Recipe } from '../../types/recipe'
 import { bananaCreamPieIceCream } from './banana-cream-pie-ice-cream'
 import { bananaSplitIceCream } from './banana-split-ice-cream'
 import { biscoffIceCream } from './biscoff-ice-cream'
+import { blackberryBlissIceCream } from './blackberry-bliss-ice-cream'
+import { blueberryBlissIceCream } from './blueberry-bliss-ice-cream'
 import { brownieBlastIceCream } from './brownie-blast-ice-cream'
 import { cheesecakeDreamIceCream } from './cheesecake-dream-ice-cream'
+import { chipMintCoolIceCream } from './chip-mint-cool-ice-cream'
 import { chocolateBase } from './chocolate-base'
 import { chocolateHazelnutIceCream } from './chocolate-hazelnut-ice-cream'
 import { chocolateIceCream } from './chocolate-ice-cream'
@@ -19,11 +22,13 @@ import { keyLimePieIceCream } from './key-lime-pie-ice-cream'
 import { mangoIceCream } from './mango-ice-cream'
 import { mangoSorbet } from './mango-sorbet'
 import { mintChocolateChipIceCream } from './mint-chocolate-chip-ice-cream'
+import { peachesAndCreamIceCream } from './peaches-and-cream-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
 import { pistachioIceCream } from './pistachio-ice-cream'
 import { raspberryCheesecakeIceCream } from './raspberry-cheesecake-ice-cream'
 import { saltedCaramelIceCream } from './salted-caramel-ice-cream'
 import { strawberryIceCream } from './strawberry-ice-cream'
+import { tiramisuDreamIceCream } from './tiramisu-dream-ice-cream'
 import { ultimatePeanutButterCupIceCream } from './ultimate-peanut-butter-cup-ice-cream'
 import { vanillaBase } from './vanilla-base'
 import { vanillaBeanIceCream } from './vanilla-bean-ice-cream'
@@ -59,6 +64,11 @@ export const CURATED_RECIPES: Recipe[] = [
   bananaSplitIceCream,
   cinnamonDreamIceCream,
   brownieBlastIceCream,
+  peachesAndCreamIceCream,
+  blueberryBlissIceCream,
+  tiramisuDreamIceCream,
+  chipMintCoolIceCream,
+  blackberryBlissIceCream,
   // From around the web
   condensedMilkVanillaIceCream,
   // The five bases, to flavour your own way

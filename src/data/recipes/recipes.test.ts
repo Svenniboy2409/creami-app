@@ -11,6 +11,13 @@ describe('curated recipes', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
+  it('have unique names in both languages, so a second card of the same recipe extends the first instead', () => {
+    for (const names of [CURATED_RECIPES.map((r) => r.name), CURATED_RECIPES.map((r) => r.translations?.nl?.name)]) {
+      const lower = names.map((name) => name?.toLowerCase())
+      expect(lower.filter((name, index) => lower.indexOf(name) !== index)).toEqual([])
+    }
+  })
+
   it.each(CURATED_RECIPES.map((r) => [r.id, r] as const))('%s is complete and consistent', (_, recipe) => {
     // A photo, and a flavour to draw instead when illustrations are switched on in Settings.
     expect(recipe.image).toBeTruthy()

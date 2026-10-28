@@ -41,6 +41,10 @@ export type Flavor =
   | 'banana-split'
   | 'cinnamon'
   | 'brownie'
+  | 'peach'
+  | 'blueberry'
+  | 'tiramisu'
+  | 'blackberry'
 
 /** Pint size in US fluid ounces: 16 oz for Original/Breeze/Swirl, 24 oz for Deluxe. */
 export type PintSize = 16 | 24

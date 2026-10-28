@@ -45,4 +45,8 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   'banana-split': { from: '#fff4dc', to: '#f4c98a', scoop: '#fbf0d6', bits: [chips(DARK_CHOCOLATE), chunks('#d93a4a'), chunks('#f2cd4b')] },
   cinnamon: { from: '#f8ece0', to: '#d6a47c', scoop: '#e9cdb0', bits: [specks('#8a4f2a'), crumbs('#c9955a')] },
   brownie: { from: '#efe1d6', to: '#b8876b', scoop: '#6e4030', bits: [chunks('#3b2119'), chips('#2a1712')] },
+  peach: { from: '#fff0e2', to: '#ffbe8f', scoop: '#fbe8c8', bits: [chunks('#f39a3e')] },
+  blueberry: { from: '#eeeaf8', to: '#b3a5dc', scoop: '#b9a3d6', bits: [chunks('#3d3b7a'), chunks('#5b3f86')] },
+  tiramisu: { from: '#f6ece2', to: '#cfa784', scoop: '#f0e1c8', bits: [chunks('#4a2c22'), specks('#7a4a35')] },
+  blackberry: { from: '#f6e8f1', to: '#d4a2c4', scoop: '#e7bfd8', bits: [chunks('#3a1a3a'), chunks('#5b2457')] },
 }
