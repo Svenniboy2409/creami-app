@@ -4,6 +4,7 @@ const METRIC_UNITS = new Set(['g', 'kg', 'ml', 'l', 'cl', 'dl'])
 
 const FRACTIONS: [number, string][] = [
   [0, ''],
+  [1 / 8, '⅛'],
   [1 / 4, '¼'],
   [1 / 3, '⅓'],
   [1 / 2, '½'],
@@ -16,12 +17,17 @@ export function scaleFactor(from: PintSize, to: PintSize): number {
   return to / from
 }
 
+// A pinch is a pinch in any pint: two thirds of one isn't something anyone can measure.
+const UNSCALED_UNITS = new Set(['pinch'])
+
 export function scaleGroups(groups: IngredientGroup[], from: PintSize, to: PintSize): IngredientGroup[] {
   const factor = scaleFactor(from, to)
   if (factor === 1) return groups
   return groups.map((group) => ({
     ...group,
-    items: group.items.map((item) => (item.qty === undefined ? item : { ...item, qty: item.qty * factor })),
+    items: group.items.map((item) =>
+      item.qty === undefined || (item.unit && UNSCALED_UNITS.has(item.unit)) ? item : { ...item, qty: item.qty * factor },
+    ),
   }))
 }
 

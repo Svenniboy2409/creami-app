@@ -59,6 +59,10 @@ export type Flavor =
   | 'cotton-candy'
   | 'passion-fruit'
   | 'lemon'
+  | 'strawberry-banana'
+  | 'pear'
+  | 'pineapple'
+  | 'aperol-spritz'
 
 /** Pint size in US fluid ounces: 16 oz for Original/Breeze/Swirl, 24 oz for Deluxe. */
 export type PintSize = 16 | 24

@@ -12,6 +12,12 @@ describe('scaleGroups', () => {
     expect(scaleGroups(groups, 24, 16)[0].items[0].qty).toBeCloseTo(66.67, 1)
   })
 
+  it('leaves a pinch a pinch', () => {
+    const salt = [{ items: [{ qty: 1, unit: 'pinch', name: 'salt' }] }]
+    expect(scaleGroups(salt, 24, 16)[0].items[0].qty).toBe(1)
+    expect(scaleGroups(salt, 16, 24)[0].items[0].qty).toBe(1)
+  })
+
   it('leaves items without a quantity untouched', () => {
     expect(scaleGroups(groups, 16, 24)[0].items[1]).toEqual({ name: 'pinch of salt' })
   })
@@ -35,6 +41,7 @@ describe('formatQty', () => {
   it('uses kitchen fractions for spoons and pieces', () => {
     expect(formatQty(1.5, 'tbsp')).toBe('1 ½')
     expect(formatQty(0.75, 'tsp')).toBe('¾')
+    expect(formatQty(0.125, 'tsp')).toBe('⅛')
     expect(formatQty(0.66, 'cup')).toBe('⅔')
     expect(formatQty(2)).toBe('2')
     expect(formatQty(2.95)).toBe('3')

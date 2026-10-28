@@ -63,4 +63,8 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   'cotton-candy': { from: '#fdeaf3', to: '#bfe0f5', scoop: '#f7c2d9', bits: [chunks('#8fd0f2'), chips('#f48fb8')] },
   'passion-fruit': { from: '#f6ecf6', to: '#c9a0cf', scoop: '#f8e6b6', bits: [specks('#2b2118'), chunks('#9a4d93')] },
   lemon: { from: '#fffbe0', to: '#f8e27a', scoop: '#fcf0a8', bits: [specks('#f2c21b'), crumbs('#e8cf9a')] },
+  'strawberry-banana': { from: '#fff0f0', to: '#f6c6a6', scoop: '#fbe9d6', bits: [chunks('#d6476a'), chunks('#f6dc8a')] },
+  pear: { from: '#f9f8e6', to: '#dfe0a6', scoop: '#f6efd2', bits: [chunks('#e3d07a')] },
+  pineapple: { from: '#fffbe0', to: '#ffe066', scoop: '#fbe36b', bits: [chunks('#f2b705')] },
+  'aperol-spritz': { from: '#fff0e4', to: '#ffb27a', scoop: '#f9a26b', bits: [chunks('#e8590c')] },
 }

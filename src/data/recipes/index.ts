@@ -1,4 +1,5 @@
 import type { Recipe } from '../../types/recipe'
+import { aperolSpritzSorbet } from './aperol-spritz-sorbet'
 import { bananaCreamPieIceCream } from './banana-cream-pie-ice-cream'
 import { bananaSplitIceCream } from './banana-split-ice-cream'
 import { birthdayCakeDreamIceCream } from './birthday-cake-dream-ice-cream'
@@ -43,10 +44,13 @@ import { passionFruitIceCream } from './passion-fruit-ice-cream'
 import { peachPerfectionIceCream } from './peach-perfection-ice-cream'
 import { peachesAndCreamIceCream } from './peaches-and-cream-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
+import { pearAndRumIceCream } from './pear-and-rum-ice-cream'
+import { pineappleSorbet } from './pineapple-sorbet'
 import { pistachioIceCream } from './pistachio-ice-cream'
 import { pomegranateDelightIceCream } from './pomegranate-delight-ice-cream'
 import { raspberryCheesecakeIceCream } from './raspberry-cheesecake-ice-cream'
 import { saltedCaramelIceCream } from './salted-caramel-ice-cream'
+import { strawberryBananaIceCream } from './strawberry-banana-ice-cream'
 import { strawberryIceCream } from './strawberry-ice-cream'
 import { strawberrySorbet } from './strawberry-sorbet'
 import { tiramisuDreamIceCream } from './tiramisu-dream-ice-cream'
@@ -111,6 +115,10 @@ export const CURATED_RECIPES: Recipe[] = [
   cacaoDreamIceCream,
   matchaMagicIceCream,
   coconutCreamFrozenYogurt,
+  strawberryBananaIceCream,
+  pearAndRumIceCream,
+  pineappleSorbet,
+  aperolSpritzSorbet,
   // From around the web
   condensedMilkVanillaIceCream,
   // The five bases, to flavour your own way
