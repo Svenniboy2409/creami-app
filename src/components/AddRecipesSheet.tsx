@@ -9,6 +9,7 @@ import type { Folder } from '../types/recipe'
 import { RecipeImage } from './RecipeImage'
 import { SearchBar } from './SearchBar'
 import { Sheet } from './Sheet'
+import { WholeWords } from './WholeWords'
 
 /**
  * Filling a folder from the folder itself: every recipe with its picture, tap
@@ -79,7 +80,9 @@ function RecipePicker({ folder, onDone }: { folder: Folder; onDone: () => void }
                 <span className="block aspect-square overflow-hidden rounded-xl">
                   <RecipeImage recipe={recipe} />
                 </span>
-                <span className="line-clamp-2 min-h-[2.5em] px-1 pb-0.5 pt-1.5 text-xs font-bold leading-tight">{recipe.name}</span>
+                <span className="line-clamp-2 min-h-[2.5em] px-1 pb-0.5 pt-1.5 text-xs font-bold leading-tight [overflow-wrap:anywhere]">
+                  <WholeWords text={recipe.name} />
+                </span>
                 <span
                   className={`absolute right-2 top-2 grid size-6 place-items-center rounded-full border-2 shadow-sm transition-colors ${
                     on ? 'animate-chip-pop border-raspberry bg-raspberry text-white' : 'border-white bg-white/70'

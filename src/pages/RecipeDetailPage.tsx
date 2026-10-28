@@ -25,6 +25,7 @@ import { FolderPickerSheet } from '../components/FolderPickerSheet'
 import { RecipeImage } from '../components/RecipeImage'
 import { Sheet, SheetAction } from '../components/Sheet'
 import { TONES, type ToneClasses } from '../components/tone'
+import { WholeWords } from '../components/WholeWords'
 import { BASIC_TIPS, CATEGORIES, DIFFICULTIES, MODEL_ORDER, MODELS, PINT_SIZES } from '../data/creami'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
@@ -304,7 +305,9 @@ export function RecipeDetailPage() {
             </span>
           ))}
         </div>
-        <h1 className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-tight">{recipe.name}</h1>
+        <h1 className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-tight [overflow-wrap:anywhere]">
+          <WholeWords text={recipe.name} />
+        </h1>
         {recipe.tagline && <p className="mt-2 text-lg font-semibold text-ink-soft">{recipe.tagline}</p>}
         {recipe.description && <p className="mt-3 whitespace-pre-line leading-relaxed text-ink/85">{recipe.description}</p>}
 
