@@ -45,6 +45,7 @@ export const smoresIceCream: Recipe = {
       items: [
         { qty: 2, unit: 'tbsp', name: 'mini marshmallows' },
         { qty: 2, unit: 'tbsp', name: 'graham cracker crumbs' },
+        { name: 'chocolate sauce', note: 'optional, a drizzle' },
       ],
     },
   ],
@@ -74,11 +75,12 @@ export const smoresIceCream: Recipe = {
     },
     {
       title: 'Serve',
-      text: 'Scatter the rest of the marshmallows and crumbs on top.',
+      text: 'Scoop it into bowls or cones and scatter the rest of the marshmallows and crumbs on top, with a drizzle of chocolate sauce if you like.',
     },
   ],
   tips: [
     'The original makes three 16 oz pints in one go: set the pint counter to 3 for the whole batch, and never pack it all into one pint.',
+    'Making your own crumbs? Put graham crackers or digestive biscuits in a zip-lock bag and crush them into small pieces with a rolling pin or your hands.',
     'For a richer chocolate flavour, use dark chocolate.',
     'Add nuts or caramel sauce for extra texture and flavour.',
   ],
@@ -110,6 +112,7 @@ export const smoresIceCream: Recipe = {
           items: [
             { qty: 2, unit: 'tbsp', name: 'mini-marshmallows' },
             { qty: 2, unit: 'tbsp', name: 'grahamcrackerkruimels' },
+            { name: 'chocoladesaus', note: 'optioneel, een scheutje' },
           ],
         },
       ],
@@ -139,11 +142,12 @@ export const smoresIceCream: Recipe = {
         },
         {
           title: 'Serveren',
-          text: 'Strooi de rest van de marshmallows en de kruimels erover.',
+          text: 'Schep het in kommetjes of hoorntjes en strooi de rest van de marshmallows en de kruimels erover, met een scheutje chocoladesaus als je wilt.',
         },
       ],
       tips: [
         'Het origineel is voor drie 16 oz-pints tegelijk: zet de pint-teller op 3 voor de hele hoeveelheid, en stop het nooit allemaal in één pint.',
+        'Zelf kruimels maken? Doe grahamcrackers of digestive biscuits in een diepvrieszakje en maak ze met een deegroller of je handen fijn tot kleine stukjes.',
         'Voor een vollere chocoladesmaak gebruik je pure chocolade.',
         'Voeg noten of karamelsaus toe voor extra bite en smaak.',
       ],
