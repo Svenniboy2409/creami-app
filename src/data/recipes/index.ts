@@ -1,6 +1,7 @@
 import type { Recipe } from '../../types/recipe'
 import { aperolSpritzSorbet } from './aperol-spritz-sorbet'
 import { bananaCreamPieIceCream } from './banana-cream-pie-ice-cream'
+import { bananaPuddingPieIceCream } from './banana-pudding-pie-ice-cream'
 import { bananaSplitIceCream } from './banana-split-ice-cream'
 import { birthdayCakeDreamIceCream } from './birthday-cake-dream-ice-cream'
 import { birthdayCakeIceCream } from './birthday-cake-ice-cream'
@@ -15,6 +16,7 @@ import { cheesecakeDreamIceCream } from './cheesecake-dream-ice-cream'
 import { cherryDelightIceCream } from './cherry-delight-ice-cream'
 import { chipMintCoolIceCream } from './chip-mint-cool-ice-cream'
 import { chocolateBase } from './chocolate-base'
+import { chocolateDevotionIceCream } from './chocolate-devotion-ice-cream'
 import { chocolateHazelnutIceCream } from './chocolate-hazelnut-ice-cream'
 import { chocolateIceCream } from './chocolate-ice-cream'
 import { cinnamonDreamIceCream } from './cinnamon-dream-ice-cream'
@@ -36,6 +38,7 @@ import { icedTeaDelightIceCream } from './iced-tea-delight-ice-cream'
 import { keyLimePieIceCream } from './key-lime-pie-ice-cream'
 import { mangoIceCream } from './mango-ice-cream'
 import { mangoSorbet } from './mango-sorbet'
+import { mapleCoffeeIceCream } from './maple-coffee-ice-cream'
 import { marshmallowDreamIceCream } from './marshmallow-dream-ice-cream'
 import { matchaDreamIceCream } from './matcha-dream-ice-cream'
 import { matchaMagicIceCream } from './matcha-magic-ice-cream'
@@ -127,6 +130,10 @@ export const CURATED_RECIPES: Recipe[] = [
   // From around the web
   condensedMilkVanillaIceCream,
   smoresIceCream,
+  // Sara J Sweets on YouTube
+  bananaPuddingPieIceCream,
+  chocolateDevotionIceCream,
+  mapleCoffeeIceCream,
   // The five bases, to flavour your own way
   vanillaBase,
   chocolateBase,
