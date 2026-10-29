@@ -52,6 +52,7 @@ import { pistachioIceCream } from './pistachio-ice-cream'
 import { pomegranateDelightIceCream } from './pomegranate-delight-ice-cream'
 import { raspberryCheesecakeIceCream } from './raspberry-cheesecake-ice-cream'
 import { saltedCaramelIceCream } from './salted-caramel-ice-cream'
+import { smoresIceCream } from './smores-ice-cream'
 import { strawberryBananaIceCream } from './strawberry-banana-ice-cream'
 import { strawberryIceCream } from './strawberry-ice-cream'
 import { strawberrySorbet } from './strawberry-sorbet'
@@ -125,6 +126,7 @@ export const CURATED_RECIPES: Recipe[] = [
   aperolSpritzSorbet,
   // From around the web
   condensedMilkVanillaIceCream,
+  smoresIceCream,
   // The five bases, to flavour your own way
   vanillaBase,
   chocolateBase,

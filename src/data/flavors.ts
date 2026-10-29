@@ -67,4 +67,5 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   pear: { from: '#f9f8e6', to: '#dfe0a6', scoop: '#f6efd2', bits: [chunks('#e3d07a')] },
   pineapple: { from: '#fffbe0', to: '#ffe066', scoop: '#fbe36b', bits: [chunks('#f2b705')] },
   'aperol-spritz': { from: '#fff0e4', to: '#ffb27a', scoop: '#f9a26b', bits: [chunks('#e8590c')] },
+  smores: { from: '#f7ece2', to: '#cfa17d', scoop: '#e6cfb5', bits: [chunks('#4a2c22'), crumbs('#c98d4e'), chunks('#fffaf2')] },
 }

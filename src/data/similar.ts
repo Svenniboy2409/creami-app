@@ -25,6 +25,7 @@ export const SIMILAR: string[][] = [
   ['coconut-milk-base', 'coconut-cream-frozen-yogurt'],
   ['coffee-ice-cream', 'tiramisu-dream-ice-cream'],
   ['key-lime-pie-ice-cream', 'citronmane-ice-cream'],
+  ['smores-ice-cream', 'marshmallow-dream-ice-cream'],
 ]
 
 /** The recipes that go with this one, in the order Discover lists them. */
