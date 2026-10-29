@@ -78,7 +78,6 @@ export const bananaPuddingPieIceCream: Recipe = {
   ],
   tips: [
     'Freezing the banana slices first keeps them against the wall when you pour in the base; they are spun into the ice cream with the rest.',
-    'Sara holds the frozen pint under hot water for a minute before spinning, against ice build-up.',
   ],
   credits: { author: 'Sara J Sweets', url: 'https://www.youtube.com/shorts/Z48v6cNLDHM' },
   translations: {
@@ -140,7 +139,6 @@ export const bananaPuddingPieIceCream: Recipe = {
       ],
       tips: [
         'Doordat de plakjes banaan eerst bevriezen, blijven ze tegen de wand zitten als je de basis erin giet; ze worden daarna gewoon mee tot ijs gedraaid.',
-        'Sara houdt de bevroren pint voor het draaien een minuut onder heet water, tegen ijsaanslag.',
       ],
     },
   },

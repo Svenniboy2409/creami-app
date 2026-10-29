@@ -136,6 +136,7 @@ export const SUGGESTED_TAGS = [
 export const BASIC_TIPS = [
   'Fill no higher than the MAX FILL line; a little left over makes a lovely milkshake.',
   'Always freeze the base for a full 24 hours, on a level surface.',
+  'Hold the frozen pint under hot water for a minute before the first spin; it keeps ice from building up.',
   'Crumbly after the first spin? Add a splash of milk and use RE-SPIN.',
   'Add mix-ins after the first spin: make a well down the middle, add them and run MIX-IN.',
   'Leftovers? Smooth the top, put the lid on and freeze; process again before serving.',

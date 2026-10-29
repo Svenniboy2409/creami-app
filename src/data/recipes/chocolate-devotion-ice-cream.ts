@@ -81,7 +81,7 @@ export const chocolateDevotionIceCream: Recipe = {
     },
   ],
   tips: [
-    'Sara’s rule for any chocolate base: warm the milk first. It melts the cocoa butter in the cocoa powder, so it blends into a silky-smooth base.',
+    'For any chocolate base, warm the milk first: it melts the cocoa butter in the cocoa powder, so it blends into a silky-smooth base.',
   ],
   credits: { author: 'Sara J Sweets', url: 'https://www.youtube.com/shorts/uupWwyRCizM' },
   translations: {
@@ -145,7 +145,7 @@ export const chocolateDevotionIceCream: Recipe = {
         },
       ],
       tips: [
-        'Sara’s regel voor elke chocoladebasis: verwarm eerst de melk. Dan smelt de cacaoboter in het cacaopoeder en wordt de basis zijdezacht.',
+        'Verwarm voor elke chocoladebasis eerst de melk: dan smelt de cacaoboter in het cacaopoeder en wordt de basis zijdezacht.',
       ],
     },
   },

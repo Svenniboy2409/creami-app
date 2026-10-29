@@ -54,7 +54,7 @@ export const mapleCoffeeIceCream: Recipe = {
     },
   ],
   tips: [
-    'For a thick ice cream, re-spin without adding milk: Sara needed only one re-spin for a thick and creamy result.',
+    'For a thick ice cream, re-spin without adding milk: in the original, one re-spin was enough for a thick and creamy result.',
   ],
   credits: { author: 'Sara J Sweets', url: 'https://www.youtube.com/shorts/AJcv6jd4tcg' },
   translations: {
@@ -93,7 +93,7 @@ export const mapleCoffeeIceCream: Recipe = {
         },
       ],
       tips: [
-        'Wil je het ijs dik? Draai dan RE-SPIN zonder extra melk: Sara had maar één re-spin nodig voor een dik en romig resultaat.',
+        'Wil je het ijs dik? Draai dan RE-SPIN zonder extra melk: in het origineel was één re-spin genoeg voor een dik en romig resultaat.',
       ],
     },
   },
