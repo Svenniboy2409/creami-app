@@ -16,7 +16,7 @@ export const whiteChocolateIceCream: Recipe = {
   program: 'Ice Cream',
   basePint: 24,
   servings: '4–6',
-  difficulty: 'easy',
+  difficulty: 'medium',
   times: { prepMin: 10, freezeHours: 12 },
   ingredients: [
     {

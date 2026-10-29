@@ -20,7 +20,7 @@ export const smoresIceCream: Recipe = {
   program: 'Ice Cream',
   basePint: 16,
   servings: '2–3',
-  difficulty: 'easy',
+  difficulty: 'medium',
   times: { prepMin: 10, freezeHours: 24 },
   ingredients: [
     {

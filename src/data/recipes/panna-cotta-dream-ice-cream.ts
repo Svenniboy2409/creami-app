@@ -19,7 +19,7 @@ export const pannaCottaDreamIceCream: Recipe = {
   program: 'Ice Cream',
   basePint: 24,
   servings: '4–6',
-  difficulty: 'easy',
+  difficulty: 'advanced',
   times: { prepMin: 10, freezeHours: 24 },
   ingredients: [
     {

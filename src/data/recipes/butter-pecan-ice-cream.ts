@@ -19,7 +19,7 @@ export const butterPecanIceCream: Recipe = {
   program: 'Ice Cream',
   basePint: 24,
   servings: '4–6',
-  difficulty: 'easy',
+  difficulty: 'medium',
   times: { prepMin: 10, freezeHours: 24 },
   ingredients: [
     {
