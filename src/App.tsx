@@ -1,10 +1,11 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
-import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { HashRouter, Navigate, Route, Routes, useLocation, useNavigationType, type Location } from 'react-router'
 import { BottomNav } from './components/BottomNav'
 import { ToastProvider } from './components/Toast'
 import { I18nProvider } from './hooks/I18nProvider'
 import { LibraryProvider } from './hooks/LibraryProvider'
 import { RecipeEditorProvider } from './hooks/RecipeEditorProvider'
+import { moveBackStack, type StackEntry } from './lib/backStack'
 import { recall, remember } from './lib/pageMemory'
 import { DiscoverPage } from './pages/DiscoverPage'
 import { FolderPage } from './pages/FolderPage'
@@ -66,18 +67,73 @@ function PageMemory() {
   return null
 }
 
+let nextEntryId = 0
+const newEntryId = () => nextEntryId++
+
+const historyIndex = () => (window.history.state as { idx?: number } | null)?.idx ?? 0
+
+/**
+ * The pages you came through to get here, in the order the browser history
+ * has them. Each one stays mounted while another lies on top of it, so Back
+ * shows it exactly as you left it rather than building it again.
+ */
+function useBackStack(): StackEntry<Location>[] {
+  const location = useLocation()
+  const navigationType = useNavigationType()
+  const [stack, setStack] = useState(() => ({
+    location,
+    entries: moveBackStack<Location>([], historyIndex(), 'PUSH', location, newEntryId),
+  }))
+  let entries = stack.entries
+  // Every move through the history is a new location object; an address typed
+  // by hand can share its key with another, so the object is what counts.
+  if (stack.location !== location) {
+    entries = moveBackStack(stack.entries, historyIndex(), navigationType, location, newEntryId)
+    setStack({ location, entries })
+  }
+  return entries.filter((entry) => entry !== undefined)
+}
+
+function StackPage({ location, active }: { location: Location; active: boolean }) {
+  // Where it was scrolled when the next page went on top. While hidden it is
+  // held at that height, out of the flow, so nothing in it moves or starts
+  // over; when it comes back the scroll is set to the same place.
+  const [hiddenAt, setHiddenAt] = useState<number | null>(null)
+  if (!active && hiddenAt === null) setHiddenAt(window.scrollY)
+  if (active && hiddenAt !== null) setHiddenAt(null)
+  return (
+    <div
+      inert={!active}
+      className={active ? undefined : 'pointer-events-none invisible fixed inset-x-0 mx-auto max-w-md'}
+      style={active ? undefined : { top: -(hiddenAt ?? window.scrollY) }}
+    >
+      {/* Keyed on the path so every new page fades in as you arrive on it. */}
+      <div key={location.pathname} className="animate-page-in">
+        <Routes location={location}>
+          <Route index element={<DiscoverPage />} />
+          <Route path="library" element={<LibraryPage />} />
+          <Route path="recipe/:id" element={<RecipeDetailPage />} />
+          <Route path="folder/:id" element={<FolderPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </div>
+  )
+}
+
 function Layout() {
   const { pathname } = useLocation()
+  // The page you are on is the top one; the rest wait underneath.
+  const pages = useBackStack()
   // A recipe has the whole screen: its photo runs to the top, and no bar sits at the bottom.
   const isRecipe = pathname.startsWith('/recipe/')
   return (
     <>
       <PageMemory />
       <main className={`mx-auto min-h-dvh max-w-md ${isRecipe ? 'pb-[calc(3rem_+_env(safe-area-inset-bottom))]' : 'pb-36'}`}>
-        {/* Keyed on the path so every page fades in as you arrive on it. */}
-        <div key={pathname} className="animate-page-in">
-          <Outlet />
-        </div>
+        {pages.map((page, i) => (
+          <StackPage key={page.id} location={page.location} active={i === pages.length - 1} />
+        ))}
       </main>
       {!isRecipe && <BottomNav />}
     </>
@@ -92,15 +148,7 @@ export function App() {
           <HashRouter>
             {/* Inside the router, so saving a new recipe can open its page. */}
             <RecipeEditorProvider>
-              <Routes>
-                <Route element={<Layout />}>
-                  <Route index element={<DiscoverPage />} />
-                  <Route path="library" element={<LibraryPage />} />
-                  <Route path="recipe/:id" element={<RecipeDetailPage />} />
-                  <Route path="folder/:id" element={<FolderPage />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Route>
-              </Routes>
+              <Layout />
             </RecipeEditorProvider>
           </HashRouter>
         </ToastProvider>

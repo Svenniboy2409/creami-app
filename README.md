@@ -44,7 +44,7 @@ Built with Vite, React, TypeScript, Tailwind CSS v4, React Router (hash routing 
 | `src/data/similar.ts` | Groups of similar recipes, for "Also try these flavours" |
 | `src/data/flavors.ts` | Colours of each flavour's pint illustration |
 | `src/assets/recipes/` | Photos for curated recipes |
-| `src/lib/` | Storage (IndexedDB), pint scaling, quantity parsing, search and filters, machines, page memory, image compression, translations |
+| `src/lib/` | Storage (IndexedDB), pint scaling, quantity parsing, search and filters, machines, page memory, the back stack, image compression, translations |
 | `src/lib/strings-nl.ts` | The Dutch interface text, keyed by the English |
 | `src/components/` | Cards, sheets, toasts, the filter sheet, folders, the drag-to-rearrange grid and `WholeWords` (titles that only hyphenate where a word can't fit) |
 | `src/pages/` | Discover, Library, folder and recipe detail |
@@ -90,6 +90,7 @@ Chromium and Playwright are installed in the cloud sessions. Start `npx vite --p
 - Titles wrap between whole words (`WholeWords`); only a word wider than a line may be hyphenated.
 - Discover shows chip rows for **category** and **taste**; the filter sheet has, in order, machine, category, taste, program and tags. Chips only list values that occur in the recipes; the machines always show all four.
 - Pages remember their state **while the app is open** (`src/lib/pageMemory.ts`), not after it closes. The Library opens on **Favorites**.
+- **Nothing reloads in between.** A page you leave by following a link stays mounted underneath, hidden where it was (the back stack in `src/App.tsx` and `src/lib/backStack.ts`, up to six pages). Back shows it exactly as you left it: no fade, no photos loading again, the same scroll. Only a page you newly open fades in. Never hide a page with `display: none`: showing it again would restart every animation in it.
 
 ### Recipes
 
