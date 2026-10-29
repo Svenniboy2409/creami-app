@@ -20,7 +20,7 @@ export const pearAndRumIceCream: Recipe = {
   basePint: 24,
   servings: '4–6',
   difficulty: 'advanced',
-  times: { prepMin: 10, freezeHours: 24 },
+  times: { prepMin: 45, freezeHours: 24 },
   ingredients: [
     {
       title: 'Base',

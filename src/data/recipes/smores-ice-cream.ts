@@ -21,7 +21,7 @@ export const smoresIceCream: Recipe = {
   basePint: 16,
   servings: '2–3',
   difficulty: 'medium',
-  times: { prepMin: 10, freezeHours: 24 },
+  times: { prepMin: 15, freezeHours: 24 },
   ingredients: [
     {
       title: 'Base',

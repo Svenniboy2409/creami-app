@@ -19,7 +19,7 @@ export const raspberryCheesecakeIceCream: Recipe = {
   basePint: 16,
   servings: '3–4',
   difficulty: 'easy',
-  times: { prepMin: 10, freezeHours: 24 },
+  times: { prepMin: 15, freezeHours: 24 },
   ingredients: [
     {
       title: 'Base',

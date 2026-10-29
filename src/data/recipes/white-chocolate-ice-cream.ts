@@ -17,7 +17,7 @@ export const whiteChocolateIceCream: Recipe = {
   basePint: 24,
   servings: '4–6',
   difficulty: 'medium',
-  times: { prepMin: 10, freezeHours: 12 },
+  times: { prepMin: 20, freezeHours: 12 },
   ingredients: [
     {
       title: 'Base',

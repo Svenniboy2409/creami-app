@@ -20,7 +20,7 @@ export const birthdayCakeIceCream: Recipe = {
   basePint: 24,
   servings: '4–6',
   difficulty: 'medium',
-  times: { prepMin: 10, freezeHours: 24 },
+  times: { prepMin: 15, freezeHours: 24 },
   ingredients: [
     {
       title: 'Base',
