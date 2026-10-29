@@ -87,11 +87,10 @@ export const NL: Record<string, string> = {
   'Basic tips': 'Basistips',
   'For every recipe': 'Voor elk recept',
   // BASIC_TIPS in data/creami.ts
-  'Fill no higher than the MAX FILL line; a little left over makes a lovely milkshake.':
-    'Vul niet hoger dan de MAX FILL-lijn; een restje is heerlijk als milkshake.',
+  'Fill no higher than the MAX FILL line.': 'Vul niet hoger dan de MAX FILL-lijn.',
   'Always freeze the base for a full 24 hours, on a level surface.': 'Vries de basis altijd een volle 24 uur in, op een vlakke ondergrond.',
-  'Hold the frozen pint under hot water for a minute before the first spin; it keeps ice from building up.':
-    'Houd de bevroren pint voor de eerste keer draaien een minuut onder heet water; dat gaat ijsaanslag tegen.',
+  'Hold the frozen pint under hot water for 30\u00a0seconds to a minute before the first spin; it keeps ice from building up.':
+    'Houd de bevroren pint voor de eerste keer draaien 30\u00a0seconden tot een minuut onder heet water; dat gaat ijsaanslag tegen.',
   'Crumbly after the first spin? Add a splash of milk and use RE-SPIN.': 'Kruimelig na de eerste keer draaien? Voeg een scheutje melk toe en gebruik RE-SPIN.',
   'Add mix-ins after the first spin: make a well down the middle, add them and run MIX-IN.':
     'Voeg mix-ins pas toe na de eerste keer draaien: maak een kuil in het midden, doe ze erin en draai MIX-IN.',
