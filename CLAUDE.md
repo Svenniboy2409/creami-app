@@ -1,0 +1,1 @@
+Read `README.md` before you start, above all the section **Working on this project**: it holds how the owner wants this app built and how to work with them. Keep it up to date when the owner settles something new.
