@@ -14,6 +14,7 @@ import { brownieBlissIceCream } from './brownie-bliss-ice-cream'
 import { butterPecanIceCream } from './butter-pecan-ice-cream'
 import { cacaoDreamIceCream } from './cacao-dream-ice-cream'
 import { caramelApplePieIceCream } from './caramel-apple-pie-ice-cream'
+import { caramelPretzelDateIceCream } from './caramel-pretzel-date-ice-cream'
 import { cheesecakeDreamIceCream } from './cheesecake-dream-ice-cream'
 import { cherryDelightIceCream } from './cherry-delight-ice-cream'
 import { chipMintCoolIceCream } from './chip-mint-cool-ice-cream'
@@ -36,6 +37,7 @@ import { creamyStrawberryIceCream } from './creamy-strawberry-ice-cream'
 import { elderflowerDreamIceCream } from './elderflower-dream-ice-cream'
 import { greekYogurtBase } from './greek-yogurt-base'
 import { hazelnutHeavenIceCream } from './hazelnut-heaven-ice-cream'
+import { honeyStrawberryIceCream } from './honey-strawberry-ice-cream'
 import { icedTeaDelightIceCream } from './iced-tea-delight-ice-cream'
 import { keyLimePieIceCream } from './key-lime-pie-ice-cream'
 import { mangoIceCream } from './mango-ice-cream'
@@ -148,6 +150,8 @@ export const CURATED_RECIPES: Recipe[] = [
   caramelApplePieIceCream,
   mangoYogurtIceCream,
   berryMangoSorbet,
+  caramelPretzelDateIceCream,
+  honeyStrawberryIceCream,
   // The five bases, to flavour your own way
   vanillaBase,
   chocolateBase,

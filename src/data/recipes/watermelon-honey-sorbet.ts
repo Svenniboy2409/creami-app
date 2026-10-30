@@ -2,10 +2,10 @@ import image from '../../assets/recipes/watermelon-honey-sorbet.jpg'
 import type { Recipe } from '../../types/recipe'
 
 // After Sara J Sweets' YouTube Short, in our own words, with a photo from the
-// video. The amounts are the ones she gives as she goes: watermelon cubes to
-// fill the pint (about a quarter of a watermelon for her 16 oz Swirl pint) and
-// about a tablespoon of honey. Only screen recordings were shared, so the
-// credit links to her channel.
+// video and the amounts from its description, for her 16 oz Swirl pint. Its
+// 2–3 cups of watermelon chunks are 300–450 g: the middle of that goes in the
+// list so it scales with the pint, the range in a tip. Only screen recordings
+// were shared, so the credit links to her channel.
 export const watermelonHoneySorbet: Recipe = {
   id: 'watermelon-honey-sorbet',
   origin: 'curated',
@@ -26,7 +26,7 @@ export const watermelonHoneySorbet: Recipe = {
     {
       title: 'Base',
       items: [
-        { name: 'watermelon', note: 'in cubes, enough to fill the empty pint to the top' },
+        { qty: 380, unit: 'g', name: 'watermelon', note: 'in chunks' },
         { qty: 1, unit: 'tbsp', name: 'honey' },
       ],
     },
@@ -34,11 +34,11 @@ export const watermelonHoneySorbet: Recipe = {
   steps: [
     {
       title: 'Make the base',
-      text: 'Fill an empty CREAMi pint with watermelon cubes, as many as it will hold, and tip them into a blender. Blend until liquid, add the honey and blend again so it is spread evenly.',
+      text: 'Blend the watermelon chunks in a blender until liquid, add the honey and blend again so it is spread evenly.',
     },
     {
       title: 'Freeze',
-      text: 'Pour it all back into the pint, no higher than the MAX FILL line. Put the lid on and freeze on a level surface for 24 hours.',
+      text: 'Pour it into an empty CREAMi pint, no higher than the MAX FILL line. Put the lid on and freeze on a level surface for 24 hours.',
     },
     {
       title: 'Process',
@@ -51,7 +51,7 @@ export const watermelonHoneySorbet: Recipe = {
       program: 'Re-spin',
     },
   ],
-  tips: ['For a 16\u00a0oz pint that is about a quarter of a watermelon.'],
+  tips: ['The original takes 2–3 cups of chunks (300–450\u00a0g), as many as fit in the pint: for a 16\u00a0oz pint about a quarter of a watermelon.'],
   credits: { author: 'Sara J Sweets', url: 'https://www.youtube.com/@sarajsweets' },
   translations: {
     nl: {
@@ -61,7 +61,7 @@ export const watermelonHoneySorbet: Recipe = {
         {
           title: 'Basis',
           items: [
-            { name: 'watermeloen', note: 'in blokjes, genoeg om de lege pint tot de rand te vullen' },
+            { qty: 380, unit: 'g', name: 'watermeloen', note: 'in stukken' },
             { qty: 1, unit: 'tbsp', name: 'honing' },
           ],
         },
@@ -69,11 +69,11 @@ export const watermelonHoneySorbet: Recipe = {
       steps: [
         {
           title: 'Basis maken',
-          text: 'Vul een lege CREAMi-pint met zoveel watermeloenblokjes als erin passen en doe ze in een blender. Mix tot het vloeibaar is, voeg de honing toe en mix nog eens, zodat hij goed verdeeld is.',
+          text: 'Mix de stukken watermeloen in een blender tot het vloeibaar is, voeg de honing toe en mix nog eens, zodat hij goed verdeeld is.',
         },
         {
           title: 'Invriezen',
-          text: 'Giet alles terug in de pint, niet hoger dan de MAX FILL-lijn. Doe het deksel erop en vries 24 uur in op een vlakke ondergrond.',
+          text: 'Giet het in een lege CREAMi-pint, niet hoger dan de MAX FILL-lijn. Doe het deksel erop en vries 24 uur in op een vlakke ondergrond.',
         },
         {
           title: 'Draaien',
@@ -86,7 +86,7 @@ export const watermelonHoneySorbet: Recipe = {
           program: 'Re-spin',
         },
       ],
-      tips: ['Voor een 16\u00a0oz-pint is dat ongeveer een kwart watermeloen.'],
+      tips: ['Het origineel gebruikt 2–3 cups stukken (300–450\u00a0g), zoveel als er in de pint passen: voor een 16\u00a0oz-pint ongeveer een kwart watermeloen.'],
     },
   },
 }

@@ -30,6 +30,7 @@ describe('similar recipes', () => {
       'strawberry-sorbet',
       'banana-pudding-pie-ice-cream',
       'strawberry-mango-fruit-whip',
+      'honey-strawberry-ice-cream',
     ])
   })
 })

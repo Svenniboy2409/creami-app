@@ -7,7 +7,7 @@ import { CURATED_RECIPES } from './recipes'
  * the links always run both ways. A recipe can be in more than one group.
  */
 export const SIMILAR: string[][] = [
-  ['strawberry-ice-cream', 'creamy-strawberry-ice-cream', 'strawberry-sorbet', 'strawberry-banana-ice-cream', 'strawberry-mango-fruit-whip'],
+  ['strawberry-ice-cream', 'creamy-strawberry-ice-cream', 'strawberry-sorbet', 'strawberry-banana-ice-cream', 'strawberry-mango-fruit-whip', 'honey-strawberry-ice-cream'],
   ['vanilla-bean-ice-cream', 'condensed-milk-vanilla-ice-cream', 'vanilla-base'],
   ['chocolate-ice-cream', 'cacao-dream-ice-cream', 'chocolate-base', 'chocolate-devotion-ice-cream'],
   ['mint-chocolate-chip-ice-cream', 'creamy-mint-chocolate-chip-ice-cream', 'chip-mint-cool-ice-cream'],
@@ -27,6 +27,7 @@ export const SIMILAR: string[][] = [
   ['key-lime-pie-ice-cream', 'citronmane-ice-cream'],
   ['smores-ice-cream', 'marshmallow-dream-ice-cream'],
   ['cookies-and-cream-ice-cream', 'oreo-ice-cream'],
+  ['caramel-apple-pie-ice-cream', 'caramel-pretzel-date-ice-cream', 'salted-caramel-ice-cream'],
 ]
 
 /** The recipes that go with this one, in the order Discover lists them. */
