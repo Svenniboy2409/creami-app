@@ -64,6 +64,7 @@ import { tiramisuDreamIceCream } from './tiramisu-dream-ice-cream'
 import { ultimatePeanutButterCupIceCream } from './ultimate-peanut-butter-cup-ice-cream'
 import { vanillaBase } from './vanilla-base'
 import { vanillaBeanIceCream } from './vanilla-bean-ice-cream'
+import { watermelonHoneySorbet } from './watermelon-honey-sorbet'
 import { whiteChocolateIceCream } from './white-chocolate-ice-cream'
 
 /**
@@ -136,6 +137,7 @@ export const CURATED_RECIPES: Recipe[] = [
   chocolateDevotionIceCream,
   mapleCoffeeIceCream,
   strawberryMangoFruitWhip,
+  watermelonHoneySorbet,
   // The five bases, to flavour your own way
   vanillaBase,
   chocolateBase,

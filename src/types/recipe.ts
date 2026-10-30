@@ -65,6 +65,7 @@ export type Flavor =
   | 'aperol-spritz'
   | 'smores'
   | 'strawberry-mango'
+  | 'watermelon'
 
 /** What a recipe tastes like, for the taste filter on Discover. */
 export type Taste = 'sweet' | 'fruity' | 'refreshing' | 'creamy' | 'rich' | 'chocolatey' | 'nutty' | 'healthy'
