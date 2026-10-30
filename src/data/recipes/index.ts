@@ -3,6 +3,7 @@ import { aperolSpritzSorbet } from './aperol-spritz-sorbet'
 import { bananaCreamPieIceCream } from './banana-cream-pie-ice-cream'
 import { bananaPuddingPieIceCream } from './banana-pudding-pie-ice-cream'
 import { bananaSplitIceCream } from './banana-split-ice-cream'
+import { berryMangoSorbet } from './berry-mango-sorbet'
 import { birthdayCakeDreamIceCream } from './birthday-cake-dream-ice-cream'
 import { birthdayCakeIceCream } from './birthday-cake-ice-cream'
 import { biscoffIceCream } from './biscoff-ice-cream'
@@ -12,6 +13,7 @@ import { brownieBlastIceCream } from './brownie-blast-ice-cream'
 import { brownieBlissIceCream } from './brownie-bliss-ice-cream'
 import { butterPecanIceCream } from './butter-pecan-ice-cream'
 import { cacaoDreamIceCream } from './cacao-dream-ice-cream'
+import { caramelApplePieIceCream } from './caramel-apple-pie-ice-cream'
 import { cheesecakeDreamIceCream } from './cheesecake-dream-ice-cream'
 import { cherryDelightIceCream } from './cherry-delight-ice-cream'
 import { chipMintCoolIceCream } from './chip-mint-cool-ice-cream'
@@ -38,14 +40,17 @@ import { icedTeaDelightIceCream } from './iced-tea-delight-ice-cream'
 import { keyLimePieIceCream } from './key-lime-pie-ice-cream'
 import { mangoIceCream } from './mango-ice-cream'
 import { mangoSorbet } from './mango-sorbet'
+import { mangoYogurtIceCream } from './mango-yogurt-ice-cream'
 import { mapleCoffeeIceCream } from './maple-coffee-ice-cream'
 import { marshmallowDreamIceCream } from './marshmallow-dream-ice-cream'
 import { matchaDreamIceCream } from './matcha-dream-ice-cream'
 import { matchaMagicIceCream } from './matcha-magic-ice-cream'
 import { mintChocolateChipIceCream } from './mint-chocolate-chip-ice-cream'
 import { mixedBerriesIceCream } from './mixed-berries-ice-cream'
+import { oreoIceCream } from './oreo-ice-cream'
 import { pannaCottaDreamIceCream } from './panna-cotta-dream-ice-cream'
 import { passionFruitIceCream } from './passion-fruit-ice-cream'
+import { peachFrozenYogurt } from './peach-frozen-yogurt'
 import { peachPerfectionIceCream } from './peach-perfection-ice-cream'
 import { peachesAndCreamIceCream } from './peaches-and-cream-ice-cream'
 import { peanutButterCupIceCream } from './peanut-butter-cup-ice-cream'
@@ -138,6 +143,11 @@ export const CURATED_RECIPES: Recipe[] = [
   mapleCoffeeIceCream,
   strawberryMangoFruitWhip,
   watermelonHoneySorbet,
+  oreoIceCream,
+  peachFrozenYogurt,
+  caramelApplePieIceCream,
+  mangoYogurtIceCream,
+  berryMangoSorbet,
   // The five bases, to flavour your own way
   vanillaBase,
   chocolateBase,

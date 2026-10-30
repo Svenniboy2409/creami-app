@@ -42,6 +42,8 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   pistachio: { from: '#eef5e1', to: '#bcd69a', scoop: '#c8dc9c', bits: [chunks('#6f8f2f'), chunks('#8a5a3a')] },
   'strawberry-mango': { from: '#ffeae2', to: '#ffae94', scoop: '#f98f78', bits: [chunks('#f7b733'), chunks('#d9485f')] },
   watermelon: { from: '#ffe8ec', to: '#ffa3b1', scoop: '#f9909f', bits: [specks('#3b2a2a')] },
+  oreo: { from: '#efe4de', to: '#a88b7e', scoop: '#4f3229', bits: [crumbs('#2a1a15'), chunks('#f4ece4')] },
+  'apple-pie': { from: '#fbf1e6', to: '#e0b98f', scoop: '#efe0cf', bits: [chunks('#d9a35a'), specks('#8a5a35')] },
   biscoff: { from: '#f8ead8', to: '#d9a873', scoop: '#e7c495', bits: [crumbs('#a8642c'), chunks('#b8733a')] },
   'key-lime': { from: '#f1f8df', to: '#c6e08f', scoop: '#eef2c4', bits: [crumbs('#d1a35e'), specks('#6fa832')] },
   'banana-split': { from: '#fff4dc', to: '#f4c98a', scoop: '#fbf0d6', bits: [chips(DARK_CHOCOLATE), chunks('#d93a4a'), chunks('#f2cd4b')] },

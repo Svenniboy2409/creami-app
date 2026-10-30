@@ -15,9 +15,9 @@ export const SIMILAR: string[][] = [
   ['peanut-butter-cup-ice-cream', 'ultimate-peanut-butter-cup-ice-cream'],
   ['brownie-blast-ice-cream', 'brownie-bliss-ice-cream', 'chocolate-devotion-ice-cream'],
   ['cookie-dough-ice-cream', 'cookies-and-cream-ice-cream'],
-  ['mango-ice-cream', 'mango-sorbet', 'strawberry-mango-fruit-whip'],
+  ['mango-ice-cream', 'mango-sorbet', 'strawberry-mango-fruit-whip', 'mango-yogurt-ice-cream', 'berry-mango-sorbet'],
   ['matcha-dream-ice-cream', 'matcha-magic-ice-cream'],
-  ['peaches-and-cream-ice-cream', 'peach-perfection-ice-cream'],
+  ['peaches-and-cream-ice-cream', 'peach-perfection-ice-cream', 'peach-frozen-yogurt'],
   ['banana-cream-pie-ice-cream', 'banana-split-ice-cream', 'strawberry-banana-ice-cream', 'banana-pudding-pie-ice-cream'],
   ['blueberry-bliss-ice-cream', 'blackberry-bliss-ice-cream', 'mixed-berries-ice-cream'],
   ['raspberry-cheesecake-ice-cream', 'cheesecake-dream-ice-cream'],
@@ -26,6 +26,7 @@ export const SIMILAR: string[][] = [
   ['coffee-ice-cream', 'tiramisu-dream-ice-cream', 'maple-coffee-ice-cream'],
   ['key-lime-pie-ice-cream', 'citronmane-ice-cream'],
   ['smores-ice-cream', 'marshmallow-dream-ice-cream'],
+  ['cookies-and-cream-ice-cream', 'oreo-ice-cream'],
 ]
 
 /** The recipes that go with this one, in the order Discover lists them. */
