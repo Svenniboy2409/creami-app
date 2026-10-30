@@ -40,6 +40,7 @@ export const FLAVORS: Record<Flavor, FlavorLook> = {
   'salted-caramel': { from: '#fbeedd', to: '#e6b57f', scoop: '#e9c69c', bits: [chunks('#b4692c'), specks('#fffaf2')] },
   cheesecake: { from: '#fdf3ea', to: '#efc7b1', scoop: '#fcf3e3', bits: [chunks('#c8323f'), crumbs('#d4a15e')] },
   pistachio: { from: '#eef5e1', to: '#bcd69a', scoop: '#c8dc9c', bits: [chunks('#6f8f2f'), chunks('#8a5a3a')] },
+  'strawberry-mango': { from: '#ffeae2', to: '#ffae94', scoop: '#f98f78', bits: [chunks('#f7b733'), chunks('#d9485f')] },
   biscoff: { from: '#f8ead8', to: '#d9a873', scoop: '#e7c495', bits: [crumbs('#a8642c'), chunks('#b8733a')] },
   'key-lime': { from: '#f1f8df', to: '#c6e08f', scoop: '#eef2c4', bits: [crumbs('#d1a35e'), specks('#6fa832')] },
   'banana-split': { from: '#fff4dc', to: '#f4c98a', scoop: '#fbf0d6', bits: [chips(DARK_CHOCOLATE), chunks('#d93a4a'), chunks('#f2cd4b')] },

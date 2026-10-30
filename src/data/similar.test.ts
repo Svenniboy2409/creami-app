@@ -29,6 +29,7 @@ describe('similar recipes', () => {
       'creamy-strawberry-ice-cream',
       'strawberry-sorbet',
       'banana-pudding-pie-ice-cream',
+      'strawberry-mango-fruit-whip',
     ])
   })
 })

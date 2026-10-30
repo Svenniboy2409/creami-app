@@ -58,6 +58,7 @@ import { saltedCaramelIceCream } from './salted-caramel-ice-cream'
 import { smoresIceCream } from './smores-ice-cream'
 import { strawberryBananaIceCream } from './strawberry-banana-ice-cream'
 import { strawberryIceCream } from './strawberry-ice-cream'
+import { strawberryMangoFruitWhip } from './strawberry-mango-fruit-whip'
 import { strawberrySorbet } from './strawberry-sorbet'
 import { tiramisuDreamIceCream } from './tiramisu-dream-ice-cream'
 import { ultimatePeanutButterCupIceCream } from './ultimate-peanut-butter-cup-ice-cream'
@@ -134,6 +135,7 @@ export const CURATED_RECIPES: Recipe[] = [
   bananaPuddingPieIceCream,
   chocolateDevotionIceCream,
   mapleCoffeeIceCream,
+  strawberryMangoFruitWhip,
   // The five bases, to flavour your own way
   vanillaBase,
   chocolateBase,

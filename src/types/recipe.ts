@@ -64,6 +64,7 @@ export type Flavor =
   | 'pineapple'
   | 'aperol-spritz'
   | 'smores'
+  | 'strawberry-mango'
 
 /** What a recipe tastes like, for the taste filter on Discover. */
 export type Taste = 'sweet' | 'fruity' | 'refreshing' | 'creamy' | 'rich' | 'chocolatey' | 'nutty' | 'healthy'

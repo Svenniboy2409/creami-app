@@ -7,7 +7,7 @@ import { CURATED_RECIPES } from './recipes'
  * the links always run both ways. A recipe can be in more than one group.
  */
 export const SIMILAR: string[][] = [
-  ['strawberry-ice-cream', 'creamy-strawberry-ice-cream', 'strawberry-sorbet', 'strawberry-banana-ice-cream'],
+  ['strawberry-ice-cream', 'creamy-strawberry-ice-cream', 'strawberry-sorbet', 'strawberry-banana-ice-cream', 'strawberry-mango-fruit-whip'],
   ['vanilla-bean-ice-cream', 'condensed-milk-vanilla-ice-cream', 'vanilla-base'],
   ['chocolate-ice-cream', 'cacao-dream-ice-cream', 'chocolate-base', 'chocolate-devotion-ice-cream'],
   ['mint-chocolate-chip-ice-cream', 'creamy-mint-chocolate-chip-ice-cream', 'chip-mint-cool-ice-cream'],
@@ -15,7 +15,7 @@ export const SIMILAR: string[][] = [
   ['peanut-butter-cup-ice-cream', 'ultimate-peanut-butter-cup-ice-cream'],
   ['brownie-blast-ice-cream', 'brownie-bliss-ice-cream', 'chocolate-devotion-ice-cream'],
   ['cookie-dough-ice-cream', 'cookies-and-cream-ice-cream'],
-  ['mango-ice-cream', 'mango-sorbet'],
+  ['mango-ice-cream', 'mango-sorbet', 'strawberry-mango-fruit-whip'],
   ['matcha-dream-ice-cream', 'matcha-magic-ice-cream'],
   ['peaches-and-cream-ice-cream', 'peach-perfection-ice-cream'],
   ['banana-cream-pie-ice-cream', 'banana-split-ice-cream', 'strawberry-banana-ice-cream', 'banana-pudding-pie-ice-cream'],
