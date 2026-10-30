@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Recipe } from '../types/recipe'
-import { filterRecipes, normalize, presentValues, searchRecipes } from './search'
+import { filterRecipes, normalize, presentValues, readQuery, searchRecipes } from './search'
 
 const recipe = (id: string, name: string, extra: Partial<Recipe> = {}): Recipe => ({
   id,
@@ -98,6 +98,59 @@ describe('filterRecipes', () => {
   it('finds a taste by name, in either language', () => {
     expect(ids(searchRecipes(all, 'zoet'))).toEqual(['vanilla'])
     expect(ids(searchRecipes(all, 'refreshing'))).toEqual(['coconut'])
+  })
+})
+
+describe('typed filters', () => {
+  const sundae = recipe('sundae', 'Brownie Sundae', {
+    difficulty: 'medium',
+    times: { prepMin: 15, freezeHours: 24 },
+    models: ['original', 'deluxe'],
+    ingredients: [
+      { title: 'Base', items: [{ name: 'milk' }] },
+      { title: 'Mix-ins', items: [{ name: 'brownie' }] },
+      { title: 'Toppings', items: [{ name: 'sprinkles' }] },
+    ],
+  })
+  const quick = recipe('quick', 'Lemon Sorbet', { category: 'sorbet', program: 'Sorbet', difficulty: 'easy', times: { prepMin: 5, freezeHours: 12 } })
+  // Vanilla: no level, 5 minutes, 24 hours, the Original only, no mix-ins or toppings.
+  const list = [sundae, quick, vanilla]
+
+  it('finds a machine', () => {
+    expect(ids(searchRecipes(list, 'deluxe'))).toEqual(['sundae'])
+  })
+
+  it('finds a level in either language', () => {
+    expect(ids(searchRecipes(list, 'medium'))).toEqual(['sundae'])
+    expect(ids(searchRecipes(list, 'makkelijk'))).toEqual(['quick'])
+    expect(ids(searchRecipes(list, 'niveau gemiddeld'))).toEqual(['sundae'])
+  })
+
+  it('finds the recipes with mix-ins or toppings, however that is typed', () => {
+    for (const query of ['mix-ins', 'Mix-Ins', 'mixins', 'mixin', 'mix in']) expect(ids(searchRecipes(list, query))).toEqual(['sundae'])
+    for (const query of ['toppings', 'topping']) expect(ids(searchRecipes(list, query))).toEqual(['sundae'])
+  })
+
+  it('reads prep and freezing times, exactly', () => {
+    expect(ids(searchRecipes(list, '5 min'))).toEqual(['quick', 'vanilla'])
+    expect(ids(searchRecipes(list, '15 minuten'))).toEqual(['sundae'])
+    expect(searchRecipes(list, '10 min')).toEqual([])
+    expect(ids(searchRecipes(list, '12 u'))).toEqual(['quick'])
+    expect(ids(searchRecipes(list, '24h'))).toEqual(['sundae', 'vanilla'])
+    expect(ids(searchRecipes(list, 'prep 15'))).toEqual(['sundae'])
+    expect(ids(searchRecipes(list, 'vriezen 12'))).toEqual(['quick'])
+    expect(ids(searchRecipes(list, '12'))).toEqual(['quick'])
+  })
+
+  it('combines typed filters with words', () => {
+    expect(ids(searchRecipes(list, 'sorbet 5 min'))).toEqual(['quick'])
+    expect(ids(searchRecipes(list, 'deluxe toppings 15 min'))).toEqual(['sundae'])
+    expect(searchRecipes(list, 'easy 24 uur')).toEqual([])
+  })
+
+  it('takes the filter out of the words, and leaves a lone filter word alone while you type', () => {
+    expect(readQuery('Prep 10 min deluxe')).toEqual({ text: 'deluxe', prep: [10], freeze: [], either: [] })
+    expect(searchRecipes(list, 'prep')).toEqual(list)
   })
 })
 

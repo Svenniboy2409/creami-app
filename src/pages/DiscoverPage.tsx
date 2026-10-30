@@ -24,7 +24,11 @@ export function DiscoverPage() {
   const { openNew } = useRecipeEditor()
   // Search and filters live in the URL so they survive opening a recipe and coming back.
   const [params, setParams] = useSearchParams()
-  const query = params.get('q') ?? ''
+  // The search box keeps its own text and writes it to the URL as you type.
+  // Read back from the URL, letters went missing when typing fast: the router
+  // catches up a moment after the keyboard. Each visit is its own page in the
+  // back stack, so the URL only needs reading when the page is made.
+  const [query, setQuery] = useState(() => params.get('q') ?? '')
   const filters = Object.fromEntries(FILTER_KEYS.map((key) => [key, params.get(key) ?? 'all'])) as Record<FilterKey, string>
   const [filterOpen, setFilterOpen] = useState(false)
 
@@ -43,7 +47,10 @@ export function DiscoverPage() {
     setParams(next, { replace: true })
   }
   const resetFilters = () => update(Object.fromEntries(FILTER_KEYS.map((key) => [key, 'all'])))
-  const clearAll = () => setParams(new URLSearchParams(), { replace: true })
+  const clearAll = () => {
+    setQuery('')
+    setParams(new URLSearchParams(), { replace: true })
+  }
 
   const present = useMemo(() => presentValues(CURATED_RECIPES), [])
   const results = useMemo(
@@ -157,7 +164,10 @@ export function DiscoverPage() {
       >
         <SearchBar
           value={query}
-          onChange={(value) => update({ q: value })}
+          onChange={(value) => {
+            setQuery(value)
+            update({ q: value })
+          }}
           onClear={clearAll}
           clearable={hasFilters}
           trailing={

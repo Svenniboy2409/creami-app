@@ -6,7 +6,7 @@
 // instead, and falls back to a bounded edit distance so ordinary typos still
 // land on the right recipe. Ported from the Mixly cocktail app.
 
-import { CATEGORIES, PROGRAMS, SUGGESTED_TAGS, TASTE_ORDER, TASTES } from '../data/creami'
+import { CATEGORIES, DIFFICULTIES, MODELS, PROGRAMS, SUGGESTED_TAGS, TASTE_ORDER, TASTES } from '../data/creami'
 import type { Category, CreamiModel, Recipe, Taste } from '../types/recipe'
 import { machinesFor } from './machines'
 import { NL } from './strings-nl'
@@ -98,7 +98,20 @@ interface SearchIndex {
   programWords: string[]
   ingredientWords: string[]
   tagWords: string[]
+  /** What the filters and the recipe's facts say: its machines, its level, and whether it has mix-ins or toppings. */
+  featureWords: string[]
   taglineWords: string[]
+}
+
+// "mix-ins", "mix in", "mixin": all one word, so they find the recipes with mix-ins.
+const MIX_INS = /\bmix ?ins?\b/g
+
+/** Whether a group of ingredients is the mix-ins or the toppings, whatever its exact spelling. */
+function groupKind(title: string | undefined): 'mixins' | 'toppings' | undefined {
+  const words = normalize(title).replace(MIX_INS, 'mixins')
+  if (words.includes('mixins')) return 'mixins'
+  if (words.includes('topping')) return 'toppings'
+  return undefined
 }
 
 // Worked out once per recipe object and remembered.
@@ -124,6 +137,11 @@ function indexOf(recipe: Recipe): SearchIndex {
     ingredientWords: wordsOf(...versions.flatMap((v) => (v.ingredients ?? []).flatMap((group) => group.items.map((item) => item.name)))),
     // Tags and tastes alike: "zoet" finds the sweet ones.
     tagWords: wordsOf(...recipe.tags.flatMap((tag) => [tag, NL[tag]]), ...(recipe.tastes ?? []).flatMap((taste) => [TASTES[taste], NL[TASTES[taste]]])),
+    featureWords: wordsOf(
+      ...machinesFor(recipe).map((model) => MODELS[model].short),
+      ...(recipe.difficulty ? [DIFFICULTIES[recipe.difficulty], NL[DIFFICULTIES[recipe.difficulty]]] : []),
+      ...recipe.ingredients.filter((group) => group.items.length > 0).map((group) => groupKind(group.title)),
+    ),
     taglineWords: wordsOf(...versions.map((v) => v.tagline)),
   }
   indexCache.set(recipe, entry)
@@ -138,6 +156,7 @@ const FIELDS: [keyof Omit<SearchIndex, 'names'>, number][] = [
   ['programWords', 4],
   ['ingredientWords', 3],
   ['tagWords', 3],
+  ['featureWords', 3],
   ['taglineWords', 2],
 ]
 
@@ -165,13 +184,72 @@ function score(recipe: Recipe, terms: string[], query: string): { total: number;
   return { total, strong }
 }
 
-/** Recipes matching a free-text query, best match first. An empty query returns the list as it was. */
+const MINUTES = 'm|min|mins|minute|minutes|minuut|minuten'
+const HOURS = 'h|hr|hrs|hour|hours|u|uur|uren'
+const PREP_WORDS = 'prep|preparation|bereiden|bereiding|bereidingstijd|voorbereiding|voorbereidingstijd'
+const FREEZE_WORDS = 'freeze|freezing|vriezen|invriezen|vriestijd'
+// In this order: a time named with its filter ("prep 10", "vriezen 12"), then
+// one with its unit ("10 min", "24u"), then a bare number, which may be either.
+const PREP_NAMED = new RegExp(`\\b(?:${PREP_WORDS}) ?(\\d+) ?(?:${MINUTES})?\\b`, 'g')
+const FREEZE_NAMED = new RegExp(`\\b(?:${FREEZE_WORDS}) ?(\\d+) ?(?:${HOURS})?\\b`, 'g')
+const PREP_UNIT = new RegExp(`\\b(\\d+) ?(?:${MINUTES})\\b`, 'g')
+const FREEZE_UNIT = new RegExp(`\\b(\\d+) ?(?:${HOURS})\\b`, 'g')
+const BARE_NUMBER = /\b(\d+)\b/g
+// Words that only say which filter is meant, and find nothing on their own.
+const FILTER_WORDS = new RegExp(
+  `\\b(?:${PREP_WORDS}|${FREEZE_WORDS}|minutes?|mins?|minuut|minuten|hours?|uur|uren|level|niveau|difficulty|moeilijkheid|moeilijkheidsgraad|machine)\\b`,
+  'g',
+)
+
+/** A search with its times taken out: "10 min" is the prep time, "24 u" the freezing time, a bare number either. */
+interface Query {
+  text: string
+  prep: number[]
+  freeze: number[]
+  either: number[]
+}
+
+export function readQuery(query: string): Query {
+  const read: Query = { text: normalize(query).replace(MIX_INS, 'mixins'), prep: [], freeze: [], either: [] }
+  const take = (pattern: RegExp, into: number[]) => {
+    read.text = read.text.replace(pattern, (_, n: string) => {
+      into.push(Number(n))
+      return ' '
+    })
+  }
+  take(PREP_NAMED, read.prep)
+  take(FREEZE_NAMED, read.freeze)
+  take(PREP_UNIT, read.prep)
+  take(FREEZE_UNIT, read.freeze)
+  read.text = read.text.replace(FILTER_WORDS, ' ')
+  take(BARE_NUMBER, read.either)
+  read.text = read.text.replace(/ +/g, ' ').trim()
+  return read
+}
+
+/** Whether a recipe has the times asked for; times are exact, so "10 min" never finds a recipe of 15. */
+function hasTimes(recipe: Recipe, { prep, freeze, either }: Query): boolean {
+  const { prepMin, freezeHours } = recipe.times
+  return (
+    prep.every((n) => n === prepMin) &&
+    freeze.every((n) => n === freezeHours) &&
+    either.every((n) => n === prepMin || n === freezeHours)
+  )
+}
+
+/**
+ * Recipes matching a free-text query, best match first. An empty query returns
+ * the list as it was. Filters can be typed too: a machine, a level, "mix-ins",
+ * "toppings", "10 min" for the prep time or "24 u" for the freezing time.
+ */
 export function searchRecipes(recipes: Recipe[], query: string): Recipe[] {
-  const q = normalize(query)
-  if (!q) return recipes
+  const read = readQuery(query)
+  const timed = read.prep.length || read.freeze.length || read.either.length ? recipes.filter((recipe) => hasTimes(recipe, read)) : recipes
+  const q = read.text
+  if (!q) return timed
   const terms = q.split(' ')
   const hits: { recipe: Recipe; total: number; strong: boolean; order: number }[] = []
-  recipes.forEach((recipe, order) => {
+  timed.forEach((recipe, order) => {
     const { total, strong } = score(recipe, terms, q)
     if (total > 0) hits.push({ recipe, total, strong, order })
   })

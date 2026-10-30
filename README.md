@@ -2,7 +2,7 @@
 
 A mobile web app with frozen treats for every Ninja CREAMi: the Original, Breeze, Deluxe and Swirl (Scoop & Swirl).
 
-- **Discover**: hand-picked recipes with photos, ingredients, a step-by-step method and the right Creami program for each step. Search forgives typos ("vanila" finds Vanilla) and the search bar stays at the top while you scroll. Chip rows for category and taste sit on the page; the filter sheet adds machine, program and tags.
+- **Discover**: hand-picked recipes with photos, ingredients, a step-by-step method and the right Creami program for each step. Search forgives typos ("vanila" finds Vanilla) and the search bar stays at the top while you scroll. Filters can be typed as well, in English or Dutch: a category, taste, program, tag or machine, a level ("easy", "gemiddeld"), "mix-ins" or "toppings" for the recipes that have them, "10 min" for the prep time and "24 h" or "24 uur" for the freezing time (times match exactly). Chip rows for category and taste sit on the page; the filter sheet adds machine, program and tags.
 - **+**: add your own recipes in a pop-up, with a photo taken on your phone. Not finished yet? **Save as draft**, and the + button (which shows how many drafts are waiting) offers to carry on with it next time.
 - **Library**: opens on the favorites you saved with the heart; next to them your own recipes and **folders** you fill with any recipe. Tap the rearrange button to drag recipes and folders into your own order.
 - **Settings** (the gear in the Library): English or Dutch, folders as tiles or a list, illustrations instead of photos for the app's own recipes, and backups.
