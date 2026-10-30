@@ -527,29 +527,6 @@ export function RecipeDetailPage() {
 
         <Tips recipe={recipe} />
 
-        {flavourLinks.length > 0 && (
-          <Section title={t('Also try these flavours')}>
-            <ul className="flex flex-wrap gap-2">
-              {flavourLinks.map((idea) => (
-                <li key={idea.recipeId ?? idea.name}>
-                  {/* An idea the app has a recipe for opens it; the others are there to inspire. */}
-                  {idea.recipeId ? (
-                    <Link
-                      to={`/recipe/${idea.recipeId}`}
-                      className="flex items-center gap-1 rounded-full bg-white py-2 pl-4 pr-3 text-sm font-extrabold text-raspberry shadow-sm ring-2 ring-strawberry/60 transition-transform active:scale-95"
-                    >
-                      {idea.name}
-                      <ChevronRight className="size-4" strokeWidth={2.6} aria-hidden />
-                    </Link>
-                  ) : (
-                    <span className="block rounded-full bg-white px-4 py-2 text-sm font-bold text-ink-soft shadow-sm">{idea.name}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </Section>
-        )}
-
         {recipe.nutrition && (
           <Section title={t('Nutrition')} aside={<span className="text-sm font-bold text-ink-soft">{t(recipe.nutrition.per === 'pint' ? 'per pint' : 'per serving')}</span>}>
             <dl className="grid grid-cols-3 gap-2">
@@ -572,6 +549,29 @@ export function RecipeDetailPage() {
                   </div>
                 ))}
             </dl>
+          </Section>
+        )}
+
+        {flavourLinks.length > 0 && (
+          <Section title={t('Also try these flavours')}>
+            <ul className="flex flex-wrap gap-2">
+              {flavourLinks.map((idea) => (
+                <li key={idea.recipeId ?? idea.name}>
+                  {/* An idea the app has a recipe for opens it; the others are there to inspire. */}
+                  {idea.recipeId ? (
+                    <Link
+                      to={`/recipe/${idea.recipeId}`}
+                      className="flex items-center gap-1 rounded-full bg-white py-2 pl-4 pr-3 text-sm font-extrabold text-raspberry shadow-sm ring-2 ring-strawberry/60 transition-transform active:scale-95"
+                    >
+                      {idea.name}
+                      <ChevronRight className="size-4" strokeWidth={2.6} aria-hidden />
+                    </Link>
+                  ) : (
+                    <span className="block rounded-full bg-white px-4 py-2 text-sm font-bold text-ink-soft shadow-sm">{idea.name}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
           </Section>
         )}
 

@@ -1,4 +1,4 @@
-import { Check, FolderPlus } from 'lucide-react'
+import { Check, FolderPlus, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
@@ -50,16 +50,24 @@ export function FolderPickerSheet({ open, onClose, recipeId }: { open: boolean; 
 function FolderPicker({ recipeId, onChange }: { recipeId: string; onChange: (folderId: string, inside: boolean) => void }) {
   const { t, tn } = useI18n()
   const { folders, toggleInFolder, createFolder } = useLibrary()
-  const [creating, setCreating] = useState(folders.length === 0)
+  // The name field only shows once you ask for a new folder, so opening the
+  // sheet never brings up the keyboard by itself.
+  const [creating, setCreating] = useState(false)
   const [name, setName] = useState('')
+
+  const stopCreating = () => {
+    // Put the keyboard away before the field goes, so the sheet comes back down with it.
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+    setName('')
+    setCreating(false)
+  }
 
   const create = async () => {
     if (!name.trim()) return
-    // A folder made from a recipe's page starts with that recipe in it.
+    // A folder made from a recipe's page starts with that recipe in it, at the top of the list.
     const folder = await createFolder(name, { recipeIds: [recipeId] })
     onChange(folder.id, true)
-    setName('')
-    setCreating(false)
+    stopCreating()
   }
 
   return (
@@ -70,13 +78,13 @@ function FolderPicker({ recipeId, onChange }: { recipeId: string; onChange: (fol
             event.preventDefault()
             void create()
           }}
-          className="flex animate-fade-up gap-2"
+          className="flex animate-fade-up items-center gap-2"
         >
           <input
-            className="field bg-white"
+            className="field min-w-0 bg-white"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder={t('Name of the new folder')}
+            placeholder={t('Folder name')}
             aria-label={t('Name of the new folder')}
             enterKeyHint="done"
             maxLength={60}
@@ -84,6 +92,14 @@ function FolderPicker({ recipeId, onChange }: { recipeId: string; onChange: (fol
           />
           <button type="submit" disabled={!name.trim()} className="btn-primary shrink-0 px-5 py-3">
             {t('Create')}
+          </button>
+          <button
+            type="button"
+            onClick={stopCreating}
+            aria-label={t('Cancel')}
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-cream-deep text-ink-soft transition-transform active:scale-90"
+          >
+            <X className="size-5" aria-hidden />
           </button>
         </form>
       ) : (
@@ -97,6 +113,10 @@ function FolderPicker({ recipeId, onChange }: { recipeId: string; onChange: (fol
           </span>
           {t('New folder')}
         </button>
+      )}
+
+      {folders.length === 0 && !creating && (
+        <p className="animate-fade-up px-1 pt-1 text-sm text-ink-soft">{t('No folders yet. Make one and this recipe goes straight in.')}</p>
       )}
 
       <ul className="space-y-2">

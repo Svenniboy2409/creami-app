@@ -173,6 +173,7 @@ export const NL: Record<string, string> = {
   'New folder': 'Nieuwe map',
   'Edit folder': 'Map bewerken',
   'No folders yet': 'Nog geen mappen',
+  'No folders yet. Make one and this recipe goes straight in.': 'Nog geen mappen. Maak er een en dit recept gaat er meteen in.',
   'Group recipes however you like: summer sorbets, protein treats, party desserts…':
     'Groepeer recepten zoals jij wilt: zomerse sorbets, eiwitrijke traktaties, feestdesserts…',
   'Cover photo': 'Omslagfoto',
@@ -205,6 +206,7 @@ export const NL: Record<string, string> = {
   'In {n} folder': 'In {n} map',
   'In {n} folders': 'In {n} mappen',
   'Name of the new folder': 'Naam van de nieuwe map',
+  'Folder name': 'Mapnaam',
   'Added to {folder}': 'Toegevoegd aan {folder}',
   'Removed from {folder}': 'Uit {folder} gehaald',
   'Remove from {folder}': 'Uit {folder} halen',

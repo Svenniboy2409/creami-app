@@ -5,8 +5,8 @@ import type { Recipe } from '../../types/recipe'
 // from the video. She makes it in a 16 oz Swirl pint with "about a cup" of
 // strawberries and of mango, here 150 g and 165 g; the 150 calories are hers.
 // Only screen recordings were shared, so the credit links to her channel.
-// She runs FRUIT WHIP on the Swirl and says SORBET does it on other machines,
-// so like every fruit-only pint it runs on SORBET, with the Swirl in a tip.
+// She runs FRUIT WHIP, which only the Swirl has, so it is a Swirl recipe; she
+// says SORBET does it on other machines, and a tip says so.
 export const strawberryMangoFruitWhip: Recipe = {
   id: 'strawberry-mango-fruit-whip',
   origin: 'curated',
@@ -17,8 +17,8 @@ export const strawberryMangoFruitWhip: Recipe = {
   category: 'sorbet',
   tags: ['vegan', 'dairy-free', 'egg-free', 'gluten-free', 'fruity'],
   tastes: ['fruity', 'refreshing', 'healthy'],
-  models: ['original', 'breeze', 'deluxe', 'swirl'],
-  program: 'Sorbet',
+  models: ['swirl'],
+  program: 'Fruit Whip',
   basePint: 16,
   servings: '2–3',
   difficulty: 'easy',
@@ -43,8 +43,8 @@ export const strawberryMangoFruitWhip: Recipe = {
     },
     {
       title: 'Process',
-      text: 'Take the lid off, place the pint in the outer bowl and run the SORBET program.',
-      program: 'Sorbet',
+      text: 'Take the lid off, place the pint in the outer bowl and run the FRUIT WHIP program.',
+      program: 'Fruit Whip',
     },
     {
       title: 'Re-spin if needed',
@@ -53,11 +53,11 @@ export const strawberryMangoFruitWhip: Recipe = {
     },
     {
       title: 'Serve',
-      text: 'Scoop it into a bowl.',
+      text: 'Scoop it into a bowl, or push it through the soft serve dispenser.',
     },
   ],
   tips: [
-    'On the Ninja Swirl, run FRUIT WHIP instead of SORBET and push it through the soft serve dispenser.',
+    'No Ninja Swirl? Run SORBET instead of FRUIT WHIP for the closest result, and scoop it.',
     'Frozen strawberries work too: let them thaw completely first, so they are soft and juicy enough to mash.',
   ],
   nutrition: { per: 'pint', kcal: 150 },
@@ -86,8 +86,8 @@ export const strawberryMangoFruitWhip: Recipe = {
         },
         {
           title: 'Draaien',
-          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma SORBET.',
-          program: 'Sorbet',
+          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma FRUIT WHIP.',
+          program: 'Fruit Whip',
         },
         {
           title: 'Zo nodig re-spin',
@@ -96,11 +96,11 @@ export const strawberryMangoFruitWhip: Recipe = {
         },
         {
           title: 'Serveren',
-          text: 'Schep het in een kommetje.',
+          text: 'Schep het in een kommetje, of druk het door de softijsdispenser.',
         },
       ],
       tips: [
-        'Op de Ninja Swirl draai je FRUIT WHIP in plaats van SORBET en druk je het door de softijsdispenser.',
+        'Geen Ninja Swirl? Draai dan SORBET in plaats van FRUIT WHIP voor het meest vergelijkbare resultaat, en schep het.',
         'Bevroren aardbeien kan ook: laat ze eerst helemaal ontdooien, zodat ze zacht en sappig genoeg zijn om te stampen.',
       ],
     },

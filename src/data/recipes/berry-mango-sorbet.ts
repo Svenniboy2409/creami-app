@@ -4,9 +4,10 @@ import type { Recipe } from '../../types/recipe'
 // After Sara J Sweets' YouTube Short, in our own words, with the owner's still
 // from the video and the amounts from its description, for her 16 oz Swirl
 // pint: a cup of raspberries is about 125 g, of strawberries 150 g, half a cup
-// of mango 80 g. The 200 calories a pint are hers. She runs FRUIT WHIP on the
-// Swirl; like every fruit-only pint it runs on SORBET here, with the Swirl in
-// a tip. Only screen recordings were shared, so the credit links to her channel.
+// of mango 80 g. The 200 calories a pint are hers. She runs FRUIT WHIP, which
+// only the Swirl has, so it is a Swirl recipe; a tip gives SORBET for the other
+// machines. Only screen recordings were shared, so the credit links to her
+// channel.
 export const berryMangoSorbet: Recipe = {
   id: 'berry-mango-sorbet',
   origin: 'curated',
@@ -17,8 +18,8 @@ export const berryMangoSorbet: Recipe = {
   category: 'sorbet',
   tags: ['vegan', 'dairy-free', 'egg-free', 'gluten-free', 'fruity'],
   tastes: ['fruity', 'refreshing', 'healthy'],
-  models: ['original', 'breeze', 'deluxe', 'swirl'],
-  program: 'Sorbet',
+  models: ['swirl'],
+  program: 'Fruit Whip',
   basePint: 16,
   servings: '2–3',
   difficulty: 'easy',
@@ -44,18 +45,22 @@ export const berryMangoSorbet: Recipe = {
     },
     {
       title: 'Process',
-      text: 'Take the lid off, place the pint in the outer bowl and run the SORBET program.',
-      program: 'Sorbet',
+      text: 'Take the lid off, place the pint in the outer bowl and run the FRUIT WHIP program.',
+      program: 'Fruit Whip',
     },
     {
       title: 'Re-spin if needed',
       text: 'Looks crumbly? Add a tablespoon of water and run RE-SPIN until it is smooth and creamy.',
       program: 'Re-spin',
     },
+    {
+      title: 'Serve',
+      text: 'Scoop it into a bowl, or fit the swirl attachment and pull the lever for soft serve.',
+    },
   ],
   tips: [
     'The mango is what makes it creamy without any milk or thickener, and it balances the sweetness of the berries.',
-    'On the Ninja Swirl, run FRUIT WHIP instead of SORBET, fit the swirl attachment and pull the lever for soft serve.',
+    'No Ninja Swirl? Run SORBET instead of FRUIT WHIP for the closest result, and scoop it.',
   ],
   nutrition: { per: 'pint', kcal: 200 },
   credits: { author: 'Sara J Sweets', url: 'https://www.youtube.com/@sarajsweets' },
@@ -84,18 +89,22 @@ export const berryMangoSorbet: Recipe = {
         },
         {
           title: 'Draaien',
-          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma SORBET.',
-          program: 'Sorbet',
+          text: 'Haal het deksel eraf, zet de pint in de buitenkom en start het programma FRUIT WHIP.',
+          program: 'Fruit Whip',
         },
         {
           title: 'Zo nodig re-spin',
           text: 'Ziet het er kruimelig uit? Voeg een eetlepel water toe en draai RE-SPIN tot het glad en romig is.',
           program: 'Re-spin',
         },
+        {
+          title: 'Serveren',
+          text: 'Schep het in een kommetje, of zet het swirl-opzetstuk erop en trek aan de hendel voor softijs.',
+        },
       ],
       tips: [
         'De mango maakt het romig zonder melk of bindmiddel, en hij brengt de zoetheid van de bessen in balans.',
-        'Op de Ninja Swirl draai je FRUIT WHIP in plaats van SORBET, zet je het swirl-opzetstuk erop en trek je aan de hendel voor softijs.',
+        'Geen Ninja Swirl? Draai dan SORBET in plaats van FRUIT WHIP voor het meest vergelijkbare resultaat, en schep het.',
       ],
     },
   },

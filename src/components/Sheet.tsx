@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
 
 interface Props {
   open: boolean
@@ -27,6 +27,48 @@ function lockPage(lock: boolean) {
 }
 
 /**
+ * How far the on-screen keyboard reaches up over the screen, and how tall the
+ * part above it is. On an iPhone the keyboard slides over the page instead of
+ * making it shorter, so a sheet pinned to the bottom of the screen would sit
+ * behind it; the sheet uses these to stand on top of the keyboard instead.
+ */
+function useKeyboard(active: boolean, pageY: { current: number }) {
+  const [view, setView] = useState({ inset: 0, height: 0 })
+
+  useEffect(() => {
+    const viewport = window.visualViewport
+    if (!active || !viewport) return
+    let inset = 0
+    const update = () => {
+      const next = Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop))
+      if (next > inset) {
+        // The keyboard came up over the field being typed in: bring that field to
+        // the middle of what is left, clear of any buttons pinned at the bottom.
+        requestAnimationFrame(() => {
+          const focused = document.activeElement
+          if (focused instanceof HTMLElement && focused.closest('dialog')) focused.scrollIntoView({ block: 'center' })
+        })
+      }
+      // Bringing the field into view can move the page behind the sheet; once
+      // the keyboard is gone, it goes back to where it was.
+      if (next === 0 && window.scrollY !== pageY.current) window.scrollTo(0, pageY.current)
+      inset = next
+      setView({ inset: next, height: Math.round(viewport.height) })
+    }
+    update()
+    viewport.addEventListener('resize', update)
+    viewport.addEventListener('scroll', update)
+    return () => {
+      viewport.removeEventListener('resize', update)
+      viewport.removeEventListener('scroll', update)
+      setView({ inset: 0, height: 0 })
+    }
+  }, [active, pageY])
+
+  return view
+}
+
+/**
  * Bottom sheet built on <dialog> for focus handling and Escape. It slides up
  * when opened, can be pulled down by its grip to close, and slides away again
  * when `open` turns false — so callers only ever flip `open`.
@@ -41,16 +83,19 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
   // Measured when a drag starts, so the backdrop can fade in proportion to it.
   const [height, setHeight] = useState(600)
   const drag = useRef<{ startY: number; lastY: number; lastT: number; speed: number } | null>(null)
+  // Where the page behind was scrolled when the sheet opened.
+  const pageY = useRef(0)
 
   if (open && !shown) setShown(true)
   const closing = shown && !open
+  const keyboard = useKeyboard(shown, pageY)
 
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
     if (open) {
       if (dialog.open) return
-      const pageY = window.scrollY
+      pageY.current = window.scrollY
       dialog.showModal()
       // Opening moves focus to the first button in the sheet, and the browser
       // scrolls whatever it can to bring that button into view — while the
@@ -59,7 +104,7 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
       // into place. The dialog can't scroll any more (overflow: clip), and
       // anything that did scroll is put back before the first frame is drawn.
       dialog.scrollTop = 0
-      if (window.scrollY !== pageY) window.scrollTo(0, pageY)
+      if (window.scrollY !== pageY.current) window.scrollTo(0, pageY.current)
       return
     }
     if (!dialog.open) return
@@ -117,9 +162,17 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
   // brightens in step with the finger.
   const progress = Math.min(1, dragY / height)
 
-  const panelStyle = closing
-    ? { transform: 'translateY(100%)', transition: `transform ${CLOSE_MS}ms cubic-bezier(0.4, 0, 1, 1)` }
-    : { transform: `translateY(${dragY}px)`, transition: dragging ? 'none' : 'transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1.1)' }
+  // With the keyboard up, the sheet stands on top of it and fits in what is left
+  // of the screen. One transform moves it, so it rides up with the keyboard.
+  const panelStyle: CSSProperties & { '--screen': string } = {
+    '--screen': keyboard.height ? `${keyboard.height}px` : '100dvh',
+    ...(closing
+      ? { transform: 'translateY(100%)', transition: `transform ${CLOSE_MS}ms cubic-bezier(0.4, 0, 1, 1)` }
+      : {
+          transform: `translateY(${dragY - keyboard.inset}px)`,
+          transition: dragging ? 'none' : 'transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1.1)',
+        }),
+  }
   const backdropStyle = {
     opacity: closing ? 0 : 1 - progress,
     transition: dragging ? 'none' : `opacity ${CLOSE_MS}ms ease`,
@@ -145,7 +198,7 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
           <div
             ref={panelRef}
             className={`absolute inset-x-0 bottom-0 mx-auto flex w-full max-w-md animate-sheet-up flex-col rounded-t-[2rem] bg-cream shadow-[0_-12px_40px_-12px_rgb(59_42_42/0.35)] ${
-              tall ? 'h-[calc(100dvh-var(--safe-top)-1rem)]' : 'max-h-[min(88dvh,calc(100dvh-var(--safe-top)-1rem))]'
+              tall ? 'h-[calc(var(--screen)-var(--safe-top)-1rem)]' : 'max-h-[min(88dvh,calc(var(--screen)-var(--safe-top)-1rem))]'
             }`}
             style={panelStyle}
           >
@@ -162,7 +215,10 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
             <div data-sheet-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6 pt-1">
               {children}
             </div>
-            <div className="pb-safe shrink-0">{footer && <div className="border-t border-cream-deep px-5 pb-4 pt-3">{footer}</div>}</div>
+            {/* The keyboard covers the home indicator, so on top of it no room is kept for that. */}
+            <div className={`shrink-0 ${keyboard.inset ? '' : 'pb-safe'}`}>
+              {footer && <div className="border-t border-cream-deep px-5 pb-4 pt-3">{footer}</div>}
+            </div>
           </div>
         </>
       )}
