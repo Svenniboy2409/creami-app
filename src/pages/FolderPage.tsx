@@ -1,4 +1,4 @@
-import { ArrowLeft, FolderOpen, FolderPlus, Pencil } from 'lucide-react'
+import { ArrowLeft, ArrowUpDown, FolderOpen, FolderPlus, Pencil } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { AddRecipesSheet } from '../components/AddRecipesSheet'
@@ -6,8 +6,9 @@ import { EmptyState } from '../components/EmptyState'
 import { FolderCover } from '../components/FolderCover'
 import { FolderSheet } from '../components/FolderSheet'
 import { RecipeCard, RecipeGrid } from '../components/RecipeCard'
-import { RearrangeBar, RearrangeButton } from '../components/Rearrange'
+import { RearrangeBar } from '../components/Rearrange'
 import { ReorderableGrid } from '../components/ReorderableGrid'
+import { WholeWords } from '../components/WholeWords'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useAllRecipes } from '../hooks/useRecipes'
@@ -69,22 +70,34 @@ export function FolderPage() {
 
   return (
     <div className="px-5">
+      {/* One row, as in the cocktail app: back, the folder with its count, then rearrange and edit. */}
       <header className="pt-safe">
-        <div className="flex items-center justify-between gap-2 pt-4">
-          <button type="button" onClick={goBack} aria-label={t('Back')} className="icon-btn bg-white shadow-soft">
+        <div className="flex items-center gap-2.5 pb-5 pt-4">
+          <button type="button" onClick={goBack} aria-label={t('Back')} className="icon-btn size-10 shrink-0 bg-white shadow-soft">
             <ArrowLeft className="size-5" aria-hidden />
           </button>
-          <button type="button" onClick={() => setEditing(true)} aria-label={t('Edit folder')} title={t('Edit folder')} className="icon-btn bg-white shadow-soft">
+          <FolderCover folder={folder} className="size-12 shrink-0 animate-pop-in rounded-xl shadow-soft" />
+          <div className="min-w-0 flex-1">
+            <h1 className="line-clamp-2 text-[1.35rem] font-semibold leading-tight tracking-tight [overflow-wrap:anywhere]">
+              <WholeWords text={folder.name} />
+            </h1>
+            <p className="text-sm font-bold text-ink-soft">{tn(recipes.length, '{n} recipe', '{n} recipes')}</p>
+          </div>
+          {recipes.length > 1 && (
+            <button
+              type="button"
+              onClick={() => setSorting((on) => !on)}
+              aria-label={t('Rearrange')}
+              aria-pressed={sorting}
+              title={t('Rearrange')}
+              className={`icon-btn size-10 shrink-0 shadow-soft transition-colors ${sorting ? 'bg-raspberry text-white' : 'bg-white'}`}
+            >
+              <ArrowUpDown className="size-5" aria-hidden />
+            </button>
+          )}
+          <button type="button" onClick={() => setEditing(true)} aria-label={t('Edit folder')} title={t('Edit folder')} className="icon-btn size-10 shrink-0 bg-white shadow-soft">
             <Pencil className="size-[18px]" aria-hidden />
           </button>
-        </div>
-        <div className="flex items-center gap-4 pb-5 pt-5">
-          <FolderCover folder={folder} className="size-20 shrink-0 animate-pop-in rounded-3xl shadow-soft" />
-          <div className="min-w-0">
-            <p className="mb-1 text-sm font-bold uppercase tracking-[0.14em] text-raspberry">{t('Folder')}</p>
-            <h1 className="break-words text-[1.75rem] font-semibold leading-[1.1] tracking-tight">{folder.name}</h1>
-            <p className="mt-1 text-sm font-bold text-ink-soft">{tn(recipes.length, '{n} recipe', '{n} recipes')}</p>
-          </div>
         </div>
       </header>
 
@@ -92,28 +105,22 @@ export function FolderPage() {
         <EmptyState icon={FolderOpen} title={t('This folder is empty')} action={addActions}>
           {t('Add recipes from here, or with the folder button on any recipe.')}
         </EmptyState>
+      ) : rearranging ? (
+        <>
+          <div className="mb-4">
+            <RearrangeBar onDone={() => setSorting(false)} />
+          </div>
+          <ReorderableGrid items={recipes} onReorder={(ids) => reorderFolder(folder.id, ids)} renderItem={(recipe) => <RecipeCard recipe={recipe} still />} />
+        </>
       ) : (
         <>
-          <div className="mb-4 flex min-h-12 items-center gap-2">
-            {rearranging ? (
-              <div className="flex-1">
-                <RearrangeBar onDone={() => setSorting(false)} />
-              </div>
-            ) : (
-              <>
-                <button type="button" onClick={() => setAdding(true)} className="btn-secondary h-12 flex-1 shadow-soft">
-                  <FolderPlus className="size-5 text-raspberry" aria-hidden /> {t('Add recipes')}
-                </button>
-                {recipes.length > 1 && <RearrangeButton onClick={() => setSorting(true)} />}
-              </>
-            )}
+          {/* Tells the recipe page which folder you came from, so it can offer to take it out again. */}
+          <RecipeGrid recipes={recipes} linkTo={(recipe) => `/recipe/${recipe.id}?folder=${folder.id}`} />
+          {/* Under the recipes, as in the cocktail app: what to do next once you have looked through them. */}
+          <div className="mt-8 flex animate-fade-up flex-col items-center gap-3 text-center">
+            <p className="text-sm font-bold text-ink-soft">{t('Add more recipes to this folder')}</p>
+            {addActions}
           </div>
-          {rearranging ? (
-            <ReorderableGrid items={recipes} onReorder={(ids) => reorderFolder(folder.id, ids)} renderItem={(recipe) => <RecipeCard recipe={recipe} still />} />
-          ) : (
-            // Tells the recipe page which folder you came from, so it can offer to take it out again.
-            <RecipeGrid recipes={recipes} linkTo={(recipe) => `/recipe/${recipe.id}?folder=${folder.id}`} />
-          )}
         </>
       )}
 

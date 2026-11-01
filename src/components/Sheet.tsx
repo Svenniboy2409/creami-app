@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode, type RefObject } from 'react'
 
 interface Props {
   open: boolean
@@ -12,6 +12,8 @@ interface Props {
   footer?: ReactNode
   /** Nearly full height whatever the content, for long forms. */
   tall?: boolean
+  /** Changes when the sheet shows something else (a list, then a form): its height then glides to fit. */
+  contentKey?: string | number | boolean
 }
 
 const CLOSE_MS = 260 // must match the slide-out transition below
@@ -26,46 +28,95 @@ function lockPage(lock: boolean) {
   document.documentElement.classList.toggle('sheet-open', locks > 0)
 }
 
+const KEYBOARD_GAP = 16 // room kept between the field being typed in and the keyboard
+
 /**
- * How far the on-screen keyboard reaches up over the screen, and how tall the
- * part above it is. On an iPhone the keyboard slides over the page instead of
- * making it shorter, so a sheet pinned to the bottom of the screen would sit
- * behind it; the sheet uses these to stand on top of the keyboard instead.
+ * How far the sheet moves up for the on-screen keyboard. On an iPhone the
+ * keyboard slides over the bottom of the screen; the sheet stays where it is,
+ * as in the cocktail app, and only moves up as far as it takes to show the
+ * field being typed in. Its own list scrolls first; whatever is lower than the
+ * field, the button at the bottom included, stays under the keyboard until it
+ * goes away. The keyboard's return key does what that button does.
  */
-function useKeyboard(active: boolean, pageY: { current: number }) {
-  const [view, setView] = useState({ inset: 0, height: 0 })
+function useKeyboardLift(active: boolean, panel: RefObject<HTMLDivElement | null>, pageY: { current: number }) {
+  const [lift, setLift] = useState(0)
 
   useEffect(() => {
     const viewport = window.visualViewport
     if (!active || !viewport) return
-    let inset = 0
-    const update = () => {
-      const next = Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop))
-      if (next > inset) {
-        // The keyboard came up over the field being typed in: bring that field to
-        // the middle of what is left, clear of any buttons pinned at the bottom.
-        requestAnimationFrame(() => {
-          const focused = document.activeElement
-          if (focused instanceof HTMLElement && focused.closest('dialog')) focused.scrollIntoView({ block: 'center' })
-        })
+    let frame = 0
+    const place = () => {
+      const keyboard = Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop))
+      if (keyboard === 0) {
+        setLift(0)
+        // Typing can move the page behind the sheet; once the keyboard is gone, it goes back.
+        if (window.scrollY !== pageY.current) window.scrollTo(0, pageY.current)
+        return
       }
-      // Bringing the field into view can move the page behind the sheet; once
-      // the keyboard is gone, it goes back to where it was.
-      if (next === 0 && window.scrollY !== pageY.current) window.scrollTo(0, pageY.current)
-      inset = next
-      setView({ inset: next, height: Math.round(viewport.height) })
+      const field = document.activeElement
+      const sheet = panel.current
+      if (!sheet || !(field instanceof HTMLElement) || !sheet.contains(field)) return
+      // Where the field would be with the sheet in its place, wherever it is now on its way.
+      const moved = getComputedStyle(sheet).transform
+      const shift = moved === 'none' ? 0 : new DOMMatrixReadOnly(moved).m42
+      let over = field.getBoundingClientRect().bottom - shift - (viewport.offsetTop + viewport.height - KEYBOARD_GAP)
+      const list = field.closest<HTMLElement>('[data-sheet-body]')
+      if (over > 0 && list) {
+        const by = Math.min(over, Math.max(0, list.scrollHeight - list.clientHeight - list.scrollTop))
+        list.scrollTop += by
+        over -= by
+      }
+      setLift(Math.round(Math.min(keyboard, Math.max(0, over))))
     }
-    update()
-    viewport.addEventListener('resize', update)
-    viewport.addEventListener('scroll', update)
+    const later = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(place)
+    }
+    viewport.addEventListener('resize', later)
+    viewport.addEventListener('scroll', later)
+    document.addEventListener('focusin', later)
     return () => {
-      viewport.removeEventListener('resize', update)
-      viewport.removeEventListener('scroll', update)
-      setView({ inset: 0, height: 0 })
+      cancelAnimationFrame(frame)
+      viewport.removeEventListener('resize', later)
+      viewport.removeEventListener('scroll', later)
+      document.removeEventListener('focusin', later)
+      setLift(0)
     }
-  }, [active, pageY])
+  }, [active, panel, pageY])
 
-  return view
+  return lift
+}
+
+/**
+ * When a sheet starts showing something else, its height glides from what it
+ * was to what the new content needs, instead of jumping.
+ */
+function useHeightGlide(panel: RefObject<HTMLDivElement | null>, key: Props['contentKey'], shown: boolean) {
+  // The height before the change: kept up to date as the content grows or shrinks by itself.
+  const last = useRef(0)
+  const seen = useRef(key)
+
+  useEffect(() => {
+    const sheet = panel.current
+    if (!shown || !sheet) return
+    const observer = new ResizeObserver(() => {
+      last.current = sheet.offsetHeight
+    })
+    observer.observe(sheet)
+    return () => observer.disconnect()
+  }, [panel, shown])
+
+  useLayoutEffect(() => {
+    const sheet = panel.current
+    if (seen.current === key) return
+    seen.current = key
+    if (!sheet) return
+    const from = last.current
+    const to = sheet.offsetHeight
+    last.current = to
+    if (!from || from === to || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    sheet.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 300, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' })
+  }, [panel, key])
 }
 
 /**
@@ -73,7 +124,7 @@ function useKeyboard(active: boolean, pageY: { current: number }) {
  * when opened, can be pulled down by its grip to close, and slides away again
  * when `open` turns false — so callers only ever flip `open`.
  */
-export function Sheet({ open, onClose, title, children, action, footer, tall = false }: Props) {
+export function Sheet({ open, onClose, title, children, action, footer, tall = false, contentKey }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   // Still on screen while it slides out after `open` has gone false.
@@ -88,7 +139,8 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
 
   if (open && !shown) setShown(true)
   const closing = shown && !open
-  const keyboard = useKeyboard(shown, pageY)
+  const lift = useKeyboardLift(shown, panelRef, pageY)
+  useHeightGlide(panelRef, contentKey, shown)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -162,17 +214,13 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
   // brightens in step with the finger.
   const progress = Math.min(1, dragY / height)
 
-  // With the keyboard up, the sheet stands on top of it and fits in what is left
-  // of the screen. One transform moves it, so it rides up with the keyboard.
-  const panelStyle: CSSProperties & { '--screen': string } = {
-    '--screen': keyboard.height ? `${keyboard.height}px` : '100dvh',
-    ...(closing
-      ? { transform: 'translateY(100%)', transition: `transform ${CLOSE_MS}ms cubic-bezier(0.4, 0, 1, 1)` }
-      : {
-          transform: `translateY(${dragY - keyboard.inset}px)`,
-          transition: dragging ? 'none' : 'transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1.1)',
-        }),
-  }
+  // One transform moves it: pulled down by a finger, or up just enough for the keyboard.
+  const panelStyle: CSSProperties = closing
+    ? { transform: 'translateY(100%)', transition: `transform ${CLOSE_MS}ms cubic-bezier(0.4, 0, 1, 1)` }
+    : {
+        transform: `translateY(${dragY - lift}px)`,
+        transition: dragging ? 'none' : 'transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1.1)',
+      }
   const backdropStyle = {
     opacity: closing ? 0 : 1 - progress,
     transition: dragging ? 'none' : `opacity ${CLOSE_MS}ms ease`,
@@ -198,7 +246,7 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
           <div
             ref={panelRef}
             className={`absolute inset-x-0 bottom-0 mx-auto flex w-full max-w-md animate-sheet-up flex-col rounded-t-[2rem] bg-cream shadow-[0_-12px_40px_-12px_rgb(59_42_42/0.35)] ${
-              tall ? 'h-[calc(var(--screen)-var(--safe-top)-1rem)]' : 'max-h-[min(88dvh,calc(var(--screen)-var(--safe-top)-1rem))]'
+              tall ? 'h-[calc(100dvh-var(--safe-top)-1rem)]' : 'max-h-[min(88dvh,calc(100dvh-var(--safe-top)-1rem))]'
             }`}
             style={panelStyle}
           >
@@ -215,8 +263,7 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
             <div data-sheet-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6 pt-1">
               {children}
             </div>
-            {/* The keyboard covers the home indicator, so on top of it no room is kept for that. */}
-            <div className={`shrink-0 ${keyboard.inset ? '' : 'pb-safe'}`}>
+            <div className="pb-safe shrink-0">
               {footer && <div className="border-t border-cream-deep px-5 pb-4 pt-3">{footer}</div>}
             </div>
           </div>

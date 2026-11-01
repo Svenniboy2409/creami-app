@@ -317,6 +317,7 @@ export function RecipeDetailPage() {
   const [rescaled, setRescaled] = useState<Scale & { id?: string }>()
   const [menuOpen, setMenuOpen] = useState(false)
   const [folderOpen, setFolderOpen] = useState(false)
+  const [removing, setRemoving] = useState(false)
   // Set when the recipe was opened from inside a folder.
   const [params] = useSearchParams()
   const fromFolder = folders.find((folder) => folder.id === params.get('folder'))
@@ -449,18 +450,16 @@ export function RecipeDetailPage() {
             className={`btn-secondary w-full shadow-soft ${inFolders ? 'bg-strawberry-soft text-raspberry' : ''}`}
           >
             {inFolders ? <FolderCheck className="size-5" aria-hidden /> : <FolderPlus className="size-5 text-raspberry" aria-hidden />}
-            {inFolders ? tn(inFolders, 'In {n} folder', 'In {n} folders') : t('Add to folder')}
+            {inFolders ? tn(inFolders, 'In {n} folder', 'In {n} folders') : t('Save to folder')}
           </button>
+          {/* Opened from a folder: taking it out again asks first, as in the cocktail app. */}
           {fromFolder?.recipeIds.includes(recipe.id) && (
             <button
               type="button"
-              onClick={async () => {
-                await toggleInFolder(fromFolder.id, recipe.id)
-                showToast(t('Removed from {folder}', { folder: fromFolder.name }))
-              }}
-              className="flex animate-pop-in items-center justify-center gap-2 py-2 text-sm font-extrabold text-raspberry"
+              onClick={() => setRemoving(true)}
+              className="btn-secondary w-full animate-pop-in text-raspberry ring-2 ring-raspberry/20"
             >
-              <FolderMinus className="size-4" aria-hidden /> {t('Remove from {folder}', { folder: fromFolder.name })}
+              <FolderMinus className="size-5" aria-hidden /> {t('Remove from folder')}
             </button>
           )}
         </div>
@@ -588,6 +587,27 @@ export function RecipeDetailPage() {
       </div>
 
       <FolderPickerSheet open={folderOpen} onClose={() => setFolderOpen(false)} recipeId={recipe.id} />
+
+      {fromFolder && (
+        <Sheet open={removing} onClose={() => setRemoving(false)} title={t('Remove from folder?')}>
+          <p className="mb-4 text-[15px] text-ink-soft">{t('“{name}” will be taken out of {folder}. It stays in the app.', { name: recipe.name, folder: fromFolder.name })}</p>
+          <div className="space-y-2">
+            <SheetAction
+              icon={FolderMinus}
+              label={t('Remove from folder')}
+              danger
+              onClick={async () => {
+                setRemoving(false)
+                await toggleInFolder(fromFolder.id, recipe.id)
+                showToast(t('Removed from {folder}', { folder: fromFolder.name }))
+              }}
+            />
+            <button type="button" onClick={() => setRemoving(false)} className="w-full py-3 font-bold text-ink-soft">
+              {t('Cancel')}
+            </button>
+          </div>
+        </Sheet>
+      )}
 
       <Sheet open={menuOpen} onClose={() => setMenuOpen(false)} title={t('Delete this recipe?')}>
         <p className="mb-4 text-[15px] text-ink-soft">{t('“{name}” will be removed from this device. This can’t be undone.', { name: recipe.name })}</p>

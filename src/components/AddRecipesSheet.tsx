@@ -8,30 +8,63 @@ import { searchRecipes } from '../lib/search'
 import type { Folder } from '../types/recipe'
 import { RecipeImage } from './RecipeImage'
 import { SearchBar } from './SearchBar'
-import { Sheet } from './Sheet'
+import { Sheet, SheetHeaderButton } from './Sheet'
 import { WholeWords } from './WholeWords'
 
 /**
  * Filling a folder from the folder itself: every recipe with its picture, tap
  * to pick, one button to put the lot in. Your own recipes and favorites come
- * first, since those are the ones you are most likely after.
+ * first, since those are the ones you are most likely after. As in the cocktail
+ * app, Cancel sits at the top and the button at the bottom says Done until
+ * something is picked.
  */
 export function AddRecipesSheet({ open, onClose, folder }: { open: boolean; onClose: () => void; folder: Folder }) {
-  const { t } = useI18n()
+  const { t, tn } = useI18n()
+  const showToast = useToast()
+  const { addToFolder } = useLibrary()
+  const [picked, setPicked] = useState<string[]>([])
+  const [wasOpen, setWasOpen] = useState(open)
+  if (open !== wasOpen) {
+    setWasOpen(open)
+    if (open) setPicked([])
+  }
+
+  const add = async () => {
+    if (picked.length === 0) return onClose()
+    await addToFolder(folder.id, picked)
+    showToast(picked.length === 1 ? t('Added to {folder}', { folder: folder.name }) : t('Added {n} recipes to {folder}', { n: picked.length, folder: folder.name }))
+    onClose()
+  }
+
   return (
-    <Sheet open={open} onClose={onClose} title={t('Add recipes to {folder}', { folder: folder.name })}>
-      <RecipePicker folder={folder} onDone={onClose} />
+    <Sheet
+      open={open}
+      onClose={onClose}
+      title={t('Add recipes to {folder}', { folder: folder.name })}
+      action={<SheetHeaderButton onClick={onClose}>{t('Cancel')}</SheetHeaderButton>}
+      footer={
+        <button type="button" onClick={() => void add()} className="btn-primary w-full">
+          <span key={picked.length} className="inline-block animate-chip-pop">
+            {picked.length ? tn(picked.length, 'Add {n} recipe', 'Add {n} recipes') : t('Done')}
+          </span>
+        </button>
+      }
+      tall
+    >
+      <RecipePicker
+        folder={folder}
+        picked={picked}
+        onToggle={(id) => setPicked((current) => (current.includes(id) ? current.filter((x) => x !== id) : [...current, id]))}
+      />
     </Sheet>
   )
 }
 
-function RecipePicker({ folder, onDone }: { folder: Folder; onDone: () => void }) {
-  const { t, tn, localize } = useI18n()
-  const showToast = useToast()
-  const { favorites, addToFolder } = useLibrary()
+function RecipePicker({ folder, picked, onToggle }: { folder: Folder; picked: string[]; onToggle: (id: string) => void }) {
+  const { t, localize } = useI18n()
+  const { favorites } = useLibrary()
   const all = useAllRecipes()
   const [query, setQuery] = useState('')
-  const [picked, setPicked] = useState<string[]>([])
 
   const candidates = useMemo(() => {
     const rank = (id: string, origin: string) => (origin === 'user' ? 0 : favorites.has(id) ? 1 : 2)
@@ -42,14 +75,6 @@ function RecipePicker({ folder, onDone }: { folder: Folder; onDone: () => void }
       .map(({ recipe }) => recipe)
   }, [all, folder.recipeIds, favorites])
   const shown = useMemo(() => searchRecipes(candidates, query), [candidates, query])
-
-  const toggle = (id: string) => setPicked((current) => (current.includes(id) ? current.filter((x) => x !== id) : [...current, id]))
-
-  const add = async () => {
-    await addToFolder(folder.id, picked)
-    showToast(tn(picked.length, 'Added {n} recipe to the folder', 'Added {n} recipes to the folder'))
-    onDone()
-  }
 
   if (candidates.length === 0) {
     return <p className="py-6 text-center text-[15px] text-ink-soft">{t('Every recipe is already in this folder.')}</p>
@@ -72,7 +97,7 @@ function RecipePicker({ folder, onDone }: { folder: Folder; onDone: () => void }
                 type="button"
                 role="checkbox"
                 aria-checked={on}
-                onClick={() => toggle(recipe.id)}
+                onClick={() => onToggle(recipe.id)}
                 className={`relative block w-full rounded-2xl bg-white p-1 text-left shadow-sm ring-2 transition-[box-shadow,transform] active:scale-95 ${
                   on ? 'ring-strawberry' : 'ring-transparent'
                 }`}
@@ -95,14 +120,6 @@ function RecipePicker({ folder, onDone }: { folder: Folder; onDone: () => void }
           )
         })}
       </ul>
-      {/* Stays at the bottom of the sheet while the grid scrolls under it. */}
-      <div className="sticky bottom-0 -mx-5 mt-4 bg-linear-to-t from-cream via-cream to-cream/0 px-5 pb-1 pt-4">
-        <button type="button" onClick={() => void add()} disabled={picked.length === 0} className="btn-primary w-full">
-          <span key={picked.length} className="inline-block animate-chip-pop">
-            {picked.length ? tn(picked.length, 'Add {n} recipe', 'Add {n} recipes') : t('Pick recipes to add')}
-          </span>
-        </button>
-      </div>
     </div>
   )
 }

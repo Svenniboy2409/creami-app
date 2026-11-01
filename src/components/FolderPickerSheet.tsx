@@ -1,20 +1,28 @@
-import { Check, FolderPlus, X } from 'lucide-react'
+import { Check, FolderHeart, FolderPlus, Plus } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useI18n } from '../hooks/i18nContext'
 import { useLibrary } from '../hooks/libraryContext'
 import { useToast } from '../hooks/toastContext'
 import { FolderCover } from './FolderCover'
-import { Sheet } from './Sheet'
+import { FolderForm } from './FolderSheet'
+import { Sheet, SheetHeaderButton } from './Sheet'
 
 /**
  * Tick the folders a recipe belongs to. Changes are saved straight away, and
  * reported in one toast when the sheet closes rather than one under the finger
- * for every tap.
+ * for every tap. "New folder" turns the same sheet into the folder form, with
+ * Back to return; the new folder comes back ticked, with the recipe in it.
  */
 export function FolderPickerSheet({ open, onClose, recipeId }: { open: boolean; onClose: () => void; recipeId: string }) {
   const { t } = useI18n()
   const showToast = useToast()
   const { folders } = useLibrary()
+  const [view, setView] = useState<'pick' | 'form'>('pick')
+  const [wasOpen, setWasOpen] = useState(open)
+  if (open !== wasOpen) {
+    setWasOpen(open)
+    if (open) setView('pick')
+  }
   // Folder id → whether the recipe ended up in it. Ticking and unticking the
   // same folder cancels out.
   const changes = useRef(new Map<string, boolean>())
@@ -31,94 +39,74 @@ export function FolderPickerSheet({ open, onClose, recipeId }: { open: boolean; 
     changes.current = new Map()
     initial.current = new Map()
     const name = (id: string) => folders.find((folder) => folder.id === id)?.name ?? ''
-    if (entries.length === 1) {
-      const [id, inside] = entries[0]
-      showToast(t(inside ? 'Added to {folder}' : 'Removed from {folder}', { folder: name(id) }))
-    } else if (entries.length > 1) {
-      showToast(t('{n} folders updated', { n: entries.length }))
+    const added = entries.filter(([, inside]) => inside).map(([id]) => id)
+    const removed = entries.filter(([, inside]) => !inside).map(([id]) => id)
+    if (added.length && !removed.length) {
+      showToast(added.length === 1 ? t('Added to {folder}', { folder: name(added[0]) }) : t('Added to {n} folders', { n: added.length }))
+    } else if (removed.length && !added.length) {
+      showToast(removed.length === 1 ? t('Removed from {folder}', { folder: name(removed[0]) }) : t('Removed from {n} folders', { n: removed.length }))
+    } else if (entries.length) {
+      showToast(t('Folders updated'))
     }
     onClose()
   }
 
+  const form = view === 'form'
   return (
-    <Sheet open={open} onClose={close} title={t('Add to folder')}>
-      <FolderPicker recipeId={recipeId} onChange={note} />
+    <Sheet
+      open={open}
+      onClose={close}
+      title={t(form ? 'New folder' : 'Save to folder')}
+      action={
+        <SheetHeaderButton onClick={form ? () => setView('pick') : close}>{t(form ? 'Back' : 'Done')}</SheetHeaderButton>
+      }
+      footer={
+        form ? undefined : (
+          <button type="button" onClick={close} className="btn-primary w-full">
+            {t('Done')}
+          </button>
+        )
+      }
+      contentKey={view}
+    >
+      {form ? (
+        <FolderForm
+          startWith={[recipeId]}
+          onSaved={(folder) => {
+            note(folder.id, true)
+            setView('pick')
+          }}
+        />
+      ) : (
+        <FolderPicker recipeId={recipeId} onChange={note} onNew={() => setView('form')} />
+      )}
     </Sheet>
   )
 }
 
-function FolderPicker({ recipeId, onChange }: { recipeId: string; onChange: (folderId: string, inside: boolean) => void }) {
+function FolderPicker({ recipeId, onChange, onNew }: { recipeId: string; onChange: (folderId: string, inside: boolean) => void; onNew: () => void }) {
   const { t, tn } = useI18n()
-  const { folders, toggleInFolder, createFolder } = useLibrary()
-  // The name field only shows once you ask for a new folder, so opening the
-  // sheet never brings up the keyboard by itself.
-  const [creating, setCreating] = useState(false)
-  const [name, setName] = useState('')
+  const { folders, toggleInFolder } = useLibrary()
 
-  const stopCreating = () => {
-    // Put the keyboard away before the field goes, so the sheet comes back down with it.
-    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
-    setName('')
-    setCreating(false)
-  }
-
-  const create = async () => {
-    if (!name.trim()) return
-    // A folder made from a recipe's page starts with that recipe in it, at the top of the list.
-    const folder = await createFolder(name, { recipeIds: [recipeId] })
-    onChange(folder.id, true)
-    stopCreating()
+  if (folders.length === 0) {
+    return (
+      <div className="flex animate-fade-up flex-col items-center px-2 pb-2 pt-4 text-center">
+        <span className="grid size-16 place-items-center rounded-full bg-strawberry-soft text-raspberry">
+          <FolderHeart className="size-7" aria-hidden />
+        </span>
+        <h3 className="mt-4 text-xl font-semibold">{t('No folders yet')}</h3>
+        <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">
+          {t('Folders let you group the recipes you save. Make your first one and this recipe goes straight in.')}
+        </p>
+        <button type="button" onClick={onNew} className="btn-primary mt-5">
+          <FolderPlus className="size-5" aria-hidden /> {t('New folder')}
+        </button>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-2">
-      {creating ? (
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            void create()
-          }}
-          className="flex animate-fade-up items-center gap-2"
-        >
-          <input
-            className="field min-w-0 bg-white"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder={t('Folder name')}
-            aria-label={t('Name of the new folder')}
-            enterKeyHint="done"
-            maxLength={60}
-            autoFocus
-          />
-          <button type="submit" disabled={!name.trim()} className="btn-primary shrink-0 px-5 py-3">
-            {t('Create')}
-          </button>
-          <button
-            type="button"
-            onClick={stopCreating}
-            aria-label={t('Cancel')}
-            className="grid size-11 shrink-0 place-items-center rounded-full bg-cream-deep text-ink-soft transition-transform active:scale-90"
-          >
-            <X className="size-5" aria-hidden />
-          </button>
-        </form>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setCreating(true)}
-          className="flex w-full items-center gap-3 rounded-2xl border-2 border-dashed border-strawberry/60 p-3 text-left font-bold text-raspberry transition-transform active:scale-[0.98]"
-        >
-          <span className="grid size-12 place-items-center rounded-xl bg-strawberry-soft">
-            <FolderPlus className="size-5" aria-hidden />
-          </span>
-          {t('New folder')}
-        </button>
-      )}
-
-      {folders.length === 0 && !creating && (
-        <p className="animate-fade-up px-1 pt-1 text-sm text-ink-soft">{t('No folders yet. Make one and this recipe goes straight in.')}</p>
-      )}
-
+    <div className="animate-fade-up">
       <ul className="space-y-2">
         {folders.map((folder, index) => {
           const inside = folder.recipeIds.includes(recipeId)
@@ -140,16 +128,23 @@ function FolderPicker({ recipeId, onChange }: { recipeId: string; onChange: (fol
                 </span>
                 <span
                   className={`grid size-7 shrink-0 place-items-center rounded-full border-2 transition-colors ${
-                    inside ? 'animate-chip-pop border-raspberry bg-raspberry text-white' : 'border-ink-faint/50'
+                    inside ? 'animate-chip-pop border-raspberry bg-raspberry text-white' : 'border-ink-faint/50 text-ink-faint'
                   }`}
                 >
-                  {inside && <Check className="size-4" strokeWidth={3.2} aria-hidden />}
+                  {inside ? <Check className="size-4" strokeWidth={3.2} aria-hidden /> : <Plus className="size-4" strokeWidth={3} aria-hidden />}
                 </span>
               </button>
             </li>
           )
         })}
       </ul>
+      <button
+        type="button"
+        onClick={onNew}
+        className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-strawberry/60 p-3 font-bold text-raspberry transition-transform active:scale-[0.98]"
+      >
+        <Plus className="size-5" aria-hidden /> {t('New folder')}
+      </button>
     </div>
   )
 }
