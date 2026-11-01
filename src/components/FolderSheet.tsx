@@ -182,11 +182,14 @@ export function FolderForm({
             </span>
           )}
         </label>
-        {image && (
-          <button type="button" onClick={() => setImage(undefined)} className="mt-2 animate-pop-in px-1 text-sm font-extrabold text-raspberry">
-            {t('Use a collage instead')}
-          </button>
-        )}
+        {/* Its line is kept free without a cover too, so choosing one doesn't make the sheet grow. */}
+        <div className="mt-2 flex h-5 items-center">
+          {image && (
+            <button type="button" onClick={() => setImage(undefined)} className="-my-2 animate-pop-in px-1 py-2 text-sm font-extrabold text-raspberry">
+              {t('Use a collage instead')}
+            </button>
+          )}
+        </div>
       </div>
 
       {onDelete && (

@@ -297,9 +297,10 @@
     touch-action: manipulation;
   }
 
-  /* The page holds still behind an open sheet. */
+  /* The page holds still behind an open sheet, and doesn't bounce past its edges. */
   html.sheet-open {
     overflow: hidden;
+    overscroll-behavior: none;
   }
 
   :focus-visible {

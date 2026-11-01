@@ -29,62 +29,228 @@ function lockPage(lock: boolean) {
 }
 
 const KEYBOARD_GAP = 16 // room kept between the field being typed in and the keyboard
+const FLING_MS = 160 // how far a flick carries the sheet on: its speed times this
+// Moves the sheet into place. It springs back from a pull, but glides when it
+// makes room for the keyboard: a spring would overshoot its bottom edge there.
+const SPRING = 'cubic-bezier(0.2, 0.9, 0.3, 1.1)'
+const GLIDE = 'cubic-bezier(0.2, 0.9, 0.3, 1)'
+
+const NOT_TYPED = new Set(['button', 'checkbox', 'color', 'file', 'hidden', 'image', 'radio', 'range', 'reset', 'submit'])
+
+/** A field that brings up the on-screen keyboard. */
+function typesInto(el: EventTarget | null): el is HTMLElement {
+  if (el instanceof HTMLTextAreaElement) return true
+  if (el instanceof HTMLInputElement) return !NOT_TYPED.has(el.type)
+  return el instanceof HTMLElement && el.isContentEditable
+}
+
+/** How far an element is moved up or down right now, partway through a transition or not. */
+function shiftOf(el: HTMLElement) {
+  const moved = getComputedStyle(el).transform
+  return moved === 'none' ? 0 : new DOMMatrixReadOnly(moved).m42
+}
+
+/** Whether a list between the finger and the sheet can still scroll the way the finger pushes it. */
+function scrollsOn(from: Element, sheet: Element, towardsEnd: boolean) {
+  for (let el: Element | null = from; el && el !== sheet; el = el.parentElement) {
+    if (el.scrollHeight <= el.clientHeight + 1) continue
+    const overflow = getComputedStyle(el).overflowY
+    if (overflow !== 'auto' && overflow !== 'scroll') continue
+    if (towardsEnd ? el.scrollTop + el.clientHeight < el.scrollHeight - 1 : el.scrollTop > 0) return true
+  }
+  return false
+}
 
 /**
- * How far the sheet moves up for the on-screen keyboard. On an iPhone the
- * keyboard slides over the bottom of the screen; the sheet stays where it is,
- * as in the cocktail app, and only moves up as far as it takes to show the
- * field being typed in. Its own list scrolls first; whatever is lower than the
- * field, the button at the bottom included, stays under the keyboard until it
- * goes away. The keyboard's return key does what that button does.
+ * Room for the on-screen keyboard. On an iPhone the keyboard slides over the
+ * bottom of the screen; the sheet stays where it is, as in the cocktail app,
+ * and only rises as far as it takes to show the field being typed in. Its own
+ * list scrolls first. Whatever is lower, the button at the bottom included,
+ * stays under the keyboard; a swipe brings it up, but the sheet stops when its
+ * bottom edge reaches the keyboard, so nothing under it ever shows. The
+ * keyboard's return key does what that button does.
+ *
+ * The sheet does all of this moving itself. Left to Safari, the whole screen
+ * shifts instead: it scrolls a field into view as it gets focus, and a swipe
+ * scrolls on past the bottom of the sheet. Safari puts that back in one go when
+ * the keyboard leaves, which made the sheet jump; now it glides back down.
  */
-function useKeyboardLift(active: boolean, panel: RefObject<HTMLDivElement | null>, pageY: { current: number }) {
-  const [lift, setLift] = useState(0)
+function useKeyboardRoom(
+  active: boolean,
+  dialog: RefObject<HTMLDialogElement | null>,
+  panel: RefObject<HTMLDivElement | null>,
+  pageY: { current: number },
+) {
+  const [raise, setRaise] = useState(0)
+  // While a finger moves the sheet it follows without easing.
+  const [following, setFollowing] = useState(false)
 
   useEffect(() => {
     const viewport = window.visualViewport
-    if (!active || !viewport) return
+    const layer = dialog.current
+    if (!active || !viewport || !layer) return
+    let current = 0
+    const raiseTo = (value: number) => {
+      current = Math.max(0, value)
+      setRaise(current)
+    }
+    // The keyboard is up when less of the page shows than it is tall (zooming aside).
+    const keyboardUp = () => window.innerHeight - viewport.height * viewport.scale > 1
+    // How much of the page lies under the keyboard: the furthest the sheet can
+    // rise, which puts its bottom edge right on top of the keyboard.
+    const underKeyboard = () => (keyboardUp() ? Math.max(0, window.innerHeight - viewport.offsetTop - viewport.height) : 0)
+
+    // A field held up out of the keyboard's way for a moment; see onFocus.
+    let held: { field: HTMLElement; transform: string; list: HTMLElement | null; listTop: number } | null = null
+    const release = () => {
+      if (!held) return
+      const { field, transform, list, listTop } = held
+      held = null
+      field.style.transform = transform
+      if (list && list.scrollTop !== listTop) list.scrollTop = listTop
+    }
+
     let frame = 0
     const place = () => {
-      const keyboard = Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop))
-      if (keyboard === 0) {
-        setLift(0)
+      release()
+      if (!keyboardUp()) {
+        raiseTo(0)
         // Typing can move the page behind the sheet; once the keyboard is gone, it goes back.
         if (window.scrollY !== pageY.current) window.scrollTo(0, pageY.current)
         return
       }
-      const field = document.activeElement
+      const most = underKeyboard()
+      let next = Math.min(current, most)
       const sheet = panel.current
-      if (!sheet || !(field instanceof HTMLElement) || !sheet.contains(field)) return
-      // Where the field would be with the sheet in its place, wherever it is now on its way.
-      const moved = getComputedStyle(sheet).transform
-      const shift = moved === 'none' ? 0 : new DOMMatrixReadOnly(moved).m42
-      let over = field.getBoundingClientRect().bottom - shift - (viewport.offsetTop + viewport.height - KEYBOARD_GAP)
-      const list = field.closest<HTMLElement>('[data-sheet-body]')
-      if (over > 0 && list) {
-        const by = Math.min(over, Math.max(0, list.scrollHeight - list.clientHeight - list.scrollTop))
-        list.scrollTop += by
-        over -= by
+      const field = document.activeElement
+      if (sheet && typesInto(field) && sheet.contains(field)) {
+        // Where the field is with the sheet in its place, wherever it is now on its way.
+        const shift = shiftOf(sheet)
+        const box = field.getBoundingClientRect()
+        let top = box.top - shift
+        let over = box.bottom - shift - next - (viewport.offsetTop + viewport.height - KEYBOARD_GAP)
+        const list = field.closest<HTMLElement>('[data-sheet-body]')
+        if (over > 0 && list) {
+          const by = Math.min(over, Math.max(0, list.scrollHeight - list.clientHeight - list.scrollTop))
+          list.scrollTop += by
+          over -= by
+          top -= by
+        }
+        if (over > 0) next += over
+        // Swiped up so far that the field went out of sight at the top: back down to it.
+        else next = Math.min(next, Math.max(0, top - viewport.offsetTop - KEYBOARD_GAP))
+        next = Math.round(Math.min(next, most))
       }
-      setLift(Math.round(Math.min(keyboard, Math.max(0, over))))
+      raiseTo(next)
     }
     const later = () => {
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(place)
     }
+
+    // Safari scrolls the whole screen to a field the moment it gets focus, when
+    // it reckons the keyboard will cover it — before the sheet has had a chance
+    // to rise. For that moment the field is shown to Safari high up on the
+    // screen, where no keyboard reaches; before anything is drawn it is back in
+    // its place, and the sheet makes the room itself.
+    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)
+    const onFocus = (event: FocusEvent) => {
+      const field = event.target
+      const sheet = panel.current
+      if (!ios || !sheet || !typesInto(field) || !sheet.contains(field)) return
+      release()
+      const high = viewport.offsetTop + window.innerHeight * 0.15
+      const box = field.getBoundingClientRect()
+      if (box.top > high) {
+        const list = field.closest<HTMLElement>('[data-sheet-body]')
+        held = { field, transform: field.style.transform, list, listTop: list?.scrollTop ?? 0 }
+        field.style.transform = `translateY(${Math.round(high - box.top)}px)`
+      }
+      later()
+    }
+    // A field let go of, and no other one taken: the keyboard is on its way out,
+    // so the sheet sets off down with it rather than after it.
+    const onFocusOut = (event: FocusEvent) => {
+      if (typesInto(event.relatedTarget)) return
+      cancelAnimationFrame(frame)
+      release()
+      raiseTo(0)
+    }
+
+    // A finger on the sheet. Lists in it scroll as usual; everything else is up
+    // to the sheet, so the screen itself never scrolls past it.
+    let touch: { x: number; y: number; t: number; speed: number; mode?: 'scroll' | 'hold' | 'move' } | null = null
+    const onTouchStart = (event: TouchEvent) => {
+      const point = event.touches[0]
+      touch = event.touches.length === 1 && point ? { x: point.clientX, y: point.clientY, t: event.timeStamp, speed: 0 } : null
+    }
+    const onTouchMove = (event: TouchEvent) => {
+      const point = event.touches[0]
+      // Two fingers: a pinch, left to the browser.
+      if (!touch || event.touches.length !== 1 || !point) return
+      const dx = point.clientX - touch.x
+      const dy = point.clientY - touch.y
+      if (!touch.mode) {
+        const target = event.target instanceof Element ? event.target : null
+        const sheet = panel.current
+        // A sheet opened from inside this one handles its own touches.
+        if (!target || !sheet || target.closest('dialog') !== layer) touch.mode = 'scroll'
+        // The grip has its own drag, by pointer; nothing else moves meanwhile.
+        else if (target.closest('[data-sheet-grip]')) touch.mode = 'hold'
+        else if (Math.abs(dx) > Math.abs(dy) || scrollsOn(target, sheet, dy < 0)) touch.mode = 'scroll'
+        else touch.mode = sheet.contains(target) ? 'move' : 'hold'
+      }
+      if (touch.mode === 'scroll') return
+      if (event.cancelable) event.preventDefault()
+      if (touch.mode === 'move') {
+        const dt = event.timeStamp - touch.t
+        if (dt > 0) touch.speed = dy / dt
+        const next = Math.min(underKeyboard(), Math.max(0, current - dy))
+        if (next !== current) {
+          setFollowing(true)
+          raiseTo(next)
+        }
+      }
+      touch.x = point.clientX
+      touch.y = point.clientY
+      touch.t = event.timeStamp
+    }
+    const onTouchEnd = () => {
+      const flick = touch?.mode === 'move' ? touch.speed : null
+      touch = null
+      if (flick === null) return
+      setFollowing(false)
+      // A flick carries on a little, as a list would, and still stops at the edge.
+      raiseTo(Math.round(Math.min(underKeyboard(), Math.max(0, current - flick * FLING_MS))))
+    }
+
     viewport.addEventListener('resize', later)
     viewport.addEventListener('scroll', later)
+    document.addEventListener('focus', onFocus, true)
     document.addEventListener('focusin', later)
+    document.addEventListener('focusout', onFocusOut)
+    layer.addEventListener('touchstart', onTouchStart, { passive: true })
+    layer.addEventListener('touchmove', onTouchMove, { passive: false })
+    layer.addEventListener('touchend', onTouchEnd)
+    layer.addEventListener('touchcancel', onTouchEnd)
     return () => {
       cancelAnimationFrame(frame)
+      release()
       viewport.removeEventListener('resize', later)
       viewport.removeEventListener('scroll', later)
+      document.removeEventListener('focus', onFocus, true)
       document.removeEventListener('focusin', later)
-      setLift(0)
+      document.removeEventListener('focusout', onFocusOut)
+      layer.removeEventListener('touchstart', onTouchStart)
+      layer.removeEventListener('touchmove', onTouchMove)
+      layer.removeEventListener('touchend', onTouchEnd)
+      layer.removeEventListener('touchcancel', onTouchEnd)
+      setRaise(0)
+      setFollowing(false)
     }
-  }, [active, panel, pageY])
+  }, [active, dialog, panel, pageY])
 
-  return lift
+  return { raise, following }
 }
 
 /**
@@ -139,7 +305,7 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
 
   if (open && !shown) setShown(true)
   const closing = shown && !open
-  const lift = useKeyboardLift(shown, panelRef, pageY)
+  const { raise, following } = useKeyboardRoom(shown, dialogRef, panelRef, pageY)
   useHeightGlide(panelRef, contentKey, shown)
 
   useEffect(() => {
@@ -214,12 +380,12 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
   // brightens in step with the finger.
   const progress = Math.min(1, dragY / height)
 
-  // One transform moves it: pulled down by a finger, or up just enough for the keyboard.
+  // One transform moves it: pulled down by its grip, or up for the keyboard.
   const panelStyle: CSSProperties = closing
     ? { transform: 'translateY(100%)', transition: `transform ${CLOSE_MS}ms cubic-bezier(0.4, 0, 1, 1)` }
     : {
-        transform: `translateY(${dragY - lift}px)`,
-        transition: dragging ? 'none' : 'transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1.1)',
+        transform: `translateY(${dragY - raise}px)`,
+        transition: dragging || following ? 'none' : `transform 320ms ${raise > 0 ? GLIDE : SPRING}`,
       }
   const backdropStyle = {
     opacity: closing ? 0 : 1 - progress,
@@ -245,12 +411,14 @@ export function Sheet({ open, onClose, title, children, action, footer, tall = f
           <div className="absolute inset-0 animate-backdrop-in bg-ink/40 backdrop-blur-[2px]" style={backdropStyle} onClick={onClose} aria-hidden />
           <div
             ref={panelRef}
-            className={`absolute inset-x-0 bottom-0 mx-auto flex w-full max-w-md animate-sheet-up flex-col rounded-t-[2rem] bg-cream shadow-[0_-12px_40px_-12px_rgb(59_42_42/0.35)] ${
+            // The cream carries on below the sheet (after:): while it is raised over
+            // the keyboard, that is what lies behind the keyboard, not the page.
+            className={`absolute inset-x-0 bottom-0 mx-auto flex w-full max-w-md animate-sheet-up flex-col rounded-t-[2rem] bg-cream shadow-[0_-12px_40px_-12px_rgb(59_42_42/0.35)] after:absolute after:inset-x-0 after:top-full after:h-lvh after:bg-cream ${
               tall ? 'h-[calc(100dvh-var(--safe-top)-1rem)]' : 'max-h-[min(88dvh,calc(100dvh-var(--safe-top)-1rem))]'
             }`}
             style={panelStyle}
           >
-            <div {...handle} className="shrink-0 cursor-grab touch-none select-none px-5 pt-3 active:cursor-grabbing">
+            <div {...handle} data-sheet-grip className="shrink-0 cursor-grab touch-none select-none px-5 pt-3 active:cursor-grabbing">
               <div
                 className={`mx-auto mb-3 h-1.5 w-10 rounded-full transition-colors ${dragging ? 'bg-strawberry' : 'bg-cream-deep'}`}
                 aria-hidden
