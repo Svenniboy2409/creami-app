@@ -4,7 +4,8 @@ A mobile web app with frozen treats for every Ninja CREAMi: the Original, Breeze
 
 - **Discover**: hand-picked recipes with photos, ingredients, a step-by-step method and the right Creami program for each step. Search forgives typos ("vanila" finds Vanilla) and the search bar stays at the top while you scroll. Filters can be typed as well, in English or Dutch: a category, taste, program, tag or machine, a level ("easy", "gemiddeld"), "mix-ins" or "toppings" for the recipes that have them, "10 min" for the prep time and "24 h" or "24 uur" for the freezing time (times match exactly). Chip rows for category and taste sit on the page; the filter sheet adds machine, program and tags.
 - **+**: add your own recipes in a pop-up, with a photo taken on your phone. Not finished yet? **Save as draft**, and the + button (which shows how many drafts are waiting) offers to carry on with it next time.
-- **Library**: opens on the favorites you saved with the heart; next to them your own recipes and **folders** you fill with any recipe. Tap the rearrange button to drag recipes and folders into your own order.
+- **Library**: opens on the favorites you saved with the heart; next to them your own recipes and your **folders**. Tap the rearrange button to drag recipes and folders into your own order.
+- **Folders** hold any recipe, curated or your own. Make one in the Library or straight from a recipe with **Save to folder**, which ticks the recipe into as many folders as you like. A folder shows a collage of the recipes inside, or a cover photo of your own. On the folder page you rearrange, add more recipes, or rename the folder, change its cover and delete it; a recipe opened from a folder can be taken out of it again.
 - **Settings** (the gear in the Library): English or Dutch, folders as tiles or a list, illustrations instead of photos for the app's own recipes, and backups.
 
 On a recipe the photo runs to the very top of the screen. Choose a 16 oz pint (Original, Breeze, Swirl) or a 24 oz Deluxe pint and how many pints to fill (1 to 10); the amounts and servings follow, and the lines that change pop. The category and tag chips under the photo open Discover filtered on them, "Works with" crosses out machines that lack a program the recipe needs, the basic tips fold open under the recipe's own tips, and "Also try these flavours" links to similar recipes.
@@ -48,6 +49,8 @@ Built with Vite, React, TypeScript, Tailwind CSS v4, React Router (hash routing 
 | `src/lib/strings-nl.ts` | The Dutch interface text, keyed by the English |
 | `src/components/` | Cards, sheets, toasts, the filter sheet, folders, the drag-to-rearrange grid and `WholeWords` (titles that only hyphenate where a word can't fit) |
 | `src/pages/` | Discover, Library, folder and recipe detail |
+| `src/components/Folder*.tsx`, `AddRecipesSheet.tsx`, `src/pages/FolderPage.tsx` | Folders: the cover collage, the folder form, "Save to folder", adding recipes and the folder page |
+| `src/components/Sheet.tsx` | The pop-up every sheet is built on: sliding, pulling down to close, the keyboard and the height glide |
 | `src/components/RecipeEditor.tsx`, `src/lib/recipeDraft.ts` | The add/edit recipe pop-up and drafts |
 
 ### Translations
@@ -96,12 +99,21 @@ Chromium and Playwright are installed in the cloud sessions. Start `npx vite --p
 - On a recipe, Nutrition sits under the tips, above "Also try these flavours".
 - Discover shows chip rows for **category** and **taste**; the filter sheet has, in order, machine, category, taste, program and tags. Chips only list values that occur in the recipes; the machines always show all four.
 - Pages remember their state **while the app is open** (`src/lib/pageMemory.ts`), not after it closes. The Library opens on **Favorites**.
-- **Folders work as in the cocktail app**, compared side by side with it, in the Creami style and with Creami's own animations (sheets slide out when closed, lists come in one by one, ticks pop):
-  - The folder form has the name first, then a large cover area ("Without a cover, the folder shows the recipes inside", with "Use a collage instead" below it once a photo is picked; its line stays free without a photo, so the sheet keeps the same height), and its button pinned at the bottom ("Create folder", "Save changes"); Done at the top closes without saving. Delete is a red button in the form, and asks for confirmation inside the sheet, not with the phone's own dialog.
-  - On a recipe, "Save to folder" opens a sheet with Done at the top and at the bottom; "+ New folder" is a dashed row under the list (a big button when there are no folders yet) and turns the same sheet into the folder form, with Back, after which the new folder comes back ticked. Closing it gives one toast: "Added to {folder}", "Added to 2 folders", "Removed from…", or "Folders updated" for both.
-  - The folder page has one compact header row (back, small cover, name and count, rearrange, edit); "Add more recipes to this folder", the add button and "Browse Discover" sit under the recipes. A recipe opened from a folder has a red "Remove from folder" button that asks first.
-  - "Add recipes" lists every recipe (own and favorites first, with a search): folders may hold any recipe. Cancel sits at the top; the button at the bottom says Done until something is picked, then "Add 2 recipes".
 - **Nothing reloads in between.** A page you leave by following a link stays mounted underneath, hidden where it was (the back stack in `src/App.tsx` and `src/lib/backStack.ts`, up to six pages). Back shows it exactly as you left it: no fade, no photos loading again, the same scroll. Only a page you newly open fades in. Never hide a page with `display: none`: showing it again would restart every animation in it.
+
+### Folders
+
+Folders work as in the cocktail app, compared side by side with it, in the Creami style and with Creami's own animations: sheets slide out when closed, lists come in one by one, ticks pop. Any recipe can go in a folder.
+
+- **The folder form** ("New folder", "Edit folder") has the name first, then a large 16:9 cover area. Without a photo it says "Without a cover, the folder shows the recipes inside"; with one, "Replace" sits on the photo and "Use a collage instead" below it. That line is kept free when there is no photo, so picking one never makes the sheet taller (the owner asked for this). The button is pinned at the bottom ("Create folder", "Save changes") and the keyboard's return key does the same; Done at the top closes without saving. The name field doesn't take the focus by itself.
+- **Delete** is a red button in the edit form and asks for confirmation inside the same sheet ("Delete folder" / Cancel), never with the phone's own dialog. The recipes inside stay where they are.
+- **Save to folder**, on a recipe, opens a sheet with Done at the top and at the bottom. Each folder is a row with its cover and count and a ✓ or + circle; "+ New folder" is a dashed row under the list, or a big button with a short explanation when there are no folders yet. It turns the same sheet into the folder form, with Back; the new folder comes back ticked, with the recipe in it. Ticks are saved straight away, and closing gives one toast: "Added to {folder}", "Added to 2 folders", "Removed from {folder}", "Removed from 2 folders", or "Folders updated" for both. The button on the recipe says "In 2 folders" once it is in some.
+- **The folder page** has one compact header row: back, a small cover, the name (two lines at most) with the count, rearrange and edit. While rearranging, a bar above the recipes says "Drag a card to move it", with Done. Under the recipes sit "Add more recipes to this folder", the add button and "Browse Discover"; an empty folder says how to fill it.
+- **Add recipes** is a tall sheet listing every recipe not yet in the folder (own recipes and favorites first, with a search once there are more than six) in a grid of three to tick. Cancel sits at the top; the button at the bottom says Done until something is picked, then "Add 2 recipes", and a toast confirms it.
+- **Remove from folder**: a recipe opened from a folder has a red button for it, which asks first ("“{name}” will be taken out of {folder}. It stays in the app.").
+- **Covers**: a folder's own photo, or else a collage of the first one to four recipes inside (three is one tall picture beside two), or a pastel folder mark when it is empty. In the Library folders show as tiles or a list (Settings).
+- Folders, their order and the order inside them are part of the backup.
+- The sheets behave as under Design: they keep their place above the keyboard and stop at their bottom edge, and switching between the list and the form glides the height (`contentKey`).
 
 ### Recipes
 
